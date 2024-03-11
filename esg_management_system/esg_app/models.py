@@ -1,33 +1,75 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
-class Industry(models.Model):
-    industry_name = models.CharField(max_length=255)
-    industry_code = models.CharField(max_length=50)
+class Location(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 class Company(models.Model):
-    name = models.CharField(max_length=255)
-    industry = models.ForeignKey(Industry, on_delete=models.CASCADE)
-    # Optionally link to a user if needed
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='companies')
 
-class ESGFramework(models.Model):
+    def __str__(self):
+        return self.name
+
+class Framework(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+class Metric(models.Model):
+    PILLAR_CHOICES = [
+        ('E', 'Environmental'),
+        ('S', 'Social'),
+        ('G', 'Governance'),
+    ]
+
     name = models.CharField(max_length=255)
     description = models.TextField()
-    # Link frameworks to users if there's a need for subscription or assignment
-    users = models.ManyToManyField(User, related_name='frameworks')
+    pillar = models.CharField(max_length=1, choices=PILLAR_CHOICES)
+    framework = models.ForeignKey(Framework, on_delete=models.CASCADE, related_name='metrics')
 
-class ESGMetric(models.Model):
+    def __str__(self):
+        return self.name
+
+class Indicator(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    framework = models.ForeignKey(ESGFramework, related_name='metrics', on_delete=models.CASCADE)
-    unit = models.CharField(max_length=50)  # To accommodate various units from the data
-    data_type = models.CharField(max_length=50)  # To handle different data types (e.g., float, int, ratio)
+    source = models.TextField()
 
-class CompanyESGData(models.Model):
-    company = models.ForeignKey(Company, related_name='esg_data', on_delete=models.CASCADE)
-    metric = models.ForeignKey(ESGMetric, related_name='company_data', on_delete=models.CASCADE)
-    value = models.TextField()  # Using Text to accommodate various formats like ratios, percentages, etc.
+    def __str__(self):
+        return self.name
+
+class DataValue(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='data_values')
+    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE, related_name='data_values')
     year = models.IntegerField()
-    # Additional field to store the reporting period if data varies within a year
-    period = models.CharField(max_length=50, null=True, blank=True)
+    value = models.FloatField()
+
+class FrameworkMetric(models.Model):
+    framework = models.ForeignKey(Framework, on_delete=models.CASCADE, related_name='framework_metrics')
+    metric = models.ForeignKey(Metric, on_delete=models.CASCADE, related_name='framework_metrics')
+    predefined_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])
+
+class MetricIndicator(models.Model):
+    metric = models.ForeignKey(Metric, on_delete=models.CASCADE, related_name='metric_indicators')
+    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE, related_name='metric_indicators')
+    predefined_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])
+
+class UserMetricPreference(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='metric_preferences')
+    framework = models.ForeignKey(Framework, on_delete=models.CASCADE)
+    metric = models.ForeignKey(Metric, on_delete=models.CASCADE)
+    custom_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])
+
+class UserIndicatorPreference(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='indicator_preferences')
+    metric = models.ForeignKey(Metric, on_delete=models.CASCADE)
+    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE)
+    custom_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])

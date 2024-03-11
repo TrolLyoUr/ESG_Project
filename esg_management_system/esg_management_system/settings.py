@@ -75,13 +75,13 @@ WSGI_APPLICATION = 'esg_management_system.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'csg_data',
-        'USER': 'admin',
-        'PASSWORD': '88888888',
-        'HOST': 'localhost',  # Or your database server IP
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "esg",
+        "USER": "postgres",
+        "PASSWORD": "99009900",
+        "HOST": "168.138.100.108",
+        "PORT": "5432",
     }
 }
 
