@@ -1,8 +1,10 @@
-esg_management_system/esg_management_system/__pycache__/__init__.cpython-311.pyc
-esg_management_system/esg_management_system/__pycache__/settings.cpython-311.pyc
-esg_management_system/esg_management_system/__pycache__/urls.cpython-311.pyc
-esg_management_system/esg_management_system/__pycache__/wsgi.cpython-311.pyc
+# Django
+esg_management_system/*/__pycache__
+esg_management_system/*.pyc
 esg_management_system/db.sqlite3
-.vscode/settings.json
-esg_management_system/.idea
+esg_management_system/esg_app/migrations/__pycache__/__init__.cpython-311.pyc
+
+# System and editor files
 .DS_Store
+Thumbs.db
+.vscode/
