@@ -41,6 +41,7 @@ class Metric(models.Model):
 class Indicator(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    unit = models.CharField(max_length=255, blank=True)
     source = models.TextField()
 
     def __str__(self):
