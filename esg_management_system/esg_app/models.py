@@ -10,8 +10,8 @@ class Location(models.Model):
 
 class Company(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    description = models.TextField()
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='companies')
+    description = models.TextField(blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='companies', blank=True, null=True)
 
     def __str__(self):
         return self.name

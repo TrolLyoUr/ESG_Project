@@ -1,6 +1,6 @@
 # Django
 esg_management_system/*/__pycache__
-esg_management_system/*.pyc
+*.pyc
 esg_management_system/db.sqlite3
 esg_management_system/esg_app/migrations/__pycache__/__init__.cpython-311.pyc
 

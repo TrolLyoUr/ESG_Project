@@ -1,5 +1,3 @@
-from .models import Company
+from django.shortcuts import render
 
-def add_company(request):
-    new_company = Company(name="Example Company", industry="Finance", market_cap=500000)
-    new_company.save()
+# Create your views here.
