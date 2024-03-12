@@ -1,0 +1,183 @@
+/**顶部导航**/
+*{
+	font-family: "微软雅黑";
+}
+li{
+	list-style: none;
+}
+a{
+	color: #000;
+}
+a:visited{
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: none;
+}
+
+
+/**头部样式**/
+.navbar-nav > li > a{
+	line-height: 43px;
+}
+.my_nav{
+	border-radius: 0;
+	margin-bottom: 0;
+}
+#myNav a{
+	font-size: 16px;
+	color: #000;
+}
+#example-navbar-collapse .nav li{
+	position: relative;
+}
+#example-navbar-collapse .nav .my_nav_shadow{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 0;
+	background: #F26522;
+}
+.my_nav_logo{
+	height: 72px;
+	line-height: 45px;
+	padding: 3px 50px 0 0;
+}
+#my_carousel{
+	/*margin-top: 25px;*/
+	box-shadow: 7px 10px 20px #CCC;
+	margin-bottom: 20px;
+}
+.my_tabs{
+	padding-left: 0;
+	padding-right: 0;
+}
+.carousel-inner img{
+	margin: 0 auto;
+}
+.more{
+	float: right;
+	font-size: 16px;
+	text-decoration: none;
+	cursor: pointer;
+}
+.more hover{
+	text-decoration: none;
+}
+.my_tabs_item1,.my_tabs_item2,.my_tabs_item3{
+	position: relative;
+	height: 500px;
+}
+.my_tab_shadow{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background-color: rgba(0,0,0,.4);
+}
+/**主体**/
+.banner{
+	background: url(../img/banner.png) no-repeat ;
+	color: white;
+	
+}
+.my-title{
+	margin-bottom: 20px;
+	margin-top: 60px;
+}
+.title-font{
+	font-size:  24px;
+}
+.my-course-box{
+	border: 1px solid #ccc ;
+	margin-bottom: 15px; 
+	padding: 5px;
+	overflow: hidden;
+	border-radius: 5px;
+
+}
+.my-course-box img{
+	transition: all 1s;
+}
+.my-course-box:hover img{
+	transform: scale(1.1);
+}
+.my-course-box:hover {
+	box-shadow:  0px 0px 10px #888888; 
+}
+.my-courses-info{
+	padding: 20px;
+}
+.my-courses-info h4 span{
+	display: inline-block;
+	margin-right: 4px;
+	padding: 4px 8px;
+	color: #fff;
+	background: #00be91;
+	font-size: 14px;
+	font-weight: 100;
+}
+.my-img-list {
+	float: left;
+}
+
+.my-img-list img{
+	height: 200px;
+	width: 250px;
+	transition: all 2s;
+	-webkit-transition: all 2s ;
+    -moz-transition: all 2s ;
+    -o-transition: all 2s ;
+}
+.my-img-list:hover img{
+	transform:rotateY(360deg);
+	-webkit-transform:rotateY(360deg);
+	-moz-transform:rotateY(360deg);
+	-o-transform:rotateY(360deg);
+}
+/**底部样式**/
+#footer{
+
+	box-shadow:inset 0 2px 8px 0 rgba(7,17,27,.06);
+	padding: 45px 0 25px;
+}
+#footer p{
+	text-align: center;
+	color: #99a1a6;
+}
+#footer p a{
+	color: #99a1a6;
+	display: inline-block;
+	width: 100px;
+}
+#footer p a:hover{
+	color: #000;
+}
+#gotop{
+	position: fixed;
+	font-size: 18px;
+	padding: 15px;
+	background-color: #fff;
+	box-shadow: 0 4px 12px 0 rgba(7,17,27,.1);
+	right: 5px;
+	bottom: 20px;
+	cursor: pointer;
+	border-radius: 5px;
+	overflow: hidden;
+	display: none;
+}
+#gotop .goshadow{
+	display: block;
+	width: 48px;
+	height: 55px;
+	background-color: #0071bc;
+	position:absolute;
+	top: 56px;
+	left: 0;
+	transition: top 0.5s;
+}
+#gotop:hover .goshadow{
+	top: 0;
+}

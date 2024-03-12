@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <!-- Custom Theme files -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" media="all"/>
+</head>
+<body>
+<div class="login">
+    <h2>Acced Form</h2>
+    <div class="login-top">
+        <h1>LOGIN FORM</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label>
+                <input type="text" name="username" value="" placeholder="Username or Email">
+            </label>
+            <label>
+                <input type="password" name="password" value="" placeholder="Password">
+            </label>
+            <div class="forgot">
+                <input type="submit">
+            </div>
+        </form>
+    </div>
+    <div class="login-bottom">
+        <h3>New User &nbsp;<a href="{% url 'usermanage:register' %}">Register</a>&nbsp Here</h3>
+        <h3>Forgot Password? &nbsp;<a href="{% url 'usermanage:register' %}">Reset</a>&nbsp Here</h3>
+    </div>
+</div>
+<div class="copyright">
+    <p>Copyright &copy; seasite.top</p>
+</div>
+<script src="{% static 'layui.all.js' %}" charset="utf-8"></script>
+<script src="{% static 'jquery.min.js' %}"></script>
+<script>
+    let layer = layui.layer, form = layui.form, table = layui.table, element = layui.element;
+    {% if messages %}
+        {% for msg in messages %}
+            layer.msg('{{ msg.message }}');
+        {% endfor %}
+    {% endif %}
+</script>
+</body>
+</html>
