@@ -52,7 +52,7 @@ def login_view(request):
         if user:
             request.session.setdefault('username', username)
             login(request, user)
-            return HttpResponseRedirect(reverse("esg_app:index"))
+            return HttpResponseRedirect(reverse("index"))
         else:
             messages.error(request, "username or password is incorrect")
             logout(request)
