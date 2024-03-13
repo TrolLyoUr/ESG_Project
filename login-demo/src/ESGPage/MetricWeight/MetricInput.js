@@ -31,7 +31,7 @@ function MetricInput() {
             {showContent && (
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> <span style={{ backgroundColor: 'rgba(255, 208, 0, 0.689)' }}>85</span></span></p>
+                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> </span></p>
                         <input
                             type="checkbox"
                             checked={selectedWeights.weight1}
@@ -39,7 +39,7 @@ function MetricInput() {
                         />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> <span style={{ backgroundColor: 'rgba(255, 208, 0, 0.689)' }}>84</span></span></p>
+                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> </span></p>
                         <input
                             type="checkbox"
                             checked={selectedWeights.weight2}
@@ -47,7 +47,7 @@ function MetricInput() {
                         />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> <span style={{ backgroundColor: 'rgba(255, 208, 0, 0.689)' }}>87</span></span></p>
+                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> </span></p>
                         <input
                             type="checkbox"
                             checked={selectedWeights.weight3}
