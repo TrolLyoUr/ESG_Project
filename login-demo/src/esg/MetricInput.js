@@ -3,7 +3,6 @@ import './MetricInput.css';
 
 function MetricInput() {
     const [showContent, setShowContent] = useState(false);
-    // 初始化每个权重的选中状态
     const [selectedWeights, setSelectedWeights] = useState({
         weight1: false,
         weight2: false,
@@ -14,7 +13,6 @@ function MetricInput() {
         setShowContent(!showContent);
     };
 
-    // 切换特定权重的选中状态
     const toggleWeightSelection = (weightKey) => {
         setSelectedWeights((prevWeights) => ({
             ...prevWeights,
@@ -25,13 +23,13 @@ function MetricInput() {
     return (
         <div className="metric-input">
             <button onClick={toggleShowContent}>
-                {showContent ? 'Hide Metrcis' : 'Show Metrcis'}
+                {showContent ? 'Hide Metrics' : 'Show Metrics'}
             </button>
 
             {showContent && (
-                <div>
+                <div className="content-container"> {/* 应用滚动样式的容器 */}
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> <span style={{ backgroundColor: 'rgba(255, 208, 0, 0.689)' }}>85</span></span></p>
+                    <p><span><span>GRI 303-1</span> <span>89</span></span></p>
                         <input
                             type="checkbox"
                             checked={selectedWeights.weight1}
@@ -39,7 +37,7 @@ function MetricInput() {
                         />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> <span style={{ backgroundColor: 'rgba(255, 208, 0, 0.689)' }}>84</span></span></p>
+                        <p><span><span>GRI 303-2</span> <span>78</span></span></p>
                         <input
                             type="checkbox"
                             checked={selectedWeights.weight2}
@@ -47,7 +45,31 @@ function MetricInput() {
                         />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <p><span><span style={{ backgroundColor: 'rgba(0, 255, 208, 0.689)' }}>GRI 303-1</span> <span style={{ backgroundColor: 'rgba(255, 208, 0, 0.689)' }}>87</span></span></p>
+                        <p><span><span>GRI 303-3</span> <span>91</span></span></p>
+                        <input
+                            type="checkbox"
+                            checked={selectedWeights.weight3}
+                            onChange={() => toggleWeightSelection('weight3')}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <p><span><span>GRI 303-4</span> <span>81</span></span></p>
+                        <input
+                            type="checkbox"
+                            checked={selectedWeights.weight3}
+                            onChange={() => toggleWeightSelection('weight3')}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <p><span><span>GRI 303-5</span> <span>84</span></span></p>
+                        <input
+                            type="checkbox"
+                            checked={selectedWeights.weight3}
+                            onChange={() => toggleWeightSelection('weight3')}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <p><span><span>GRI 303-6</span> <span>82</span></span></p>
                         <input
                             type="checkbox"
                             checked={selectedWeights.weight3}
