@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'esg_app.apps.EsgAppConfig',
+    'django_extensions',
     'usermanage.apps.AuthConfig'
 ]
 

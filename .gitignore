@@ -3,6 +3,8 @@ esg_management_system/*/__pycache__
 *.pyc
 esg_management_system/db.sqlite3
 esg_management_system/esg_app/migrations/__pycache__/__init__.cpython-311.pyc
+*.csv
+*.txt
 
 # System and editor files
 .DS_Store
