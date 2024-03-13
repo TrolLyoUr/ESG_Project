@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib import messages
 from django.core.validators import validate_email
@@ -9,21 +9,20 @@ from django.core.exceptions import ValidationError
 
 
 def login_view(request):
-    if not request.user.is_authenticated:
-        return render(request, 'login.html')
-    else:
-        if request.method == "POST":
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user:
-                login(request, user)
-                return HttpResponseRedirect(reverse("esg_app:index"))
-            else:
-                messages.error(request, "username or password is incorrect")
-                return render(request, 'login.html')
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user:
+            request.session.setdefault('username', username)
+            login(request, user)
+            return HttpResponseRedirect(reverse("esg_app:index"))
         else:
+            messages.error(request, "username or password is incorrect")
+            logout(request)
             return render(request, 'login.html')
+    else:
+        return render(request, 'login.html')
 
 
 def register_view(request):

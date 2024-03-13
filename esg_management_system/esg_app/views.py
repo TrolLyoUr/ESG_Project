@@ -5,4 +5,4 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='usermanage/login')
 def index(request):
-    return HttpResponse("<h1>hahahaha</h1>")
+    return HttpResponse(f"<h1>Hello user: {request.session.get('username')}</h1>")
