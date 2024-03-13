@@ -1,0 +1,13 @@
+/* ESGRatingDisplay.css */
+.esg-rating-display {
+    text-align: center;
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  
+  .rating {
+    font-size: 3em;
+    margin: 20px 0;
+  }
+  

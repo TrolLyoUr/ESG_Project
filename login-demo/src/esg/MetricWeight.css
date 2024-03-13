@@ -1,0 +1,48 @@
+.metric-input {
+    font-family: Arial, sans-serif; /* 使用通用字体确保兼容性 */
+    display: flex; 
+    color: rgb(130, 206, 213)55, 255, 255; /* 白色文字 */
+    max-width: 220px; /* 设置最大宽度 */
+    margin: left; /* 水平居中 */
+    padding: 20px; /* 内边距增加空间感 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 添加轻微阴影以增加层次感 */
+    border-radius: 8px; /* 轻微圆角 */
+}
+
+/* 按钮的样式 */
+.metric-input button {
+    background-color: rgb((104, 97, 214) 122, 175); /* 鲜绿色背景 */
+    color: white; /* 白色文字 */
+    padding: 10px 20px; /* 增加内边距使按钮更容易点击 */
+    border: none; /* 去除边框 */
+    border-radius: 5px; /* 按钮圆角 */
+    cursor: pointer; /* 鼠标悬停时显示指针 */
+    transition: background-color 0.3s; /* 过渡效果使颜色变化更平滑 */
+}
+
+/* 按钮:hover状态 */
+.metric-input button:hover {
+    background-color: rgb((104, 97, 214) 122, 175); /* 深绿色 */
+}
+
+/* 内容区域的样式 */
+.metric-input div {
+    display: flex; /* 将内容区域设置为 Flex 布局 */
+    justify-content: space-between; /* 水平间距分配 */
+    align-items: center; /* 垂直居中对齐 */
+    margin-top: 10px;
+    padding: 15px;
+    background-color: rgba(0, 255, 4, 0.492);
+    border-radius: 5px;
+    margin-bottom: 10px; /* 添加间距 */
+}
+
+/* 数据点的样式 */
+.metric-input span {
+    display: inline-block;
+    white-space: nowrap; /* 防止文本换行 */
+    margin: 5px 0; /* 修改间距的逗号为空格 */
+    padding: 5px;
+    background-color: rgba(0, 255, 208, 0.689);
+    border-radius: 3px;
+}
