@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'esg_app.apps.EsgAppConfig',
     'django_extensions',
+    'rest_framework',
+    'corsheaders',
     'usermanage.apps.AuthConfig'
 ]
 
@@ -52,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'esg_management_system.urls'
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
