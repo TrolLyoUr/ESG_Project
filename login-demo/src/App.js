@@ -4,7 +4,7 @@ import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
 import ResetPassword from './resetPassword';
-import ESGPage from './ESGPage';
+import ESGPage from './ESGPage/ESGPage';
 
 function App() {
   return (

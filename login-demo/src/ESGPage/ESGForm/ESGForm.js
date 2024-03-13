@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ESGForm.css';
+import companiesData from './companies.json'; // Assuming the JSON file is saved in the same directory
 
 const ESGForm = () => {
+  const [companies, setCompanies] = useState([]);
+
+  useEffect(() => {
+    // Load the company data from the JSON file
+    setCompanies(companiesData);
+  }, []);
+
   return (
     <form className="esg-form">
       <div className="input-group">
         <label>Company Name</label>
         <input type="search" list="company-options" placeholder="Search Company" />
         <datalist id="company-options">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
+          {companies.map((company, index) => (
+            <option key={index} value={company.name}>{company.name}</option>
+          ))}
         </datalist>
 
         <label>Framework</label>

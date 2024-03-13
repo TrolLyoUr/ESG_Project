@@ -1,0 +1,24 @@
+.metric-input,
+.metric-weight {
+    background-color: #fff;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.metric-input button,
+.metric-weight button {
+    background-color: #00c1d0;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.metric-input button:hover,
+.metric-weight button:hover {
+    background-color: #00a5b1;
+}
