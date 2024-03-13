@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
-
+import companiesData from './ESGPage/ESGForm/companies.json'; // Assuming the JSON file is saved in the same directory
 
 const MyESG = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
   const [framework, setFramework] = useState('');
   const [year, setYear] = useState('');
-  const companies = ['1', '2', '3']; 
   const [filteredCompanies, setFilteredCompanies] = useState([]);
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Load the company data from the JSON file
+    // Here, you might just use the names of the companies for simplicity
+    setFilteredCompanies(companiesData.map(company => company.name));
+  }, []);
+
   const handleSearchChange = (e) => {
-    const term = e.target.value;
+    const term = e.target.value.toLowerCase();
     setSearchTerm(term);
     if (term.trim()) {
-      setFilteredCompanies(companies.filter(company => company.includes(term)));
+      // Filter companies based on the search term
+      setFilteredCompanies(companiesData.filter(company => company.name.toLowerCase().includes(term)).map(company => company.name));
     } else {
       setFilteredCompanies([]);
     }
@@ -30,7 +36,6 @@ const MyESG = () => {
   };
 
   const handleConfirm = () => {
-    
     console.log(`Selected company: ${selectedCompany}, framework: ${framework}, year: ${year}`);
     navigate('/esg');
   };
@@ -69,12 +74,11 @@ const MyESG = () => {
         </select>
         <select value={year} onChange={(e) => setYear(e.target.value)}>
           <option value="">Select year...</option>
-          <option value="2022">2022</option> 
-          <option value="2023">2023</option> 
-          <option value="2024">2024</option> 
-        
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
         </select>
-        <button onClick={handleConfirm}>Confirm</button> 
+        <button onClick={handleConfirm}>Confirm</button>
       </div>
       <footer className="footer">
         <span>Copyright Reserved @2024</span>
