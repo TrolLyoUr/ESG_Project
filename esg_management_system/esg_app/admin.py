@@ -13,11 +13,11 @@ class FrameworkAdmin(admin.ModelAdmin):
 
 
 class MetricAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'pillar', 'framework')
+    list_display = ('name', 'description', 'pillar')
 
 
 class IndicatorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'source')
+    list_display = ['name', 'description', 'unit', 'source']
 
 
 class DataValueAdmin(admin.ModelAdmin):
