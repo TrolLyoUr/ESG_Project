@@ -152,13 +152,13 @@ class Command(BaseCommand):
 
                 for framework_name in metric_data['frameworks']:
                     framework, _ = Framework.objects.get_or_create(name=framework_name)
-                    FrameworkMetric.objects.get_or_create(framework=framework, metric=metric, defaults={'predefined_weight': 0.5})
+                    FrameworkMetric.objects.get_or_create(framework=framework, metric=metric, defaults={'predefined_weight': 1})
 
                 for indicator_name in metric_data['indicators']:
                     indicators = Indicator.objects.filter(name=indicator_name)
                     if indicators:
                         for indicator in indicators:
-                            MetricIndicator.objects.get_or_create(metric=metric, indicator=indicator, defaults={'predefined_weight': 0.5})
+                            MetricIndicator.objects.get_or_create(metric=metric, indicator=indicator, defaults={'predefined_weight': 1})
                     else:
                         raise ValueError(f"Indicator with name '{indicator_name}' does not exist.")
 
