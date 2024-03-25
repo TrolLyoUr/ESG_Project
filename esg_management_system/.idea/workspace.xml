@@ -4,9 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="fix redirected problem">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/build/asset-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/build/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/OIP.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/asset-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/logo192.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/logo512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/css/main.5a0fd7fa.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/css/main.5a0fd7fa.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/453.265f70ae.chunk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/453.265f70ae.chunk.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/main.90193f83.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/main.90193f83.js.map" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,12 +114,25 @@
       <workItem from="1710287201076" duration="208000" />
       <workItem from="1710287418679" duration="2018000" />
       <workItem from="1711338885465" duration="1168000" />
-      <workItem from="1711344791709" duration="2597000" />
+      <workItem from="1711344791709" duration="5029000" />
     </task>
+    <task id="LOCAL-00001" summary="fix redirected problem">
+      <option name="closed" value="true" />
+      <created>1711347888954</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1711347888954</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix redirected problem" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix redirected problem" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
