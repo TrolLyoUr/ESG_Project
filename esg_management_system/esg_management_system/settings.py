@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-i+insl$3j_4lp#&!(tbu4uu-c38*)hn#%jgtxr!@6jw&07m0#c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["9900.seasite.top", "127.0.0.1", "168.138.100.108","0.0.0.0","localhost"]
+ALLOWED_HOSTS = ["9900.seasite.top", "127.0.0.1", "168.138.100.108", "0.0.0.0", "localhost", "local"]
 
 # Application definition
 
@@ -55,7 +55,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'esg_management_system.urls'
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 # CORS Settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [

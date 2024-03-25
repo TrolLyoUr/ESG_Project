@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="merge react">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="disable 跨站">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
     </list>
@@ -99,7 +99,7 @@
       <workItem from="1710287201076" duration="208000" />
       <workItem from="1710287418679" duration="2018000" />
       <workItem from="1711338885465" duration="1168000" />
-      <workItem from="1711344791709" duration="6144000" />
+      <workItem from="1711344791709" duration="6574000" />
     </task>
     <task id="LOCAL-00001" summary="fix redirected problem">
       <option name="closed" value="true" />
@@ -125,7 +125,23 @@
       <option name="project" value="LOCAL" />
       <updated>1711351352500</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="disable 跨站">
+      <option name="closed" value="true" />
+      <created>1711351988457</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1711351988457</updated>
+    </task>
+    <task id="LOCAL-00005" summary="disable 跨站">
+      <option name="closed" value="true" />
+      <created>1711352120471</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1711352120471</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,7 +151,8 @@
     <MESSAGE value="fix redirected problem" />
     <MESSAGE value="disable csrf" />
     <MESSAGE value="merge react" />
-    <option name="LAST_COMMIT_MESSAGE" value="merge react" />
+    <MESSAGE value="disable 跨站" />
+    <option name="LAST_COMMIT_MESSAGE" value="disable 跨站" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -151,9 +168,9 @@
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/usermanage/views.py</url>
-          <line>47</line>
-          <option name="timeStamp" value="8" />
+          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
