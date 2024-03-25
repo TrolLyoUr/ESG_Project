@@ -1,9 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './Login';
-import Register from './Register';
 import Dashboard from './Dashboard';
-import ResetPassword from './resetPassword';
 import ESGPage from './ESGPage/ESGPage';
 
 function App() {
@@ -11,9 +8,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Navigate replace to="/esg" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/esg" element={<ESGPage />} />
         <Route 
           path="/dashboard" 
