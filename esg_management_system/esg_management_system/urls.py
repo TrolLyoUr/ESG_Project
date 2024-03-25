@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('esg_app.urls')),
     path('admin/', admin.site.urls),
     path('app/', include("esg_app.urls")),
-    path('usermanage/', include("usermanage.urls"))
+    path('usermanage/', include("usermanage.urls")),
+    path('', include('esg_app.urls')),
 ]
