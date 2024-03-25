@@ -9,7 +9,10 @@ const ESGForm = () => {
 
   useEffect(() => {
     // Load the company data from the JSON file
-    axios.get('http://localhost:8000/app/test')
+    axios.get('http://localhost:8000/app/test', {
+      withCredentials: true
+    })
+    
       .then(response => {
         setMessage(response.data.message);
       })
@@ -46,7 +49,7 @@ const ESGForm = () => {
           <option value="2024">2024</option>
         </select>
       </div>
-      <h1>Hello, World!</h1>
+      
       <p>{message}</p>
       {/* Add other input groups for standard and year */}
       {/* Add buttons for reset weights and add another company */}
