@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="build/index.html"), name='index'),
-    re_path(r'^.*$', TemplateView.as_view(template_name="build/index.html"), name='index')
+    path("", views.IndexView.as_view(template_name="build/index.html"), name='index'),
+    path("test", views.test, name='test'),
+    re_path(r'^.*$', views.IndexView.as_view(template_name="build/index.html"), name='index')
 ]
