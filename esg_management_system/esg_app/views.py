@@ -5,12 +5,12 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 
-@method_decorator(login_required(login_url='usermanage/login'), name='dispatch')
+@method_decorator(login_required(login_url='/usermanage/login'), name='dispatch')
 class IndexView(TemplateView):
     template_name = "build/index.html"
 
 
-@login_required(login_url='usermanage/login')
+@login_required(login_url='/usermanage/login')
 @api_view(['GET'])
 def test(request):
     return Response({'message': 'Fuck you, world!'})
