@@ -36,8 +36,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8000",
-  devServer: {
-    allowedHosts: "all"
-  }
+  "proxy": "http://0.0.0.0:8000"
 }
