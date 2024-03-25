@@ -12,7 +12,6 @@ const ESGForm = () => {
     axios.get('http://localhost:8000/app/test', {
       withCredentials: true
     })
-    
       .then(response => {
         setMessage(response.data.message);
       })
