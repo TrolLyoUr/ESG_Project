@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="disable csrf">
-      <change afterPath="$PROJECT_DIR$/templates/build/static/js/main.90193f83.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/build/static/js/main.90193f83.js.map" afterDir="false" />
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="merge react">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +99,7 @@
       <workItem from="1710287201076" duration="208000" />
       <workItem from="1710287418679" duration="2018000" />
       <workItem from="1711338885465" duration="1168000" />
-      <workItem from="1711344791709" duration="5662000" />
+      <workItem from="1711344791709" duration="6144000" />
     </task>
     <task id="LOCAL-00001" summary="fix redirected problem">
       <option name="closed" value="true" />
@@ -117,7 +117,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711350283749</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="merge react">
+      <option name="closed" value="true" />
+      <created>1711351352500</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1711351352500</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -126,7 +134,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fix redirected problem" />
     <MESSAGE value="disable csrf" />
-    <option name="LAST_COMMIT_MESSAGE" value="disable csrf" />
+    <MESSAGE value="merge react" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge react" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
