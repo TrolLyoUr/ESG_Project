@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import './ESGPage.css';
 import ESGForm from './ESGForm/ESGForm';
 import ESGRatingDisplay from './ESGRatingDisplay/ESGRatingDisplay';
