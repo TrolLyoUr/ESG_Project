@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-i+insl$3j_4lp#&!(tbu4uu-c38*)hn#%jgtxr!@6jw&07m0#c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["9900.seasite.top"]
 
 # Application definition
 
