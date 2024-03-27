@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './ESGForm.css';
 import companiesData from './companies.json'; 
 import axios from 'axios';
-axios.defaults.withCredentials = true;
+
 
 const ESGForm = () => {
   const [companies, setCompanies] = useState(companiesData);
-  const [message, setMessage] = useState('');
+const [message, setMessage] = useState('');
 
   useEffect(() => {
       // Load the company data from the JSON file
