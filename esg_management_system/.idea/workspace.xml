@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="split api and front end" />
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="split api and front end">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/templates/build/asset-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/build/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

@@ -58,6 +58,10 @@ ROOT_URLCONF = 'esg_management_system.urls'
 CORS_ORIGIN_ALLOW_ALL = True
 # CORS Settings
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4000",
+    "http://9900.seasite.top:4000"  # Add any other domains you want to allow
+]
 
 TEMPLATES = [
     {
