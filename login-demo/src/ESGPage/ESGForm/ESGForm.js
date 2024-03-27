@@ -1,25 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import './ESGForm.css';
-import companiesData from './companies.json'; // Assuming the JSON file is saved in the same directory
+import companiesData from './companies.json'; 
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 const ESGForm = () => {
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState(companiesData);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    // Load the company data from the JSON file
-    axios.get('http://localhost:8000/app/test', {
-      withCredentials: true
-    })
-      .then(response => {
+      // Load the company data from the JSON file
+    const fetchData = async () => {
+      try {
+        const apiURL = "http://127.0.0.1:8000/app/users/";
+        const response = await axios.get(apiURL, { withCredentials: true });
+        console.log(response);
         setMessage(response.data.message);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    setCompanies(companiesData);
-  }, []);
+        console.log(message);
+        console.log(response.data);
+        if(response.data.companies){
+          setCompanies(response.data.companies)
+        }
+      } catch (error) {
+        console.error('There was an error!', error);
+      }
+    };
+    fetchData();
+    }, []);
 
   return (
     <form className="esg-form">

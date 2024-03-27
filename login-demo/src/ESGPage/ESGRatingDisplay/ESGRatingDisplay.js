@@ -3,7 +3,7 @@ import './ESGRatingDisplay.css';
 
 const ESGRatingDisplay = ({ company, framework, metricWeights }) => {
   // Implement logic to calculate ESG rating based on company, framework, and metricWeights
-  const esgRating = 84.3; // Replace with your calculation logic
+  const esgRating = 84; // Replace with your calculation logic
 
   return (
     <div className="esg-rating-display">
