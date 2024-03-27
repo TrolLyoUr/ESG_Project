@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="disable 跨站">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="add new host for cors">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -98,7 +99,7 @@
       <workItem from="1710287201076" duration="208000" />
       <workItem from="1710287418679" duration="2018000" />
       <workItem from="1711338885465" duration="1168000" />
-      <workItem from="1711344791709" duration="6620000" />
+      <workItem from="1711344791709" duration="8120000" />
     </task>
     <task id="LOCAL-00001" summary="fix redirected problem">
       <option name="closed" value="true" />
@@ -148,7 +149,23 @@
       <option name="project" value="LOCAL" />
       <updated>1711352173545</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add new host for cors">
+      <option name="closed" value="true" />
+      <created>1711352228549</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1711352228549</updated>
+    </task>
+    <task id="LOCAL-00008" summary="add new host for cors">
+      <option name="closed" value="true" />
+      <created>1711352307305</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1711352307305</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,7 +176,8 @@
     <MESSAGE value="disable csrf" />
     <MESSAGE value="merge react" />
     <MESSAGE value="disable 跨站" />
-    <option name="LAST_COMMIT_MESSAGE" value="disable 跨站" />
+    <MESSAGE value="add new host for cors" />
+    <option name="LAST_COMMIT_MESSAGE" value="add new host for cors" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -178,6 +196,11 @@
           <url>file://$PROJECT_DIR$/esg_app/views.py</url>
           <line>15</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
