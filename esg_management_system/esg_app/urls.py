@@ -1,10 +1,9 @@
-from django.urls import path, re_path
-from django.views.generic import TemplateView
+from django.urls import path, re_path, include
+from rest_framework import routers
 
-from . import views
+from .views import ListUsers
 
-urlpatterns = [
-    path("", views.IndexView.as_view(template_name="build/index.html"), name='index'),
-    path("test", views.test, name='test'),
-    re_path(r'^.*$', views.IndexView.as_view(template_name="build/index.html"), name='index')
-]
+router = routers.DefaultRouter()
+router.register(r'users', ListUsers)
+
+urlpatterns = router.urls
