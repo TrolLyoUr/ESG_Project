@@ -5,26 +5,30 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Location(models.Model):
     name = models.CharField(max_length=255)
+    objects = models.Manager()
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Company(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='companies', blank=True, null=True)
+    location = models.ForeignKey(
+        Location, on_delete=models.CASCADE, related_name='companies', blank=True, null=True)
+    objects = models.Manager()
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Framework(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
+    objects = models.Manager()
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Metric(models.Model):
@@ -38,9 +42,10 @@ class Metric(models.Model):
     description = models.TextField()
     pillar = models.CharField(max_length=1, choices=PILLAR_CHOICES)
     # framework = models.ForeignKey(Framework, on_delete=models.CASCADE, related_name='metrics')
+    objects = models.Manager()
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Indicator(models.Model):
@@ -50,37 +55,49 @@ class Indicator(models.Model):
     source = models.TextField()
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class DataValue(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='data_values')
-    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE, related_name='data_values')
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name='data_values')
+    indicator = models.ForeignKey(
+        Indicator, on_delete=models.CASCADE, related_name='data_values')
     year = models.IntegerField()
     value = models.FloatField()
 
 
 class FrameworkMetric(models.Model):
-    framework = models.ForeignKey(Framework, on_delete=models.CASCADE, related_name='framework_metrics')
-    metric = models.ForeignKey(Metric, on_delete=models.CASCADE, related_name='framework_metrics')
-    predefined_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])
+    framework = models.ForeignKey(
+        Framework, on_delete=models.CASCADE, related_name='framework_metrics')
+    metric = models.ForeignKey(
+        Metric, on_delete=models.CASCADE, related_name='framework_metrics')
+    predefined_weight = models.FloatField(
+        validators=[MinValueValidator(0), MaxValueValidator(1)])
 
 
 class MetricIndicator(models.Model):
-    metric = models.ForeignKey(Metric, on_delete=models.CASCADE, related_name='metric_indicators')
-    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE, related_name='metric_indicators')
-    predefined_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])
+    metric = models.ForeignKey(
+        Metric, on_delete=models.CASCADE, related_name='metric_indicators')
+    indicator = models.ForeignKey(
+        Indicator, on_delete=models.CASCADE, related_name='metric_indicators')
+    predefined_weight = models.FloatField(
+        validators=[MinValueValidator(0), MaxValueValidator(1)])
 
 
 class UserMetricPreference(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='metric_preferences')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='metric_preferences')
     framework = models.ForeignKey(Framework, on_delete=models.CASCADE)
     metric = models.ForeignKey(Metric, on_delete=models.CASCADE)
-    custom_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])
+    custom_weight = models.FloatField(
+        validators=[MinValueValidator(0), MaxValueValidator(1)])
 
 
 class UserIndicatorPreference(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='indicator_preferences')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='indicator_preferences')
     metric = models.ForeignKey(Metric, on_delete=models.CASCADE)
     indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE)
-    custom_weight = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(1)])
+    custom_weight = models.FloatField(
+        validators=[MinValueValidator(0), MaxValueValidator(1)])
