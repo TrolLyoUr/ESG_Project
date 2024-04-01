@@ -1,0 +1,14 @@
+/* Header.css */
+
+.header {
+    width: 84.5%;
+    background-color: #eee; /* 示例背景颜色 */
+    padding: 0px 0; /* 上下填充 */
+    text-align: center; /* 标题居中 */
+    position: fixed; /* 固定在顶部 */
+    top: 0; /* 位于页面顶端 */
+    right: 0; /* 与页面左边缘对齐 */
+    z-index: 1000; /* 确保顶栏位于其他内容上方 */
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom, #a0e5e5, #ffffff); /* 使用线性渐变创建从 #71d8d8 到 #ffffff 的渐变背景 */
+}
