@@ -16,4 +16,4 @@ Thumbs.db
 .vscode/
 
 # Frontend
-login-demo/node_modules
+node_modules
