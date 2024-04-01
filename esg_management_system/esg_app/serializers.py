@@ -1,7 +1,7 @@
 from rest_framework import serializers, permissions
 from django.contrib.auth.models import User
-from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, UserMetricPreference, UserIndicatorPreference
-
+from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
+    UserMetricPreference, UserIndicatorPreference
 
 '''
 Users
@@ -64,6 +64,7 @@ User Indicator Preferences (Association Table)
 •	custom_weight (Custom weight given by the user to the indicator)
 '''
 
+
 # serialize上面所有的model
 
 
@@ -80,10 +81,10 @@ class LocationSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    location = LocationSerializer()
+    # location = LocationSerializer()
     class Meta:
         model = Company
-        fields = ['url', 'company_id', 'name', 'description', 'location']
+        fields = ['url', 'id', 'name', 'description', 'location_id']
 
 
 class FrameworkSerializer(serializers.HyperlinkedModelSerializer):
@@ -104,10 +105,12 @@ class IndicatorSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'indicator_id', 'name',
                   'description', 'source', 'unit']
 
+
 class DataValueSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DataValue
         fields = ['url', 'value_id', 'company', 'indicator', 'year', 'value']
+
 
 # 为association table创建serializer
 class FrameworkMetricSerializer(serializers.HyperlinkedModelSerializer):
@@ -115,15 +118,18 @@ class FrameworkMetricSerializer(serializers.HyperlinkedModelSerializer):
         model = FrameworkMetric
         fields = ['url', 'framework', 'metric', 'predefined_weight']
 
+
 class MetricIndicatorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MetricIndicator
         fields = ['url', 'metric', 'indicator', 'predefined_weight']
 
+
 class UserMetricPreferenceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserMetricPreference
         fields = ['url', 'user', 'framework', 'metric', 'custom_weight']
+
 
 class UserIndicatorPreferenceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
