@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="new build js">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="add company api">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_management_system/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +106,7 @@
       <workItem from="1711344791709" duration="8120000" />
       <workItem from="1711517394436" duration="3878000" />
       <workItem from="1711946412589" duration="1948000" />
-      <workItem from="1711949475734" duration="308000" />
+      <workItem from="1711949475734" duration="6360000" />
     </task>
     <task id="LOCAL-00001" summary="fix redirected problem">
       <option name="closed" value="true" />
@@ -205,7 +204,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711947950400</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="add company api">
+      <option name="closed" value="true" />
+      <created>1711949978784</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1711949978784</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,7 +227,8 @@
     <MESSAGE value="split api and front end" />
     <MESSAGE value="remove cors hosts" />
     <MESSAGE value="new build js" />
-    <option name="LAST_COMMIT_MESSAGE" value="new build js" />
+    <MESSAGE value="add company api" />
+    <option name="LAST_COMMIT_MESSAGE" value="add company api" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

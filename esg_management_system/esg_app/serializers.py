@@ -77,14 +77,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class LocationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Location
-        fields = ['url', 'location_id', 'name']
+        fields = '__all__'
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    # location = LocationSerializer()
+    location = LocationSerializer()
+
     class Meta:
         model = Company
-        fields = ['url', 'id', 'name', 'description', 'location_id']
+        fields = '__all__'
+        # depth = 1
 
 
 class FrameworkSerializer(serializers.HyperlinkedModelSerializer):
