@@ -21,7 +21,7 @@ class ListCompanies(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-
+ 
 
 class ListFrameworks(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
