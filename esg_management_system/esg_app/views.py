@@ -42,7 +42,7 @@ class ListLocations(viewsets.ModelViewSet):
 class ListCompanies(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = Company.objects.all()[:10]
+    queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
     def retrieve(self, request, pk=None, *args, **kwargs):
