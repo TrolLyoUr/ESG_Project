@@ -62,12 +62,24 @@ class ListFrameworkMetrics(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class FastSearch(viewsets.ViewSet):
+class FastSearch(viewsets.ReadOnlyModelViewSet):
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return FastCompanies
+        elif self.action == "retrieve":
+            return FastCompanies
+        return super().get_serializer_class()
+
+    def get_queryset(self, pk=None):
+        if pk is not None:
+            return Company.objects.filter(name__startswith=pk).all()[:10]
+        else:
+            return Company.objects.all()[:10]
 
     def retrieve(self, request, pk=None, *args, **kwargs):
-        # print(calculate_company_framework_values())
-        companies = Company.objects.filter(name__startswith=pk).all()[:10]
-        serializer = FastCompanies(companies, many=True)
+        queryset = self.get_queryset(pk=pk)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -204,7 +216,7 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-class SaveMetricPreference(APIView):
+class SaveMetricPreference(viewsets.ViewSet):
     def post(self, request):
         serializer = UserMetricPreferenceSerializer(
             data=request.data, context={"request": request}
