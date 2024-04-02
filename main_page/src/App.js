@@ -1,24 +1,23 @@
-// App.js
-
 import React from 'react';
 import './App.css';
 import Sidebar from './Sidebar';
-import Header from './Header'; // 引入Header组件
+import Header from './Header';
+import Feature1 from './Feature1'; // 引入 Feature1 组件
+import Feature4 from './Feature4';
 
 const App = () => {
   return (
     <div className="App">
-      <Header /> {/* 添加Header组件 */}
+      <Header />
       <Sidebar />
       <div className="main-content">
-        <h1></h1>
-        <p></p>
+        <h1>Welcome to Our Application</h1>
+       
         <div className="feature-areas">
-            <div className="feature-area feature-area-1">Feature 1</div>
+            <Feature1 /> 
             <div className="feature-area feature-area-2">Feature 2</div>
             <div className="feature-area feature-area-3">Feature 3</div>
-            <div className="feature-area feature-area-4">Feature 4</div>
-            
+            <Feature4 /> 
         </div>
       </div>
     </div>

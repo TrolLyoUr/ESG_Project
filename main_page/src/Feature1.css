@@ -1,0 +1,34 @@
+.feature-area {
+  text-align: center;
+  margin: 10px;
+  background-color: #d0f0e89c; /* 更改背景颜色 */
+  padding: 10px; /* 增加内边距以留出更多空间 */
+  border-radius: 10px; /* 添加边角圆润效果 */
+}
+
+.options {
+  margin-top: 20px;
+}
+
+.option-button {
+  padding: 15px 30px; /* 增加按钮的大小 */
+  margin: 0 10px;
+  border: 2px solid #007bff; /* 添加边框并设置颜色 */
+  border-radius: 20px; /* 增加边角圆润效果 */
+  cursor: pointer;
+  transition: all 0.3s ease; /* 平滑过渡效果应用于所有改变的属性 */
+  font-size: 16px; /* 增加字体大小 */
+  background-color: white; /* 设置按钮的背景颜色 */
+  color: #007bff; /* 设置按钮文字颜色 */
+}
+
+.option-button:hover {
+  background-color: #007bff; /* 鼠标悬停时的背景颜色 */
+  color: white; /* 鼠标悬停时的文字颜色 */
+}
+
+.selected {
+  background-color: #0056b3; /* 选中状态的背景颜色 */
+  color: white; /* 选中状态的文字颜色 */
+}
+
