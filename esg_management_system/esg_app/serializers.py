@@ -151,9 +151,41 @@ class MetricIndicatorSerializer(serializers.ModelSerializer):
 
 
 class UserMetricPreferenceSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
+    framework_id = serializers.IntegerField(
+        source='framework.id', read_only=True)
+    metric_id = serializers.IntegerField(source='metric.id', read_only=True)
+    custom_weight = serializers.FloatField()
+
     class Meta:
         model = UserMetricPreference
         fields = ['user', 'framework', 'metric', 'custom_weight']
+    
+    def create(self, validated_data):
+        user_id = self.context['request'].data.get('user_id')
+        Framework_id = self.context['request'].data.get('framework_id')
+        metrics = self.context['request'].data.get('metrics')
+
+        try:
+            user = User.objects.get(id=user_id)
+            framework = Framework.objects.get(id=Framework_id)
+        except (User.DoesNotExist, Framework.DoesNotExist):
+            raise serializers.ValidationError('User or Framework does not exist')
+
+        user_metric_preferences = []
+        for metric in metrics:
+            metric_id = metric.get('metric')
+            custom_weight = metric.get('custom_weight')
+
+            try:
+                metric = Metric.objects.get(id=metric_id)
+            except Metric.DoesNotExist:
+                raise serializers.ValidationError('Metric does not exist')
+
+            user_metric_preference = UserMetricPreference(
+                user=user, framework=framework, metric=metric, custom_weight=custom_weight)
+            user_metric_preferences.append(user_metric_preference)
+        return user_metric_preferences
 
 
 class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):

@@ -1,16 +1,12 @@
-import rest_framework.views
 from rest_framework import generics
-from rest_framework import permissions, viewsets, status
-from rest_framework.decorators import action
+from rest_framework import permissions, viewsets
 from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 # 引入所有的model
-from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
-    UserMetricPreference, UserIndicatorPreference
-from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer, FrameworkDetailSerializer, \
-    DataValueSerializer, \
-    IndicatorSerializer, LocationSerializer, MetricSerializer, FrameworkMetricSerializer, MetricIndicatorSerializer, \
-    UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, FastCompanies, FrameworkMetrics
+from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, UserMetricPreference, UserIndicatorPreference
+from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer,DataValueSerializer, IndicatorSerializer, LocationSerializer, MetricSerializer, FrameworkMetricSerializer, MetricIndicatorSerializer, UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, FrameworkMetrics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.db.models.functions import Coalesce
@@ -52,24 +48,13 @@ class ListUsers(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
-class ListLocations(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Location.objects.all()
-    serializer_class = LocationSerializer
-
-
 # 所有公司对应的序列化器
 class ListCompanies(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = Company.objects.all()[:10]
+    queryset = Company.objects.all()
     serializer_class = CompanySerializer
-
-    def retrieve(self, request, pk=None, *args, **kwargs):
-        queryset = Company.objects.filter(location_id=pk).all()
-        return Response(self.serializer_class(queryset, many=True, context={'request': request}).data)
-
+ 
 
 class ListFrameworks(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
@@ -77,13 +62,17 @@ class ListFrameworks(viewsets.ModelViewSet):
     queryset = Framework.objects.all()
     serializer_class = FrameworkSerializer
 
-
 class ListIndicators(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Indicator.objects.all()
     serializer_class = IndicatorSerializer
 
+class ListLocations(viewsets.ModelViewSet):
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
 
 class ListMetrics(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
@@ -91,13 +80,17 @@ class ListMetrics(viewsets.ModelViewSet):
     queryset = Metric.objects.all()
     serializer_class = MetricSerializer
 
-
 class ListDataValues(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = DataValue.objects.all()
     serializer_class = DataValueSerializer
 
+class ListFrameworkMetrics(viewsets.ModelViewSet):
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = FrameworkMetric.objects.all()
+    serializer_class = Framework
 
 class ListMetricIndicators(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
@@ -105,13 +98,11 @@ class ListMetricIndicators(viewsets.ModelViewSet):
     queryset = MetricIndicator.objects.all()
     serializer_class = MetricIndicatorSerializer
 
-
 class ListUserMetricPreferences(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = UserMetricPreference.objects.all()
     serializer_class = UserMetricPreferenceSerializer
-
 
 class ListUserIndicatorPreferences(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
@@ -119,8 +110,7 @@ class ListUserIndicatorPreferences(viewsets.ModelViewSet):
     queryset = UserIndicatorPreference.objects.all()
     serializer_class = UserIndicatorPreferenceSerializer
 
-
-# Path: esg_management_system/esg_app/urls.py
+# Path: esg_management_system/esg_app/urls.py 
 
 class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Framework.objects.all()
@@ -147,3 +137,12 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
             "description": serializer.data.get("description")
         }
         return Response(response_data)
+
+class SaveMetricPreference(APIView):
+    def post(self, request):
+        serializer = UserMetricPreferenceSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            user_metric_preference = serializer.create(serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
