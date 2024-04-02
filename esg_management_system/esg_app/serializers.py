@@ -66,74 +66,74 @@ User Indicator Preferences (Association Table)
 
 
 # serialize上面所有的model
+class TestSerializer(serializers.Serializer):
+    result = serializers.CharField()
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'first_name', 'last_name']
+        fields = ['username', 'email', 'first_name', 'last_name']
 
 
-class LocationSerializer(serializers.HyperlinkedModelSerializer):
+class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = '__all__'
+        fields = ['id', 'name']
 
 
-class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    location = LocationSerializer()
-
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = '__all__'
-        # depth = 1
+        fields = ['name', 'location']
+        depth = 1
 
 
-class FrameworkSerializer(serializers.HyperlinkedModelSerializer):
+class FrameworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Framework
-        fields = ['url', 'framework_id', 'name', 'description']
+        fields = ['framework_id', 'name', 'description']
 
 
-class MetricSerializer(serializers.HyperlinkedModelSerializer):
+class MetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = Metric
-        fields = ['url', 'metric_id', 'name', 'description', 'pillar']
+        fields = ['metric_id', 'name', 'description', 'pillar']
 
 
-class IndicatorSerializer(serializers.HyperlinkedModelSerializer):
+class IndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
-        fields = ['url', 'indicator_id', 'name',
+        fields = ['indicator_id', 'name',
                   'description', 'source', 'unit']
 
 
-class DataValueSerializer(serializers.HyperlinkedModelSerializer):
+class DataValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataValue
-        fields = ['url', 'value_id', 'company', 'indicator', 'year', 'value']
+        fields = ['value_id', 'company', 'indicator', 'year', 'value']
 
 
 # 为association table创建serializer
-class FrameworkMetricSerializer(serializers.HyperlinkedModelSerializer):
+class FrameworkMetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = FrameworkMetric
-        fields = ['url', 'framework', 'metric', 'predefined_weight']
+        fields = ['framework', 'metric', 'predefined_weight']
 
 
-class MetricIndicatorSerializer(serializers.HyperlinkedModelSerializer):
+class MetricIndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = MetricIndicator
-        fields = ['url', 'metric', 'indicator', 'predefined_weight']
+        fields = ['metric', 'indicator', 'predefined_weight']
 
 
-class UserMetricPreferenceSerializer(serializers.HyperlinkedModelSerializer):
+class UserMetricPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMetricPreference
-        fields = ['url', 'user', 'framework', 'metric', 'custom_weight']
+        fields = ['user', 'framework', 'metric', 'custom_weight']
 
 
-class UserIndicatorPreferenceSerializer(serializers.HyperlinkedModelSerializer):
+class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
-        fields = ['url', 'user', 'metric', 'indicator', 'custom_weight']
+        fields = ['user', 'metric', 'indicator', 'custom_weight']
