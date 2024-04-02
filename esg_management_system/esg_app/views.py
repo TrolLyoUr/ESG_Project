@@ -177,3 +177,14 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response({'frameworks': serializer.data})
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        # Reformat the response to match the exact desired output
+        response_data = {
+            "id": serializer.data.get("id"),
+            "name": serializer.data.get("name"),
+            "description": serializer.data.get("description")
+        }
+        return Response(response_data)
