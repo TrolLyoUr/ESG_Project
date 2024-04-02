@@ -1,7 +1,7 @@
 from django.urls import path, re_path, include
 from rest_framework import routers
 
-from .views import ListUsers, ListCompanies, ListLocations, FastSearch, FrameworkViewSet, ResultTest, \
+from .views import ListUsers, ListCompanies, ListLocations, FastSearch, FrameworkViewSet, MetricViewSet, ResultTest, \
     ListFrameworkMetrics
 
 router = routers.DefaultRouter()
@@ -12,6 +12,9 @@ router.register(r'fsearch', FastSearch, basename="fsearch")
 router.register(r"locations", ListLocations)
 router.register(f"frameworkMetrics", ListFrameworkMetrics)
 router.register(r"test", ResultTest, basename="tresult")
+router.register(r"frameworks", FrameworkViewSet)
+router.register(r'metrics', MetricViewSet)
+
 
 urlpatterns = router.urls
 for u in urlpatterns:

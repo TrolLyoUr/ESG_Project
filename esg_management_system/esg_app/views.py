@@ -3,10 +3,11 @@ from rest_framework import permissions, viewsets
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework import status
 # 引入所有的model
 from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, UserMetricPreference, UserIndicatorPreference
-from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer,DataValueSerializer, IndicatorSerializer, LocationSerializer, MetricSerializer, FrameworkMetricSerializer, MetricIndicatorSerializer, UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, FrameworkMetrics
+from .serializers import FastCompanies, FrameworkDetailSerializer, FrameworkListSerializer, UserSerializer, CompanySerializer, FrameworkSerializer,DataValueSerializer, IndicatorSerializer, LocationSerializer, MetricSerializer, FrameworkMetricSerializer, MetricIndicatorSerializer, UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, FrameworkMetrics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.db.models.functions import Coalesce
@@ -118,8 +119,11 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return FrameworkSerializer
-        if self.action == 'retrieve':
+        elif self.action == 'retrieve':
             return FrameworkDetailSerializer
+        elif self.action == 'list_framework_metrics':
+            # Use the FrameworkMetricSerializer when listing framework metrics
+            return FrameworkMetricSerializer
         return super().get_serializer_class()
 
     def list(self, request, *args, **kwargs):
@@ -130,13 +134,37 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        # Reformat the response to match the exact desired output
         response_data = {
             "id": serializer.data.get("id"),
             "name": serializer.data.get("name"),
             "description": serializer.data.get("description")
         }
         return Response(response_data)
+
+    @action(detail=True, methods=['get'], url_path='metrics')
+    def list_framework_metrics(self, request, pk=None):
+        framework = self.get_object()
+        queryset = FrameworkMetric.objects.filter(framework=framework)
+
+        pillar = request.query_params.get('pillar')
+        if pillar in ['E', 'S', 'G']:
+            queryset = queryset.filter(metric__pillar=pillar)
+
+        # Notice the change here: using FrameworkMetricSerializer directly
+        serializer = FrameworkMetricSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+class MetricViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Metric.objects.all()
+    serializer_class = MetricSerializer
+
+    @action(detail=True, methods=['get'], url_path='indicators')
+    def list_metric_indicators(self, request, pk=None):
+        metric = self.get_object()
+        queryset = metric.metric_indicators.all()
+
+        serializer = MetricIndicatorSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
 
 class SaveMetricPreference(APIView):
     def post(self, request):

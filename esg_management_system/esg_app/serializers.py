@@ -1,14 +1,8 @@
-from rest_framework import serializers, permissions
+from rest_framework import serializers
 from django.contrib.auth.models import User
 from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
     UserMetricPreference, UserIndicatorPreference
-from rest_framework.fields import (  # NOQA # isort:skip
-    BooleanField, CharField, ChoiceField, DateField, DateTimeField, DecimalField,
-    DictField, DurationField, EmailField, Field, FileField, FilePathField, FloatField,
-    HiddenField, HStoreField, IPAddressField, ImageField, IntegerField, JSONField,
-    ListField, ModelField, MultipleChoiceField, ReadOnlyField,
-    RegexField, SerializerMethodField, SlugField, TimeField, URLField, UUIDField,
-)
+from rest_framework.fields import CharField, IntegerField
 
 '''
 Users
@@ -117,37 +111,58 @@ class FrameworkDetailSerializer(serializers.ModelSerializer):
         model = Framework
         fields = ['id', 'name', 'description']
 
-
-class MetricSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Metric
-        fields = ['metric_id', 'name', 'description', 'pillar']
-
-
-class IndicatorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Indicator
-        fields = ['indicator_id', 'name',
-                  'description', 'source', 'unit']
-
-
 class DataValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataValue
         fields = ['value_id', 'company', 'indicator', 'year', 'value']
 
+# Serializer for List Framework Metrics API
+class FrameworkListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Framework
+        fields = ['id', 'name', 'description']
 
-# 为association table创建serializer
+    # Include a method field to get the associated metrics with predefined weights
+    metrics = serializers.SerializerMethodField()
+
+    def get_metrics(self, framework):
+        # Get all associated FrameworkMetric objects
+        framework_metrics = FrameworkMetric.objects.filter(framework=framework)
+        # Serialize the FrameworkMetric objects
+        return FrameworkMetricSerializer(framework_metrics, many=True).data
+    
+class MetricSerializer(serializers.ModelSerializer):
+    metric_indicators = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Metric
+        fields = ['id', 'name', 'description', 'pillar', 'metric_indicators']
+
+    def get_metric_indicators(self, metric):
+        # Get all associated MetricIndicator objects for the metric
+        metric_indicators = MetricIndicator.objects.filter(metric=metric)
+        # Serialize the MetricIndicator objects including the nested Indicator details
+        return MetricIndicatorSerializer(metric_indicators, many=True).data
+
 class FrameworkMetricSerializer(serializers.ModelSerializer):
+    metric = MetricSerializer(read_only=True)
+
     class Meta:
         model = FrameworkMetric
-        fields = ['framework', 'metric', 'predefined_weight']
+        fields = ['metric', 'predefined_weight']
 
-
+class IndicatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Indicator
+        fields = ['id', 'name', 'description', 'unit', 'source']
 class MetricIndicatorSerializer(serializers.ModelSerializer):
+    indicator = IndicatorSerializer()
+
     class Meta:
         model = MetricIndicator
-        fields = ['metric', 'indicator', 'predefined_weight']
+        fields = ['indicator', 'predefined_weight']
+
+
 
 
 class UserMetricPreferenceSerializer(serializers.ModelSerializer):
