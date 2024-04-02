@@ -2,6 +2,13 @@ from rest_framework import serializers, permissions
 from django.contrib.auth.models import User
 from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
     UserMetricPreference, UserIndicatorPreference
+from rest_framework.fields import (  # NOQA # isort:skip
+    BooleanField, CharField, ChoiceField, DateField, DateTimeField, DecimalField,
+    DictField, DurationField, EmailField, Field, FileField, FilePathField, FloatField,
+    HiddenField, HStoreField, IPAddressField, ImageField, IntegerField, JSONField,
+    ListField, ModelField, MultipleChoiceField, ReadOnlyField,
+    RegexField, SerializerMethodField, SlugField, TimeField, URLField, UUIDField,
+)
 
 '''
 Users
@@ -63,6 +70,13 @@ User Indicator Preferences (Association Table)
 •	indicator (Foreign Key, references Indicators.indicator_id)
 •	custom_weight (Custom weight given by the user to the indicator)
 '''
+
+
+class FastCompanies(serializers.Serializer):
+    id = IntegerField
+    name = CharField
+    location_id = IntegerField
+    location = CharField
 
 
 # serialize上面所有的model
