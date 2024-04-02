@@ -7,7 +7,8 @@ from rest_framework.response import Response
 # 引入所有的model
 from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
     UserMetricPreference, UserIndicatorPreference
-from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer, FrameworkDetailSerializer,DataValueSerializer, \
+from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer, FrameworkDetailSerializer, \
+    DataValueSerializer, \
     IndicatorSerializer, LocationSerializer, MetricSerializer, FrameworkMetricSerializer, MetricIndicatorSerializer, \
     UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, FastCompanies
 from rest_framework.authentication import SessionAuthentication
@@ -72,7 +73,7 @@ class ResultTest(viewsets.GenericViewSet):
 class FastSearch(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None, *args, **kwargs):
-        print(calculate_company_framework_values())
+        # print(calculate_company_framework_values())
         companies = Company.objects.filter(name__startswith=pk).all()[:10]
         serializer = FastCompanies(companies, many=True)
         return Response(serializer.data)
@@ -158,6 +159,7 @@ class ListUserIndicatorPreferences(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = UserIndicatorPreference.objects.all()
     serializer_class = UserIndicatorPreferenceSerializer
+
 
 # Path: esg_management_system/esg_app/urls.py
 
