@@ -1,3 +1,4 @@
+import rest_framework.views
 from rest_framework import generics
 from rest_framework import permissions, viewsets
 from django.contrib.auth import get_user_model
@@ -7,21 +8,73 @@ from esg_app.models import Company, Framework, Indicator, Location, Metric, Data
     UserMetricPreference, UserIndicatorPreference
 from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer, DataValueSerializer, \
     IndicatorSerializer, LocationSerializer, MetricSerializer, FrameworkMetricSerializer, MetricIndicatorSerializer, \
-    UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, TestSerializer
+    UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, FastCompanies
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.db.models.functions import Coalesce
+from django.db.models import Sum, F, FloatField
 
 
-class TestResult:
-    def __init__(self, result):
-        self.result = str(result)
+def calculate_company_framework_values():
+    # 首先获取所有的Company对象
+    companies = Company.objects.all()
+    # 创建一个空字典results来存储每个公司的value
+    results = {}
+
+    # 为每个公司创建一个字典来存储该公司的每个框架的值。
+    for company in companies:
+        framework_values = {}
+        data_values = DataValue.objects.filter(company=company)
+
+        # 对于每个Framework,我们获取与该框架相关的所有FrameworkMetric对象
+        for framework in Framework.objects.all():
+            framework_metrics = FrameworkMetric.objects.filter(framework=framework)
+            metric_values = {}
+
+            # 对于每个FrameworkMetric,我们获取相关的Metric和预定义的权重
+            for fm in framework_metrics:
+                metric = fm.metric
+                weight = fm.predefined_weight
+
+                # 使用Django的ORM和annotate函数来计算每个指标的加权值
+                indicator_values = MetricIndicator.objects.filter(
+                    metric=metric
+                ).annotate(
+                    weighted_value=Coalesce(
+                        Sum(
+                            F("indicator__data_values__value") * F("predefined_weight"),
+                            output_field=FloatField(),
+                        ),
+                        0.0,
+                    )
+                )
+
+                # 将每个指标的加权值相加,得到该框架下该的value,并将其存储在metric_values字典中
+                metric_value = sum(iv.weighted_value for iv in indicator_values)
+                metric_values[metric.name] = metric_value * weight
+
+            # 最后,把framework_values字典存储在results字典里,键是公司名称
+            framework_value = sum(metric_values.values())
+            framework_values[framework.name] = framework_value
+
+        results[company.name] = framework_values
+
+    return results
 
 
-class Test(viewsets.ViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = TestResult(966543)
-    serializer_class = TestSerializer
+class ResultTest(viewsets.GenericViewSet):
+    def get(self):
+        result = calculate_company_framework_values
+        return Response(result)
+
+
+class FastSearch(viewsets.ViewSet):
+
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        print(pk)
+        companies = Company.objects.filter(name__startswith=pk).all()
+        serializer = FastCompanies(companies, many=True)
+        return Response(serializer.data)
 
 
 class ListUsers(viewsets.ModelViewSet):
@@ -42,7 +95,7 @@ class ListLocations(viewsets.ModelViewSet):
 class ListCompanies(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = Company.objects.all()
+    queryset = Company.objects.all()[:10]
     serializer_class = CompanySerializer
 
     def retrieve(self, request, pk=None, *args, **kwargs):

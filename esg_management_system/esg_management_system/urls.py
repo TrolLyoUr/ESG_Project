@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('app/', include("esg_app.urls")),
     path('usermanage/', include("usermanage.urls")),
-    path('', include('react.urls')),
+    # path('', include('react.urls')),
 ]

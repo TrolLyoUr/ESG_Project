@@ -73,17 +73,13 @@ User Indicator Preferences (Association Table)
 
 
 class FastCompanies(serializers.Serializer):
-    id = IntegerField
-    name = CharField
-    location_id = IntegerField
-    location = CharField
+    id = IntegerField(read_only=True)
+    name = CharField(read_only=True)
+    location_id = IntegerField(read_only=True)
+    location = CharField(read_only=True)
 
 
 # serialize上面所有的model
-class TestSerializer(serializers.Serializer):
-    result = serializers.CharField()
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
