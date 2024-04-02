@@ -1,12 +1,13 @@
 import rest_framework.views
 from rest_framework import generics
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, viewsets, status
+from rest_framework.decorators import action
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 # 引入所有的model
 from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
     UserMetricPreference, UserIndicatorPreference
-from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer, DataValueSerializer, \
+from .serializers import UserSerializer, CompanySerializer, FrameworkSerializer, FrameworkDetailSerializer,DataValueSerializer, \
     IndicatorSerializer, LocationSerializer, MetricSerializer, FrameworkMetricSerializer, MetricIndicatorSerializer, \
     UserMetricPreferenceSerializer, UserIndicatorPreferenceSerializer, FastCompanies
 from rest_framework.authentication import SessionAuthentication
@@ -159,3 +160,18 @@ class ListUserIndicatorPreferences(viewsets.ModelViewSet):
     serializer_class = UserIndicatorPreferenceSerializer
 
 # Path: esg_management_system/esg_app/urls.py
+
+class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Framework.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return FrameworkSerializer
+        if self.action == 'retrieve':
+            return FrameworkDetailSerializer
+        return super().get_serializer_class()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'frameworks': serializer.data})

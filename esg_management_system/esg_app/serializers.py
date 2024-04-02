@@ -97,13 +97,15 @@ class CompanySerializer(serializers.ModelSerializer):
         model = Company
         fields = ['name', 'location']
         depth = 1
-
-
 class FrameworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Framework
-        fields = ['framework_id', 'name', 'description']
+        fields = ['id', 'name']
 
+class FrameworkDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Framework
+        fields = ['id', 'name', 'description']
 
 class MetricSerializer(serializers.ModelSerializer):
     class Meta:
