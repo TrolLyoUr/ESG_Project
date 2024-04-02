@@ -9,7 +9,7 @@ from .views import (
     FrameworkViewSet,
     ResultTest,
     ListFrameworkMetrics,
-    ESGPerformanceView,
+    ESGPerformanceViewSet,
 )
 
 router = routers.DefaultRouter()
