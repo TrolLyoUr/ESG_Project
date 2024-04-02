@@ -8,7 +8,7 @@ router.register(r'users', ListUsers)
 router.register(r'companies', ListCompanies)
 router.register(r'search', ListCompanies, basename=1)
 router.register(r"locations", ListLocations)
-router.register(r"test", TestResult, basename=1)
+# router.register(r"test", TestResult, basename=1)
 
 urlpatterns = router.urls
-print(urlpatterns)
+# print(urlpatterns)
