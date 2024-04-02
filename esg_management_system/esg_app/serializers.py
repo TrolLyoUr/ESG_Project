@@ -72,6 +72,13 @@ User Indicator Preferences (Association Table)
 '''
 
 
+class FrameworkMetrics(serializers.ModelSerializer):
+    class Meta:
+        # model = FrameworkMetric
+        fields = ["predefined_weight", "framework", "metric"]
+        depth = 1
+
+
 class FastCompanies(serializers.Serializer):
     id = IntegerField(read_only=True)
     name = CharField(read_only=True)
@@ -97,15 +104,19 @@ class CompanySerializer(serializers.ModelSerializer):
         model = Company
         fields = ['name', 'location']
         depth = 1
+
+
 class FrameworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Framework
         fields = ['id', 'name']
 
+
 class FrameworkDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Framework
         fields = ['id', 'name', 'description']
+
 
 class MetricSerializer(serializers.ModelSerializer):
     class Meta:
