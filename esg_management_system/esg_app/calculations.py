@@ -1,5 +1,6 @@
 from django.db.models import Sum, F, FloatField, Q
 from django.db.models.functions import Coalesce
+from .models import MetricIndicator
 
 
 def calculate_metric_score(company, framework, metric):

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
-from calculations import calculate_metric_score
+# from calculations import calculate_metric_score
 
 # 引入所有的model
 from esg_app.models import (
@@ -119,13 +119,6 @@ class ListDataValues(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = DataValue.objects.all()
     serializer_class = DataValueSerializer
-
-
-class ListFrameworkMetrics(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = FrameworkMetric.objects.all()
-    serializer_class = Framework
 
 
 class ListMetricIndicators(viewsets.ModelViewSet):
