@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="add locaitons api">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="list all companies">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/urls.py" afterDir="false" />
@@ -108,7 +108,7 @@
       <workItem from="1711517394436" duration="3878000" />
       <workItem from="1711946412589" duration="1948000" />
       <workItem from="1711949475734" duration="11299000" />
-      <workItem from="1712027070049" duration="6000" />
+      <workItem from="1712027070049" duration="9846000" />
     </task>
     <task id="LOCAL-00001" summary="fix redirected problem">
       <option name="closed" value="true" />
@@ -222,7 +222,39 @@
       <option name="project" value="LOCAL" />
       <updated>1711959551848</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="forgot what I did">
+      <option name="closed" value="true" />
+      <created>1712027092774</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1712027092774</updated>
+    </task>
+    <task id="LOCAL-00016" summary="forgot what I did">
+      <option name="closed" value="true" />
+      <created>1712027683054</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1712027683054</updated>
+    </task>
+    <task id="LOCAL-00017" summary="list all companies">
+      <option name="closed" value="true" />
+      <created>1712027810811</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1712027810811</updated>
+    </task>
+    <task id="LOCAL-00018" summary="list all companies">
+      <option name="closed" value="true" />
+      <created>1712031481223</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1712031481223</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,7 +271,9 @@
     <MESSAGE value="new build js" />
     <MESSAGE value="add company api" />
     <MESSAGE value="add locaitons api" />
-    <option name="LAST_COMMIT_MESSAGE" value="add locaitons api" />
+    <MESSAGE value="forgot what I did" />
+    <MESSAGE value="list all companies" />
+    <option name="LAST_COMMIT_MESSAGE" value="list all companies" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
