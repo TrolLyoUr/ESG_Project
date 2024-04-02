@@ -21,9 +21,8 @@ router.register(r"locations", ListLocations)
 router.register(f"frameworkMetrics", ListFrameworkMetrics)
 router.register(r"test", ResultTest, basename="tresult")
 router.register(r"frameworks", FrameworkViewSet)
-router.register(r"metrics", MetricViewSet)
+# router.register(r"metrics", MetricViewSet)
 router.register(r"esg-performance", ESGPerformanceViewSet, basename="esg-performance")
-
 
 urlpatterns = router.urls
 for u in urlpatterns:
