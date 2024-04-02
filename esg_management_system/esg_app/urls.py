@@ -10,7 +10,7 @@ router.register(r'companies', ListCompanies)
 router.register(r'fsearch', FastSearch, basename="fsearch")
 router.register(r"locations", ListLocations)
 # router.register(r"results", ResultTest, basename=3)
-# router.register(r"test", TestResult, basename=1)
+router.register(r"test", ResultTest, basename="tresult")
 
 urlpatterns = router.urls
 for u in urlpatterns:

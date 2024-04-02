@@ -71,8 +71,8 @@ class ResultTest(viewsets.GenericViewSet):
 class FastSearch(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None, *args, **kwargs):
-        print(pk)
-        companies = Company.objects.filter(name__startswith=pk).all()
+        print(calculate_company_framework_values())
+        companies = Company.objects.filter(name__startswith=pk).all()[:10]
         serializer = FastCompanies(companies, many=True)
         return Response(serializer.data)
 
