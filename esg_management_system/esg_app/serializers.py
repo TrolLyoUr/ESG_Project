@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
     UserMetricPreference, UserIndicatorPreference
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField, IntegerField, FloatField
 
 '''
 Users
@@ -111,10 +111,12 @@ class FrameworkDetailSerializer(serializers.ModelSerializer):
         model = Framework
         fields = ['id', 'name', 'description']
 
+
 class DataValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataValue
         fields = ['value_id', 'company', 'indicator', 'year', 'value']
+
 
 # Serializer for List Framework Metrics API
 class FrameworkListSerializer(serializers.ModelSerializer):
@@ -130,7 +132,8 @@ class FrameworkListSerializer(serializers.ModelSerializer):
         framework_metrics = FrameworkMetric.objects.filter(framework=framework)
         # Serialize the FrameworkMetric objects
         return FrameworkMetricSerializer(framework_metrics, many=True).data
-    
+
+
 class MetricSerializer(serializers.ModelSerializer):
     metric_indicators = serializers.SerializerMethodField()
 
@@ -144,6 +147,7 @@ class MetricSerializer(serializers.ModelSerializer):
         # Serialize the MetricIndicator objects including the nested Indicator details
         return MetricIndicatorSerializer(metric_indicators, many=True).data
 
+
 class FrameworkMetricSerializer(serializers.ModelSerializer):
     metric = MetricSerializer(read_only=True)
 
@@ -151,18 +155,19 @@ class FrameworkMetricSerializer(serializers.ModelSerializer):
         model = FrameworkMetric
         fields = ['metric', 'predefined_weight']
 
+
 class IndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
         fields = ['id', 'name', 'description', 'unit', 'source']
+
+
 class MetricIndicatorSerializer(serializers.ModelSerializer):
     indicator = IndicatorSerializer()
 
     class Meta:
         model = MetricIndicator
         fields = ['indicator', 'predefined_weight']
-
-
 
 
 class UserMetricPreferenceSerializer(serializers.ModelSerializer):
@@ -175,7 +180,7 @@ class UserMetricPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMetricPreference
         fields = ['user', 'framework', 'metric', 'custom_weight']
-    
+
     def create(self, validated_data):
         user_id = self.context['request'].data.get('user_id')
         Framework_id = self.context['request'].data.get('framework_id')
@@ -207,3 +212,15 @@ class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
         fields = ['user', 'metric', 'indicator', 'custom_weight']
+
+
+class MetricsScoresSerializer(serializers.Serializer):
+    metric_id: IntegerField(read_only=True)
+    metric_name = CharField(read_only=True)
+    score = FloatField(read_only=True)
+
+
+class MetricsDataSerializer(serializers.Serializer):
+    company_id = IntegerField(read_only=True)
+    company_name = CharField(read_only=True)
+    metrics_scores = MetricsScoresSerializer(read_only=True)

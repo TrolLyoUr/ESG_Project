@@ -1,3 +1,4 @@
+import rest_framework.mixins
 from rest_framework import generics
 from rest_framework import permissions, viewsets
 from django.contrib.auth import get_user_model
@@ -6,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 
-from calculations import calculate_metric_score
+from .calculations import calculate_metric_score
 
 # 引入所有的model
 from esg_app.models import (
@@ -37,6 +38,7 @@ from .serializers import (
     UserMetricPreferenceSerializer,
     UserIndicatorPreferenceSerializer,
     FrameworkMetrics,
+    MetricsDataSerializer
 )
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -191,14 +193,42 @@ class SaveMetricPreference(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ESGPerformanceViewSet(viewsets.ViewSet):
-    def list(self, request):
-        # 获取请求体中的数据
-        # GET请求的样例/esg-performance/?company_ids=company_id1&company_ids=company_id2&framework_id=framework_id&metric_ids=metric_id1&metric_ids=metric_id2&metric_ids=metric_id3
-        data = request.data
-        company_ids = request.query_params.getlist("companies", [])
+class DataValueTest:
+    def __init__(self, comp=None, year=None, fram=None):
+        self.company_id = comp
+        self.year = year
+        self.framework = fram
+
+
+class Data1:
+    def __init__(self, id, data, score):
+        self.metric_id = id
+        self.metric_data = data
+        self.score = score
+
+
+class Data2:
+    def __init__(self, id, name, data1):
+        self.company_id = id
+        self.company_name = name
+        self.metrics_scores = data1
+
+
+class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.RetrieveModelMixin):
+    def get_serializer_class(self):
+        if self.action == "list":
+            return MetricsDataSerializer
+        elif self.action == "retrieve":
+            return MetricsDataSerializer
+        return super().get_serializer_class()
+
+    # def get_queryset(self, data1=None, data2=None):
+    #     data1 = Data1()
+
+    def retrieve(self, request, *args, **kwargs):
+        company_ids = request.query_params.get("companies")
         framework_id = request.query_params.get("framework")
-        metric_ids = request.query_params.getlist("metrics", [])
+        metric_ids = request.query_params.get("metrics")
 
         # 查询指定的公司、框架和指标
         companies = Company.objects.filter(id__in=company_ids)
@@ -222,7 +252,7 @@ class ESGPerformanceViewSet(viewsets.ViewSet):
                 )
             result.append(
                 {
-                    "company_id": company_data["id"],
+                    "company_id": company_data["location"]["id"],
                     "company_name": company_data["name"],
                     "metrics_scores": metrics_scores,
                 }
