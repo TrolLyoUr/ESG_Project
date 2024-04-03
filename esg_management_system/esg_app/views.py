@@ -1,3 +1,4 @@
+import rest_framework.mixins
 from rest_framework import generics
 from rest_framework import permissions, viewsets
 from django.contrib.auth import get_user_model
@@ -36,6 +37,7 @@ from .serializers import (
     UserMetricPreferenceSerializer,
     UserIndicatorPreferenceSerializer,
     FrameworkMetrics,
+    MetricsDataSerializer
 )
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -188,6 +190,33 @@ class SaveMetricPreference(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DataValueTest:
+    def __init__(self, comp=None, year=None, fram=None):
+        self.company_id = comp
+        self.year = year
+        self.framework = fram
+
+
+class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.RetrieveModelMixin):
+    def get_serializer_class(self):
+        if self.action == "list":
+            return MetricsDataSerializer
+        elif self.action == "retrieve":
+            return MetricsDataSerializer
+        return super().get_serializer_class()
+
+    def get_queryset(self, comp=None, year=None, fram=None):
+        return DataValueTest(comp, year, fram)
+
+    def retrieve(self, request, *args, **kwargs):
+        company = self.request.query_params.get("company")
+        year = self.request.query_params.get("year")
+        framework = self.request.query_params.get("framework")
+        queryset = self.get_queryset(comp=company, year=year, fram=framework)
+        serializer = self.get_serializer(queryset)
+        return Response(serializer.data)
 
 
 class ESGPerformanceViewSet(viewsets.ViewSet):
