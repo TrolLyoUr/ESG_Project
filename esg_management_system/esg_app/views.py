@@ -49,19 +49,6 @@ class ResultTest(viewsets.GenericViewSet):
         return Response(result)
 
 
-class ListFrameworkMetrics(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = FrameworkMetric.objects.all()
-    serializer_class = FrameworkMetrics
-
-    def retrieve(self, request, pk=None, *args, **kwargs):
-        print(pk)
-        metrics = FrameworkMetric.objects.filter(framework_id=pk).all()
-        serializer = FrameworkMetrics(metrics, many=True)
-        return Response(serializer.data)
-
-
 class FastSearch(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
@@ -94,7 +81,7 @@ class ListUsers(viewsets.ModelViewSet):
 class ListCompanies(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = Company.objects.all()
+    queryset = Company.objects.all().order_by('?')[:10]
     serializer_class = CompanySerializer
 
 
