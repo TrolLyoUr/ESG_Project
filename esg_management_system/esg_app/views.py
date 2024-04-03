@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 
-from calculations import calculate_metric_score
+from .calculations import calculate_metric_score
 
 # 引入所有的model
 from esg_app.models import (
