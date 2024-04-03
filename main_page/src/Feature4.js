@@ -6,28 +6,23 @@ const Feature4 = ({ selectedId }) => {
   const [metrics, setMetrics] = useState([]);
 
   useEffect(() => {
-    console.log("fetch")
+    console.log("fetch");
     const fetchMetrics = async () => {
-        try {
-          
-          const apiURL = `http://9900.seasite.top:8000/app/frameworks/${selectedId}/metrics/`;
-          const response = await axios.get(apiURL, { withCredentials: true });// 替换为你的API端点
-          
-        if (!response.data) 
-        {
-          // Handle errors
-          console.error('Failed to fetch frameworks:', response.statusText);
-        }else
-        {
-          const data = await response.data;
-          console.log(data)
-          // setFrameworks(data.frameworks);
-        } 
+      try {
+        const apiURL = `http://9900.seasite.top:8000/app/frameworks/${selectedId}/metrics/`;
+        const response = await axios.get(apiURL, { withCredentials: true }); // 使用你的API端点
+  
+        if (response.data) { // 假设响应直接就是一个 metrics 数组
+          const metricsData = response.data;
+          console.log(metricsData);
+          setMetrics(metricsData); // 使用响应数据更新状态
+        } else {
+          console.error('Failed to fetch frameworks or no metrics data:', response.statusText);
+        }
       } catch (error) {
         console.error('Failed to fetch metrics:', error);
       }
     };
-    
   
     if (selectedId) {
       fetchMetrics();
