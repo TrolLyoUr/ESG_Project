@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
     UserMetricPreference, UserIndicatorPreference
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField, IntegerField, FloatField
 
 '''
 Users
@@ -214,7 +214,13 @@ class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
         fields = ['user', 'metric', 'indicator', 'custom_weight']
 
 
+class MetricsScoresSerializer(serializers.Serializer):
+    metric_id: IntegerField(read_only=True)
+    metric_name = CharField(read_only=True)
+    score = FloatField(read_only=True)
+
+
 class MetricsDataSerializer(serializers.Serializer):
     company_id = IntegerField(read_only=True)
-    year = IntegerField(read_only=True)
-    framework = IntegerField(read_only=True)
+    company_name = CharField(read_only=True)
+    metrics_scores = MetricsScoresSerializer(read_only=True)

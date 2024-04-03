@@ -5,7 +5,6 @@ from .views import (
     ListLocations,
     FastSearch,
     FrameworkViewSet,
-    ESGPerformanceViewSet,
     SaveMetricPreference,
     MetricsDataViewSet
 )
@@ -16,7 +15,6 @@ router.register(r"fsearch", FastSearch, basename="fsearch")
 router.register(r"locations", ListLocations)
 router.register(r"frameworks", FrameworkViewSet)
 router.register(r"savemetrics", SaveMetricPreference, basename="savemetrics")
-router.register(r"esg-performance", ESGPerformanceViewSet, basename="esg-performance")
 router.register(r"metricsdatavalue", MetricsDataViewSet, basename="test")
 
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})), ]
