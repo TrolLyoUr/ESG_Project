@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Sidebar.css';
 import axios from 'axios';
 
@@ -10,39 +10,27 @@ const Sidebar = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedFramework, setSelectedFramework] = useState('');
 
-  useEffect(() => {
-    const fetchCompanies = async () => {
-        try {
-          const apiURL = "http://9900.seasite.top:8000/app/fsearch/";
-          const response = await axios.get(apiURL, { withCredentials: true });// 替换为你的API端点
-          const company = response.data;
-          const companyName = company.map(company=>company.name);
-          setFilteredCompanies(companyName); // 假设API直接返回公司名称数组
-        } catch (error) {
-          console.error('Failed to fetch companies:', error);
-        }
-      };
-
-    fetchCompanies();
-  }, []);
-  
   const handleInputChange = async (e) => {
-    const value = e.target.value;
+    const value = e.target.value.trim();
     setSelectedCompany(value); // 更新输入框的值
-    if (value.length >= 4) { // 确保至少有4个字符才发起请求
+
+    // 只有当用户输入的字符数达到或超过1时才发起请求
+    if (value.length >= 1) {
       try {
-        const apiURL = `http://9900.seasite.top:8000/app/fsearch/?query=${value.substring(0, 4)}`;
-        const response = await axios.post(apiURL, { withCredentials: true }); // 使用输入的前四个字符作为查询
-        setFilteredCompanies(response.data);
-        if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          const data = await response.json(); 
-        setFilteredCompanies(data); // 使用筛选后的公司列表更新状态
-                } catch (error) {
+        // 根据用户输入动态构造API URL
+        const apiURL = `http://9900.seasite.top:8000/app/fsearch/${value}/`;
+        const response = await axios.get(apiURL, { withCredentials: true });
+
+        // 提取公司名称并更新状态
+        const companyName = response.data.map(company => company.name);
+        setFilteredCompanies(companyName);
+      } catch (error) {
         console.error('Failed to fetch filtered companies:', error);
-        }
-            }
+      }
+    } else {
+      // 如果用户输入少于1个字符，则清空当前的筛选结果
+      setFilteredCompanies([]);
+    }
   };
 
   const handleSubmit = async () => {
