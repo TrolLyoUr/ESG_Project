@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
+
 # from calculations import calculate_metric_score
 
 # 引入所有的model
@@ -217,12 +218,13 @@ class SaveMetricPreference(APIView):
 
 
 class ESGPerformanceViewSet(viewsets.ViewSet):
-    def create(self, request):
+    def list(self, request):
         # 获取请求体中的数据
+        # GET请求的样例/esg-performance/?company_ids=company_id1&company_ids=company_id2&framework_id=framework_id&metric_ids=metric_id1&metric_ids=metric_id2&metric_ids=metric_id3
         data = request.data
-        company_ids = data.get("companies", [])
-        framework_id = data.get("framework")
-        metric_ids = data.get("metrics", [])
+        company_ids = request.query_params.getlist("companies", [])
+        framework_id = request.query_params.get("framework")
+        metric_ids = request.query_params.getlist("metrics", [])
 
         # 查询指定的公司、框架和指标
         companies = Company.objects.filter(id__in=company_ids)
