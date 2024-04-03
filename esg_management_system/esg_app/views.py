@@ -43,12 +43,6 @@ from django.db.models.functions import Coalesce
 from django.db.models import Sum, F, FloatField
 
 
-class ResultTest(viewsets.GenericViewSet):
-    def get(self):
-        result = "hhhh"
-        return Response(result)
-
-
 class FastSearch(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
@@ -70,26 +64,7 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-class ListUsers(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-
-
 # 所有公司对应的序列化器
-class ListCompanies(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Company.objects.all().order_by('?')[:10]
-    serializer_class = CompanySerializer
-
-
-class ListFrameworks(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Framework.objects.all()
-    serializer_class = FrameworkSerializer
 
 
 class ListIndicators(viewsets.ModelViewSet):
