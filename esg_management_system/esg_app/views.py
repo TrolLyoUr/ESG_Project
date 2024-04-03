@@ -44,54 +44,28 @@ from django.db.models.functions import Coalesce
 from django.db.models import Sum, F, FloatField
 
 
-class ResultTest(viewsets.GenericViewSet):
-    def get(self):
-        result = "hhhh"
-        return Response(result)
+class FastSearch(viewsets.ReadOnlyModelViewSet):
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return FastCompanies
+        elif self.action == "retrieve":
+            return FastCompanies
+        return super().get_serializer_class()
 
-class ListFrameworkMetrics(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = FrameworkMetric.objects.all()
-    serializer_class = FrameworkMetrics
-
-    def retrieve(self, request, pk=None, *args, **kwargs):
-        print(pk)
-        metrics = FrameworkMetric.objects.filter(framework_id=pk).all()
-        serializer = FrameworkMetrics(metrics, many=True)
-        return Response(serializer.data)
-
-
-class FastSearch(viewsets.ViewSet):
+    def get_queryset(self, pk=None):
+        if pk is not None:
+            return Company.objects.filter(name__startswith=pk).all()[:10]
+        else:
+            return Company.objects.all()[:10]
 
     def retrieve(self, request, pk=None, *args, **kwargs):
-        # print(calculate_company_framework_values())
-        companies = Company.objects.filter(name__startswith=pk).all()[:10]
-        serializer = FastCompanies(companies, many=True)
+        queryset = self.get_queryset(pk=pk)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
-
-class ListUsers(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
 
 
 # 所有公司对应的序列化器
-class ListCompanies(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-
-
-class ListFrameworks(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Framework.objects.all()
-    serializer_class = FrameworkSerializer
 
 
 class ListIndicators(viewsets.ModelViewSet):
@@ -205,7 +179,7 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-class SaveMetricPreference(APIView):
+class SaveMetricPreference(viewsets.ViewSet):
     def post(self, request):
         serializer = UserMetricPreferenceSerializer(
             data=request.data, context={"request": request}
