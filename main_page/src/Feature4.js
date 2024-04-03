@@ -8,7 +8,7 @@ const Feature4 = ({ selectedId }) => {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const apiURL = `http://127.0.0.1:8000/app/frameworks/${selectedId}/metrics/`;
+        const apiURL = `http://9900.seasite.top:8000/app/frameworks/${selectedId}/metrics/`;
         const response = await axios.get(apiURL, { withCredentials: true });
 
         if (response.data) {
