@@ -1,43 +1,73 @@
-
 .feature-area-4 {
-  /* 示例：如果需要固定高度 */
-  max-height: 500px; /* 或根据需要设置 */
-  overflow-y: auto; /* 垂直方向上的内容如果超出容器将可滚动 */
-}
-
-.feature-area-4 {
+  max-height: 500px;
+  overflow-y: auto;
   text-align: center;
   margin: 10px;
-  background-color: #d0f0e89c; /* 更改背景颜色 */
-  padding: 10px; /* 增加内边距以留出更多空间 */
-  border-radius: 10px; /* 添加边角圆润效果 */
+  background-color: #d0f0e89c;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
 }
 
+/* Custom scrollbar styles */
+.feature-area-4::-webkit-scrollbar {
+  width: 8px;
+}
+
+.feature-area-4::-webkit-scrollbar-thumb {
+  background-color: #6468b9;
+  border-radius: 4px;
+}
 
 .feature-area-4 ul {
-  padding-left: 0; /* 移除默认的内边距 */
-  margin: 0; /* 移除默认的外边距 */
-  list-style-type: none; /* 移除默认的列表项目符号 */
+  padding-left: 0;
+  margin: 0;
+  list-style-type: none;
 }
 
 .metric-item {
-  cursor: pointer; /* 当鼠标悬停时显示指针光标 */
-  border-radius: 4px; /* 列表项边缘圆润 */
-  transition: background-color 0.3s; /* 背景色变化的过渡效果 */
-  padding: 10px; /* 设置内边距以使文本不会紧贴边缘 */
-  text-align: left; /* 确保文本在最左边对齐 */
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s, transform 0.2s; /* Add transform transition */
+  padding: 10px;
+  text-align: left;
+  margin-bottom: 2px; /* Space between metric items */
+  font-weight: 500; /* Make text slightly bolder for readability */
 }
 
 .metric-item:hover {
-  background-color: #6468b9; /* 鼠标悬停时的背景色 */
+  background-color: #6468b9;
+  color: #fff; /* Change text color on hover for contrast */
+  transform: translateY(-2px); /* Slight lift effect on hover */
 }
 
 .metric-item.selected {
-  background-color: #6468b9; /* 选中项的背景色 */
+  background-color: #6468b9;
+  color: #fff;
 }
 
 .weight-input {
   margin-left: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px; /* 输入框边缘圆润 */
+  border-radius: 4px;
+  padding: 2px 5px; /* Add padding inside input for better text visibility */
+}
+
+/* Styles for the indicator list */
+.indicator-list {
+  padding-left: 20px; /* Indent indicators for hierarchy visualization */
+  margin-top: 5px; /* Space between metric text and indicators */
+}
+
+.indicator-item {
+  font-size: 0.9rem; /* Slightly smaller font for indicators */
+  color: #333; /* Darker text for better readability */
+  padding: 5px; /* Smaller padding for compact layout */
+  background-color: #f0f0f0; /* Light background for indicators */
+  border-radius: 4px; /* Consistent border-radius with metric items */
+  margin-bottom: 2px; /* Space between indicator items */
+}
+
+.indicator-item:hover {
+  background-color: #e0e0e0; /* Slightly darker on hover for interaction feedback */
 }
