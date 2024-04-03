@@ -59,7 +59,7 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self, pk=None):
         if pk is not None:
-            return Company.objects.filter(name__startswith=pk).all()[:10]
+            return Company.objects.filter(name__istartswith=pk).all()[:10]
         else:
             return Company.objects.all()[:50]
 
