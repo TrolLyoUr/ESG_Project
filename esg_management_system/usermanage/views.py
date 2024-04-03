@@ -74,7 +74,7 @@ def register_view(request):
             validate_email(email)
             user = User.objects.create_user(username, email, password)
             user.save()
-            return HttpResponseRedirect(reverse("esg_app:index"))
+            return HttpResponseRedirect(reverse("index"))
         except ValidationError as _:
             messages.error(request, "invalid email address!")
             return render(request, 'register.html')
