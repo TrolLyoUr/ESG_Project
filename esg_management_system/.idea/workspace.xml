@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="new api">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="enable react">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_app/calculations.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/calculations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +108,7 @@
       <workItem from="1711946412589" duration="1948000" />
       <workItem from="1711949475734" duration="11299000" />
       <workItem from="1712027070049" duration="15405000" />
-      <workItem from="1712096862396" duration="72000" />
+      <workItem from="1712096862396" duration="13704000" />
     </task>
     <task id="LOCAL-00001" summary="fix redirected problem">
       <option name="closed" value="true" />
@@ -276,7 +278,87 @@
       <option name="project" value="LOCAL" />
       <updated>1712047193385</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="remove redundancy view function">
+      <option name="closed" value="true" />
+      <created>1712097468259</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1712097468259</updated>
+    </task>
+    <task id="LOCAL-00023" summary="add save metrics">
+      <option name="closed" value="true" />
+      <created>1712099384099</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1712099384099</updated>
+    </task>
+    <task id="LOCAL-00024" summary="change name search more professional">
+      <option name="closed" value="true" />
+      <created>1712101310916</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1712101310916</updated>
+    </task>
+    <task id="LOCAL-00025" summary="remove frameworksearch">
+      <option name="closed" value="true" />
+      <created>1712109282180</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1712109282180</updated>
+    </task>
+    <task id="LOCAL-00026" summary="remove frameworksearch">
+      <option name="closed" value="true" />
+      <created>1712109318517</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1712109318517</updated>
+    </task>
+    <task id="LOCAL-00027" summary="remove unnecessary api">
+      <option name="closed" value="true" />
+      <created>1712110228256</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1712110228256</updated>
+    </task>
+    <task id="LOCAL-00028" summary="test custom api">
+      <option name="closed" value="true" />
+      <created>1712121030271</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1712121030271</updated>
+    </task>
+    <task id="LOCAL-00029" summary="fix err">
+      <option name="closed" value="true" />
+      <created>1712121172894</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1712121172894</updated>
+    </task>
+    <task id="LOCAL-00030" summary="for esg performance">
+      <option name="closed" value="true" />
+      <created>1712122817077</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1712122817077</updated>
+    </task>
+    <task id="LOCAL-00031" summary="enable react">
+      <option name="closed" value="true" />
+      <created>1712122969591</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1712122969591</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -297,7 +379,16 @@
     <MESSAGE value="list all companies" />
     <MESSAGE value="support name search" />
     <MESSAGE value="new api" />
-    <option name="LAST_COMMIT_MESSAGE" value="new api" />
+    <MESSAGE value="remove redundancy view function" />
+    <MESSAGE value="add save metrics" />
+    <MESSAGE value="change name search more professional" />
+    <MESSAGE value="remove frameworksearch" />
+    <MESSAGE value="remove unnecessary api" />
+    <MESSAGE value="test custom api" />
+    <MESSAGE value="fix err" />
+    <MESSAGE value="for esg performance" />
+    <MESSAGE value="enable react" />
+    <option name="LAST_COMMIT_MESSAGE" value="enable react" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -311,6 +402,26 @@
           <url>file://$PROJECT_DIR$/usermanage/views.py</url>
           <line>114</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
+          <line>262</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
+          <line>240</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
+          <line>247</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
+          <line>256</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
