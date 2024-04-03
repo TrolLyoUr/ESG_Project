@@ -96,7 +96,7 @@ class LocationSerializer(serializers.ModelSerializer):
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['name', 'location']
+        fields = ['id', 'name', 'location']
         depth = 1
 
 

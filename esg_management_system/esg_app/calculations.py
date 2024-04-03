@@ -38,7 +38,7 @@ class MetricFormulas:
         if energy_use_total > 0:
             metric_score = (co2_direct_scope1 + co2_indirect_scope2) / energy_use_total
         else:
-            metric_score = 0
+            metric_score = -1
         return metric_score
 
     def water_efficiency(self, indicator_values):

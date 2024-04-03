@@ -1,3 +1,5 @@
+import random
+
 import rest_framework.mixins
 from rest_framework import generics
 from rest_framework import permissions, viewsets
@@ -59,7 +61,7 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
         if pk is not None:
             return Company.objects.filter(name__startswith=pk).all()[:10]
         else:
-            return Company.objects.all()[:10]
+            return Company.objects.all()[:50]
 
     def retrieve(self, request, pk=None, *args, **kwargs):
         queryset = self.get_queryset(pk=pk)
@@ -226,9 +228,9 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
     #     data1 = Data1()
 
     def retrieve(self, request, *args, **kwargs):
-        company_ids = request.query_params.get("companies")
+        company_ids = request.query_params.getlist("companies")
         framework_id = request.query_params.get("framework")
-        metric_ids = request.query_params.get("metrics")
+        metric_ids = request.query_params.getlist("metrics")
 
         # 查询指定的公司、框架和指标
         companies = Company.objects.filter(id__in=company_ids)
@@ -252,7 +254,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
                 )
             result.append(
                 {
-                    "company_id": company_data["location"]["id"],
+                    "company_id": company_data["id"],
                     "company_name": company_data["name"],
                     "metrics_scores": metrics_scores,
                 }
