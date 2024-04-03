@@ -4,20 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="remove cors hosts">
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/OIP.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/asset-manifest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/logo192.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/logo512.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/manifest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/css/main.5a0fd7fa.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/css/main.5a0fd7fa.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/453.265f70ae.chunk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/453.265f70ae.chunk.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/main.77e70fb3.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../login-demo/build/static/js/main.77e70fb3.js.map" beforeDir="false" />
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="new api">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +26,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="2dWBOS2qRcjpxr8jGQLMdWZWyPM" />
@@ -113,6 +103,10 @@
       <workItem from="1711338885465" duration="1168000" />
       <workItem from="1711344791709" duration="8120000" />
       <workItem from="1711517394436" duration="3878000" />
+      <workItem from="1711946412589" duration="1948000" />
+      <workItem from="1711949475734" duration="11299000" />
+      <workItem from="1712027070049" duration="15405000" />
+      <workItem from="1712096862396" duration="72000" />
     </task>
     <task id="LOCAL-00001" summary="fix redirected problem">
       <option name="closed" value="true" />
@@ -194,7 +188,95 @@
       <option name="project" value="LOCAL" />
       <updated>1711525174245</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="new build js">
+      <option name="closed" value="true" />
+      <created>1711946425647</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1711946425647</updated>
+    </task>
+    <task id="LOCAL-00012" summary="new build js">
+      <option name="closed" value="true" />
+      <created>1711947950400</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1711947950400</updated>
+    </task>
+    <task id="LOCAL-00013" summary="add company api">
+      <option name="closed" value="true" />
+      <created>1711949978784</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1711949978784</updated>
+    </task>
+    <task id="LOCAL-00014" summary="add locaitons api">
+      <option name="closed" value="true" />
+      <created>1711959551848</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1711959551848</updated>
+    </task>
+    <task id="LOCAL-00015" summary="forgot what I did">
+      <option name="closed" value="true" />
+      <created>1712027092774</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1712027092774</updated>
+    </task>
+    <task id="LOCAL-00016" summary="forgot what I did">
+      <option name="closed" value="true" />
+      <created>1712027683054</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1712027683054</updated>
+    </task>
+    <task id="LOCAL-00017" summary="list all companies">
+      <option name="closed" value="true" />
+      <created>1712027810811</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1712027810811</updated>
+    </task>
+    <task id="LOCAL-00018" summary="list all companies">
+      <option name="closed" value="true" />
+      <created>1712031481223</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1712031481223</updated>
+    </task>
+    <task id="LOCAL-00019" summary="list all companies">
+      <option name="closed" value="true" />
+      <created>1712041460889</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1712041460889</updated>
+    </task>
+    <task id="LOCAL-00020" summary="support name search">
+      <option name="closed" value="true" />
+      <created>1712044050693</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1712044050693</updated>
+    </task>
+    <task id="LOCAL-00021" summary="new api">
+      <option name="closed" value="true" />
+      <created>1712047193385</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1712047193385</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,7 +290,14 @@
     <MESSAGE value="add new host for cors" />
     <MESSAGE value="split api and front end" />
     <MESSAGE value="remove cors hosts" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove cors hosts" />
+    <MESSAGE value="new build js" />
+    <MESSAGE value="add company api" />
+    <MESSAGE value="add locaitons api" />
+    <MESSAGE value="forgot what I did" />
+    <MESSAGE value="list all companies" />
+    <MESSAGE value="support name search" />
+    <MESSAGE value="new api" />
+    <option name="LAST_COMMIT_MESSAGE" value="new api" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

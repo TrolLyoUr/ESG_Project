@@ -1,7 +1,8 @@
-from rest_framework import serializers, permissions
+from rest_framework import serializers
 from django.contrib.auth.models import User
-from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, UserMetricPreference, UserIndicatorPreference
-
+from esg_app.models import Company, Framework, Indicator, Location, Metric, DataValue, FrameworkMetric, MetricIndicator, \
+    UserMetricPreference, UserIndicatorPreference
+from rest_framework.fields import CharField, IntegerField, FloatField
 
 '''
 Users
@@ -64,68 +65,162 @@ User Indicator Preferences (Association Table)
 •	custom_weight (Custom weight given by the user to the indicator)
 '''
 
+
+class FrameworkMetrics(serializers.ModelSerializer):
+    class Meta:
+        # model = FrameworkMetric
+        fields = ["predefined_weight", "framework", "metric"]
+        depth = 1
+
+
+class FastCompanies(serializers.Serializer):
+    id = IntegerField(read_only=True)
+    name = CharField(read_only=True)
+    location_id = IntegerField(read_only=True)
+    location = CharField(read_only=True)
+
+
 # serialize上面所有的model
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'first_name', 'last_name']
+        fields = ['username', 'email', 'first_name', 'last_name']
 
 
-class LocationSerializer(serializers.HyperlinkedModelSerializer):
+class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ['url', 'location_id', 'name']
+        fields = ['id', 'name']
 
 
-class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    location = LocationSerializer()
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['url', 'company_id', 'name', 'description', 'location']
+        fields = ['id', 'name', 'location']
+        depth = 1
 
 
-class FrameworkSerializer(serializers.HyperlinkedModelSerializer):
+class FrameworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Framework
-        fields = ['url', 'framework_id', 'name', 'description']
+        fields = ['id', 'name']
 
 
-class MetricSerializer(serializers.HyperlinkedModelSerializer):
+class FrameworkDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Metric
-        fields = ['url', 'metric_id', 'name', 'description', 'pillar']
+        model = Framework
+        fields = ['id', 'name', 'description']
 
 
-class IndicatorSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Indicator
-        fields = ['url', 'indicator_id', 'name',
-                  'description', 'source', 'unit']
-
-class DataValueSerializer(serializers.HyperlinkedModelSerializer):
+class DataValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataValue
-        fields = ['url', 'value_id', 'company', 'indicator', 'year', 'value']
+        fields = ['value_id', 'company', 'indicator', 'year', 'value']
 
-# 为association table创建serializer
-class FrameworkMetricSerializer(serializers.HyperlinkedModelSerializer):
+
+# Serializer for List Framework Metrics API
+class FrameworkListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Framework
+        fields = ['id', 'name', 'description']
+
+    # Include a method field to get the associated metrics with predefined weights
+    metrics = serializers.SerializerMethodField()
+
+    def get_metrics(self, framework):
+        # Get all associated FrameworkMetric objects
+        framework_metrics = FrameworkMetric.objects.filter(framework=framework)
+        # Serialize the FrameworkMetric objects
+        return FrameworkMetricSerializer(framework_metrics, many=True).data
+
+
+class MetricSerializer(serializers.ModelSerializer):
+    metric_indicators = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Metric
+        fields = ['id', 'name', 'description', 'pillar', 'metric_indicators']
+
+    def get_metric_indicators(self, metric):
+        # Get all associated MetricIndicator objects for the metric
+        metric_indicators = MetricIndicator.objects.filter(metric=metric)
+        # Serialize the MetricIndicator objects including the nested Indicator details
+        return MetricIndicatorSerializer(metric_indicators, many=True).data
+
+
+class FrameworkMetricSerializer(serializers.ModelSerializer):
+    metric = MetricSerializer(read_only=True)
+
     class Meta:
         model = FrameworkMetric
-        fields = ['url', 'framework', 'metric', 'predefined_weight']
+        fields = ['metric', 'predefined_weight']
 
-class MetricIndicatorSerializer(serializers.HyperlinkedModelSerializer):
+
+class IndicatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Indicator
+        fields = ['id', 'name', 'description', 'unit', 'source']
+
+
+class MetricIndicatorSerializer(serializers.ModelSerializer):
+    indicator = IndicatorSerializer()
+
     class Meta:
         model = MetricIndicator
-        fields = ['url', 'metric', 'indicator', 'predefined_weight']
+        fields = ['indicator', 'predefined_weight']
 
-class UserMetricPreferenceSerializer(serializers.HyperlinkedModelSerializer):
+
+class UserMetricPreferenceSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
+    framework_id = serializers.IntegerField(
+        source='framework.id', read_only=True)
+    metric_id = serializers.IntegerField(source='metric.id', read_only=True)
+    custom_weight = serializers.FloatField()
+
     class Meta:
         model = UserMetricPreference
-        fields = ['url', 'user', 'framework', 'metric', 'custom_weight']
+        fields = ['user', 'framework', 'metric', 'custom_weight']
 
-class UserIndicatorPreferenceSerializer(serializers.HyperlinkedModelSerializer):
+    def create(self, validated_data):
+        user_id = self.context['request'].data.get('user_id')
+        Framework_id = self.context['request'].data.get('framework_id')
+        metrics = self.context['request'].data.get('metrics')
+
+        try:
+            user = User.objects.get(id=user_id)
+            framework = Framework.objects.get(id=Framework_id)
+        except (User.DoesNotExist, Framework.DoesNotExist):
+            raise serializers.ValidationError('User or Framework does not exist')
+
+        user_metric_preferences = []
+        for metric in metrics:
+            metric_id = metric.get('metric')
+            custom_weight = metric.get('custom_weight')
+
+            try:
+                metric = Metric.objects.get(id=metric_id)
+            except Metric.DoesNotExist:
+                raise serializers.ValidationError('Metric does not exist')
+
+            user_metric_preference = UserMetricPreference(
+                user=user, framework=framework, metric=metric, custom_weight=custom_weight)
+            user_metric_preferences.append(user_metric_preference)
+        return user_metric_preferences
+
+
+class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
-        fields = ['url', 'user', 'metric', 'indicator', 'custom_weight']
+        fields = ['user', 'metric', 'indicator', 'custom_weight']
+
+
+class MetricsScoresSerializer(serializers.Serializer):
+    metric_id: IntegerField(read_only=True)
+    metric_name = CharField(read_only=True)
+    score = FloatField(read_only=True)
+
+
+class MetricsDataSerializer(serializers.Serializer):
+    company_id = IntegerField(read_only=True)
+    company_name = CharField(read_only=True)
+    metrics_scores = MetricsScoresSerializer(read_only=True)
