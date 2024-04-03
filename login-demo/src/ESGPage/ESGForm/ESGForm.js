@@ -3,25 +3,24 @@ import './ESGForm.css';
 import companiesData from './companies.json'; 
 import axios from 'axios';
 
+axios.defaults.withCredentials = true;
 
 const ESGForm = () => {
   const [companies, setCompanies] = useState(companiesData);
-const [message, setMessage] = useState('');
+  const [locations, setLocations] = useState([]);
 
   useEffect(() => {
       // Load the company data from the JSON file
     const fetchData = async () => {
       try {
-        const apiURL = "http://127.0.0.1:8000/app/users/";
+        const apiURL = "http://9900.seasite.top:8000/app/locations/";
         const response = await axios.get(apiURL, { withCredentials: true });
-        console.log(response);
-        setMessage(response.data.message);
-        console.log(message);
         console.log(response.data);
         if(response.data.companies){
-          setCompanies(response.data.companies)
+          setCompanies(response.data.companies);
+          setLocations(response.data);
         }
-      } catch (error) {
+        } catch (error) {
         console.error('There was an error!', error);
       }
     };
@@ -30,6 +29,7 @@ const [message, setMessage] = useState('');
 
   return (
     <form className="esg-form">
+      
       <div className="input-group">
         <label>Company Name</label>
         <input type="search" list="company-options" placeholder="Search Company" />
@@ -55,10 +55,18 @@ const [message, setMessage] = useState('');
           <option value="2024">2024</option>
         </select>
       </div>
-      
-      <p>{message}</p>
-      {/* Add other input groups for standard and year */}
-      {/* Add buttons for reset weights and add another company */}
+      <div className="location-links">
+        <h2>Locations</h2>
+          <ul>
+            {locations.map((location, index) => (
+              <li key={index}>
+                <a href={location.url} target="_blank" rel="noopener noreferrer">
+                  {location.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+      </div>
     </form>
     
   );

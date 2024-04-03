@@ -28,23 +28,25 @@
 }
 
 /* 为每个功能区定义特定的大小 */
-.feature-area-1 {
+.feature-area-3 {
   flex-basis: 45%; /* 宽度 */
-  height: 200px; /* 高度 */
+  height: 550px; /* 高度 */
   order: 1; /* 设置更高的 order 值 */
 }
 
 .feature-area-2 {
   flex-basis: 45%; /* 宽度 */
-  height: 600px; /* 高度 */
+  height: 150px; /* 高度 */
+  margin-top: 40px; /* 增加到顶端的距离 */
 }
 
-.feature-area-3 {
+.feature-area-1 {
   flex-basis: 45%; /* 宽度 */
-  height: 600px; /* 高度 */
+  height: 150px; /* 高度 */
+  margin-top: 40px; /* 增加到顶端的距离 */
 }
 
 .feature-area-4 {
-  flex-basis: 50%; /* 宽度 */
-  height: 180px; /* 高度 */
+  flex-basis: 45%; /* 宽度 */
+  height: 550px; /* 高度 */
 }
