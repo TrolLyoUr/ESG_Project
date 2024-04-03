@@ -8,7 +8,6 @@ from .views import (
     FastSearch,
     FrameworkViewSet,
     ResultTest,
-    ListFrameworkMetrics,
     ESGPerformanceViewSet,
     SaveMetricPreference
 )
