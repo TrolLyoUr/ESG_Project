@@ -13,7 +13,7 @@ const App = () => {
       <Header />
       <Sidebar />
       <div className="main-content">
-        <div className="feature-areas">
+        <div className="feature-areas" style="margin-top:80px">
           <Feature1 setSelectedId={setSelectedId} />{" "}
           {/* 传递setSelectedId给Feature1 */}
           <div className="feature-area feature-area-2">Feature 2</div>
