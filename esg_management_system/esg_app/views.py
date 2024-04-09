@@ -69,61 +69,6 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-# 所有公司对应的序列化器
-
-
-class ListIndicators(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Indicator.objects.all()
-    serializer_class = IndicatorSerializer
-
-
-class ListLocations(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Location.objects.all()
-    serializer_class = LocationSerializer
-
-
-class ListMetrics(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = Metric.objects.all()
-    serializer_class = MetricSerializer
-
-
-class ListDataValues(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = DataValue.objects.all()
-    serializer_class = DataValueSerializer
-
-
-class ListMetricIndicators(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = MetricIndicator.objects.all()
-    serializer_class = MetricIndicatorSerializer
-
-
-class ListUserMetricPreferences(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = UserMetricPreference.objects.all()
-    serializer_class = UserMetricPreferenceSerializer
-
-
-class ListUserIndicatorPreferences(viewsets.ModelViewSet):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-    queryset = UserIndicatorPreference.objects.all()
-    serializer_class = UserIndicatorPreferenceSerializer
-
-
-# Path: esg_management_system/esg_app/urls.py
-
-
 class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Framework.objects.all()
 
@@ -193,27 +138,6 @@ class SaveMetricPreference(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class DataValueTest:
-    def __init__(self, comp=None, year=None, fram=None):
-        self.company_id = comp
-        self.year = year
-        self.framework = fram
-
-
-class Data1:
-    def __init__(self, id, data, score):
-        self.metric_id = id
-        self.metric_data = data
-        self.score = score
-
-
-class Data2:
-    def __init__(self, id, name, data1):
-        self.company_id = id
-        self.company_name = name
-        self.metrics_scores = data1
 
 
 class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.RetrieveModelMixin):
