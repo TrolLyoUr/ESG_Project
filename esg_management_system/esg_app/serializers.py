@@ -171,9 +171,17 @@ class MetricIndicatorSerializer(serializers.ModelSerializer):
 
 
 class UserMetricPreferenceSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    framework = FrameworkSerializer(read_only=True)
+    metric = MetricSerializer(read_only=True)
+
     class Meta:
         model = UserMetricPreference
         fields = ['user', 'framework', 'metric', 'custom_weight']
+
+    def create(self, validated_data, data=None):
+        print(validated_data.data)
+        print(data)
 
 
 class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):

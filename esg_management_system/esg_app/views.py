@@ -1,10 +1,6 @@
-import random
-
 import rest_framework.mixins
 from rest_framework import generics
 from rest_framework import permissions, viewsets
-from django.contrib.auth import get_user_model
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
@@ -128,40 +124,15 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-class SaveMetricPreference(viewsets.ViewSet):
-    def create(self, request):
-        serializer = UserMetricPreferenceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.create(serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class SaveMetricPreference(generics.CreateAPIView):
+    serializer_class = UserMetricPreferenceSerializer
 
-    # def create(self, validated_data):
-    #     user_id = self.context['request'].data.get('user_id')
-    #     Framework_id = self.context['request'].data.get('framework_id')
-    #     metrics = self.context['request'].data.get('metrics')
-    #
-    #     try:
-    #         user = User.objects.get(id=user_id)
-    #         framework = Framework.objects.get(id=Framework_id)
-    #     except (User.DoesNotExist, Framework.DoesNotExist):
-    #         raise serializers.ValidationError('User or Framework does not exist')
-    #
-    #     user_metric_preferences = []
-    #     for metric in metrics:
-    #         metric_id = metric.get('metric')
-    #         custom_weight = metric.get('custom_weight')
-    #
-    #         try:
-    #             metric = Metric.objects.get(id=metric_id)
-    #         except Metric.DoesNotExist:
-    #             raise serializers.ValidationError('Metric does not exist')
-    #
-    #         user_metric_preference = UserMetricPreference(
-    #             user=user, framework=framework, metric=metric, custom_weight=custom_weight)
-    #         user_metric_preferences.append(user_metric_preference)
-    #     return user_metric_preferences
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.RetrieveModelMixin):
