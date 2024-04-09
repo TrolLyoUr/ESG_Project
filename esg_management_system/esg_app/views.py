@@ -139,6 +139,32 @@ class SaveMetricPreference(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    # def create(self, validated_data):
+    #     user_id = self.context['request'].data.get('user_id')
+    #     Framework_id = self.context['request'].data.get('framework_id')
+    #     metrics = self.context['request'].data.get('metrics')
+    #
+    #     try:
+    #         user = User.objects.get(id=user_id)
+    #         framework = Framework.objects.get(id=Framework_id)
+    #     except (User.DoesNotExist, Framework.DoesNotExist):
+    #         raise serializers.ValidationError('User or Framework does not exist')
+    #
+    #     user_metric_preferences = []
+    #     for metric in metrics:
+    #         metric_id = metric.get('metric')
+    #         custom_weight = metric.get('custom_weight')
+    #
+    #         try:
+    #             metric = Metric.objects.get(id=metric_id)
+    #         except Metric.DoesNotExist:
+    #             raise serializers.ValidationError('Metric does not exist')
+    #
+    #         user_metric_preference = UserMetricPreference(
+    #             user=user, framework=framework, metric=metric, custom_weight=custom_weight)
+    #         user_metric_preferences.append(user_metric_preference)
+    #     return user_metric_preferences
+
 
 class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.RetrieveModelMixin):
     def get_serializer_class(self):
