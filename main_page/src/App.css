@@ -12,6 +12,7 @@
 }
 
 .feature-areas {
+  margin-top: 80px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px; /* 调整功能区之间的间隔 */
