@@ -129,12 +129,10 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class SaveMetricPreference(viewsets.ViewSet):
-    def post(self, request):
-        serializer = UserMetricPreferenceSerializer(
-            data=request.data, context={"request": request}
-        )
+    def create(self, request):
+        serializer = UserMetricPreferenceSerializer(data=request.data)
         if serializer.is_valid():
-            user_metric_preference = serializer.create(serializer.validated_data)
+            serializer.create(serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

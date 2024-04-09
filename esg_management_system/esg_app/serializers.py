@@ -171,12 +171,6 @@ class MetricIndicatorSerializer(serializers.ModelSerializer):
 
 
 class UserMetricPreferenceSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(source='user.id', read_only=True)
-    framework_id = serializers.IntegerField(
-        source='framework.id', read_only=True)
-    metric_id = serializers.IntegerField(source='metric.id', read_only=True)
-    custom_weight = serializers.FloatField()
-
     class Meta:
         model = UserMetricPreference
         fields = ['user', 'framework', 'metric', 'custom_weight']
