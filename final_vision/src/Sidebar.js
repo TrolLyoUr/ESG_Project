@@ -22,7 +22,6 @@ const Sidebar = ({ isOpen }) => {
       try {
         const response = await axios.get(`${serverUrl}/app/years/`);
         setYears(response.data.map((item) => item.year)); // Assume the API returns an array of objects with a year property
-        console.log("Years fetched:", response.data);
       } catch (error) {
         console.error("Failed to fetch years:", error);
       }

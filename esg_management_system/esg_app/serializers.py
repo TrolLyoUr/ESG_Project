@@ -104,14 +104,7 @@ class CompanySerializer(serializers.ModelSerializer):
 class FrameworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Framework
-        fields = ['id', 'name']
-
-
-class FrameworkDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Framework
         fields = ['id', 'name', 'description']
-
 
 class DataValueSerializer(serializers.ModelSerializer):
     class Meta:

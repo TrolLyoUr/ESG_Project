@@ -23,7 +23,6 @@ from esg_app.models import (
 )
 from .serializers import (
     FastCompanies,
-    FrameworkDetailSerializer,
     FrameworkListSerializer,
     UserSerializer,
     CompanySerializer,
@@ -80,8 +79,6 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return FrameworkSerializer
-        elif self.action == "retrieve":
-            return FrameworkDetailSerializer
         elif self.action == "list_framework_metrics":
             # Use the FrameworkMetricSerializer when listing framework metrics
             return FrameworkMetricSerializer
@@ -90,17 +87,8 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response({"frameworks": serializer.data})
+        return Response(serializer.data)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        response_data = {
-            "id": serializer.data.get("id"),
-            "name": serializer.data.get("name"),
-            "description": serializer.data.get("description"),
-        }
-        return Response(response_data)
 
     @action(detail=True, methods=["get"], url_path="metrics")
     def list_framework_metrics(self, request, pk=None):

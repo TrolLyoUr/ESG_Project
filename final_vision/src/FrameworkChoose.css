@@ -34,3 +34,29 @@
   background-color: #004085;
   transform: translateY(2px);
 }
+
+.framework-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.triangle-icon {
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 5px;
+  user-select: none; /* Prevents the text icon from being selectable */
+}
+
+.framework-description {
+  display: none;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.framework-item .framework-description {
+  display: block;
+}
