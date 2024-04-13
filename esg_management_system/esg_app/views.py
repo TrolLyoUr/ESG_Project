@@ -141,7 +141,8 @@ class SaveIndicatorPreference(generics.CreateAPIView):
     serializer_class = UserIndicatorPreferenceSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = UserIndicatorPreferenceSerializer(data=request.data)
+        data = request.data
+        serializer = UserIndicatorPreferenceSerializer(data=data)
         if serializer.is_valid():
             serializer.create(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -197,6 +198,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
 
 
 class ListIndicatorValue(generics.ListAPIView):
+
     def get(self, request, *args, **kwargs):
         with connection.cursor() as cursor:
             cursor.execute(
