@@ -180,7 +180,6 @@ class UserMetricPreferenceSerializer(serializers.ModelSerializer):
         fields = ['user', 'framework', 'metric', 'custom_weight']
 
     def create(self, validated_data):
-        print(list(UserMetricPreference.objects.all()))
         data = validated_data.initial_data
         user = User.objects.get(id=data['user'])
         framework = Framework.objects.get(id=data['framework'])
