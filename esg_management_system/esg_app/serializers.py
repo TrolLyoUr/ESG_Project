@@ -184,8 +184,10 @@ class UserMetricPreferenceSerializer(serializers.ModelSerializer):
         user = User.objects.get(id=data['user'])
         framework = Framework.objects.get(id=data['framework'])
         metric = Metric.objects.get(id=data['metric'])
-        newdata = UserMetricPreference(user=user, framework=framework, metric=metric, custom_weight=data['custom_weight'])
-        return newdata.save()
+        newdata = UserMetricPreference(user=user, framework=framework, metric=metric,
+                                       custom_weight=data['custom_weight'])
+        newdata.save()
+        return newdata
         # user_id = validated_data.get('user_id')
         # framework_id = validated_data.get('framework_id')
         # metrics = validated_data.get('metrics')
@@ -220,6 +222,16 @@ class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
         fields = ['user', 'metric', 'indicator', 'custom_weight']
+
+    def create(self, validated_data):
+        data = validated_data.initial_data
+        user = User.objects.get(id=data['user'])
+        metric = Metric.objects.get(id=data['metric'])
+        indicator = Indicator.objects.get(id=data['indicator'])
+        newdata = UserIndicatorPreference(user=user, indicator=indicator, metric=metric,
+                                       custom_weight=data['custom_weight'])
+        newdata.save()
+        return newdata
 
 
 class MetricsScoresSerializer(serializers.Serializer):

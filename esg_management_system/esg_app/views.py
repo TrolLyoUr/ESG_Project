@@ -127,8 +127,20 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
 class SaveMetricPreference(generics.CreateAPIView):
     serializer_class = UserMetricPreferenceSerializer
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = UserMetricPreferenceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.create(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SaveIndicatorPreference(generics.CreateAPIView):
+    serializer_class = UserIndicatorPreferenceSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserIndicatorPreferenceSerializer(data=request.data)
         if serializer.is_valid():
             serializer.create(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)

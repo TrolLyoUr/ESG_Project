@@ -5,6 +5,7 @@ from .views import (
     FastSearch,
     FrameworkViewSet,
     SaveMetricPreference,
+    SaveIndicatorPreference,
     MetricsDataViewSet
 )
 
@@ -15,7 +16,8 @@ router.register(r"frameworks", FrameworkViewSet)
 router.register(r"metricsdatavalue", MetricsDataViewSet, basename="test")
 
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})),
-               re_path(r"savemetrics", SaveMetricPreference.as_view(), name='savemetrics')]
+               re_path(r"savemetrics", SaveMetricPreference.as_view(), name='savemetrics'),
+               re_path(r"saveindicator", SaveIndicatorPreference.as_view(), name='saveindicator')]
 urlpatterns += router.urls
 # for u in urlpatterns:
 #     print(u)
