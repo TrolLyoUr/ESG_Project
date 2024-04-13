@@ -1,9 +1,10 @@
+// FrameworkChoose.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./FrameworkChoose.css";
-import { SEVER_URL } from "./config";
+import { SERVER_URL } from "./config"; // Make sure the constant is correctly named
 
-const serverUrl = SEVER_URL;
+const serverUrl = SERVER_URL; // Make sure the constant is correctly named
 
 const FrameworkChoose = ({ setFramework }) => {
   const [frameworks, setFrameworks] = useState([]);
@@ -26,6 +27,11 @@ const FrameworkChoose = ({ setFramework }) => {
     setActiveDescriptionId(activeDescriptionId === id ? null : id); // Toggle active description
   };
 
+  const handleFrameworkSelection = (frameworkId) => {
+    setFramework(frameworkId); // Pass the frameworkId to the setFramework function provided by the parent
+    setActiveDescriptionId(null); // Optionally hide the description when a new framework is selected
+  };
+
   const renderDescription = (description) => {
     // Split the description by line breaks and render each line separately
     return description.split(/\r?\n/).map((line, index) => (
@@ -40,7 +46,7 @@ const FrameworkChoose = ({ setFramework }) => {
     <div className="framework-choose">
       {frameworks.map((framework) => (
         <div key={framework.id} className="framework-item">
-          <button onClick={() => setFramework(framework.id)}>
+          <button onClick={() => handleFrameworkSelection(framework.id)}>
             {framework.name}
           </button>
           <span

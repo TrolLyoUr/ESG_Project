@@ -136,7 +136,7 @@ class MetricSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Metric
-        fields = ['id', 'name', 'description', 'pillar', 'metric_indicators']
+        fields = ['id', 'name', 'pillar', 'metric_indicators']
 
     def get_metric_indicators(self, metric):
         # Get all associated MetricIndicator objects for the metric
@@ -156,7 +156,7 @@ class FrameworkMetricSerializer(serializers.ModelSerializer):
 class IndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
-        fields = ['id', 'name', 'description', 'unit', 'source']
+        fields = ['id', 'name']
 
 
 class MetricIndicatorSerializer(serializers.ModelSerializer):

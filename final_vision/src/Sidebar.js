@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 import axios from "axios";
-import { SEVER_URL } from "./config";
+import { SERVER_URL } from "./config";
 
-const serverUrl = SEVER_URL;
+const serverUrl = SERVER_URL;
 axios.defaults.withCredentials = true;
 
 const Sidebar = ({ isOpen }) => {
