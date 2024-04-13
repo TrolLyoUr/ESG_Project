@@ -4,6 +4,8 @@ from rest_framework import routers
 from .views import (
     FastSearch,
     FrameworkViewSet,
+    IndicatorViewSet,
+    MetricViewSet,
     SaveMetricPreference,
     SaveIndicatorPreference,
     MetricsDataViewSet,
@@ -23,6 +25,11 @@ router.register(r'years', YearViewSet, basename='year')
 # 1. http://127.0.0.1:8000/app/frameworks/ return frameworks
 # 2. http://127.0.0.1:8000/app/frameworks/4/metrics/ return metrics and indicators
 router.register(r"frameworks", FrameworkViewSet)
+# return information of indicators and metrics
+# http://127.0.0.1:8000/app/indicators/?id=3
+# http://127.0.0.1:8000/app/metrics/?id=3
+router.register(r'indicators', IndicatorViewSet)
+router.register(r'metrics', MetricViewSet)
 # calculate performance based on provided company, framework and metric id
 # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
 router.register(r"metricsdatavalue", MetricsDataViewSet, basename="calculation")

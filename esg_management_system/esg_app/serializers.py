@@ -221,3 +221,14 @@ class MetricsDataSerializer(serializers.Serializer):
     company_id = IntegerField(read_only=True)
     company_name = CharField(read_only=True)
     metrics_scores = MetricsScoresSerializer(read_only=True)
+
+
+class IndicatorInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Indicator
+        fields = ('description', 'unit', 'source')
+
+class MetricInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metric
+        fields = ('description',)

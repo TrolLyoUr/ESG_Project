@@ -8,6 +8,7 @@ import {
   OverlayTrigger,
   Tooltip,
   Alert,
+  Modal,
 } from "react-bootstrap";
 import axios from "axios";
 import { SERVER_URL } from "./config";
@@ -17,6 +18,7 @@ import "./MetricsCard.css";
 const MetricsCard = ({ currentFramework }) => {
   const [metrics, setMetrics] = useState([]);
   const [errors, setErrors] = useState({});
+  const [modalInfo, setModalInfo] = useState({ show: false, content: "" });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -63,35 +65,59 @@ const MetricsCard = ({ currentFramework }) => {
 
   const [tooltipContent, setTooltipContent] = useState({}); // 存储每个提示的内容
 
-  const fetchMetrcisContent = async (id) => {
+  const fetchMetricsContent = async (metricId) => {
     setLoading(true);
     try {
-      // 示例 URL，请根据实际情况替换
-      const response = await fetch(`https://your-backend.com/data?id=${id}`);
-      const data = await response.json();
-      // 假设后端返回的数据有一个 `content` 字段
-      setTooltipContent((prev) => ({ ...prev, [id]: data.content }));
+      const response = await axios.get(
+        `${SERVER_URL}/app/metrics/?id=${metricId}`
+      );
+      const data = response.data[0];
+      setModalInfo({ show: true, content: data.description });
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error("Failed to fetch metric data:", error);
     } finally {
       setLoading(false);
     }
-  }; // 用于存储提示内容
+  };
 
-  const fetchIndicatorContent = async (id) => {
+  const renderModalContent = (content) => {
+    return content.split("\n").map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  };
+
+  const fetchIndicatorContent = async (indicatorId) => {
     setLoading(true);
     try {
-      // 示例 URL，请根据实际情况替换
-      const response = await fetch(`https://your-backend.com/data?id=${id}`);
-      const data = await response.json();
-      // 假设后端返回的数据有一个 `content` 字段
-      setTooltipContent((prev) => ({ ...prev, [id]: data.content }));
+      // Make sure to replace the URL with the correct endpoint if necessary
+      const response = await axios.get(
+        `${SERVER_URL}/app/indicators/?id=${indicatorId}`
+      );
+      console.log(response.data);
+      const data = response.data[0]; // Assuming the response is an array with one object
+      setTooltipContent((prev) => ({
+        ...prev,
+        [indicatorId]: data.description + "\n" + "Data Source: " + data.source,
+      }));
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error("Failed to fetch indicator data:", error);
     } finally {
       setLoading(false);
     }
-  }; // 用于存储提示内容
+  };
+
+  // Function to convert text with '\n' into an array of JSX elements with <br/>
+  const renderTextWithLineBreaks = (text) => {
+    return text.split("\n").map((line, index, array) => (
+      <span key={index}>
+        {line}
+        {index !== array.length - 1 && <br />}
+      </span>
+    ));
+  };
 
   // 定义 toggleSubMetrics 函数，用于切换小数据的显示/隐藏
   const toggleSubMetrics = (id) => {
@@ -160,124 +186,206 @@ const MetricsCard = ({ currentFramework }) => {
     // Optional: Send the selection status to the backend
   };
 
-  return (
-    <Card className="metrics-card">
-      <Card.Body>
-        <Card.Title>Indicators</Card.Title>
-        <ListGroup>
-          {metrics.map((metric) => (
-            <ListGroup.Item key={metric.id} className="metric-item">
-              <div className="d-flex justify-content-between align-items-center">
-                <Form.Check
-                  type="checkbox"
-                  checked={metric.isSelected}
-                  onChange={() => toggleSelection(metric.id)}
-                  label={metric.title}
-                />
+  const handleConfirmWeight = async (metricId, subMetricId, weight) => {
+    const payload = {
+      metricId: metricId,
+      subMetricId: subMetricId,
+      weight: weight,
+    };
 
-                <OverlayTrigger
-                  placement="top"
-                  overlay={
-                    <Tooltip>
-                      {loading
-                        ? "Loading..."
-                        : tooltipContent[metric.id] ||
-                          "Default tooltip content"}
-                    </Tooltip>
-                  }
-                >
-                  <span
-                    className="info-icon"
-                    onClick={() => fetchMetrcisContent(metric.id)}
-                  >
-                    !
-                  </span>
-                </OverlayTrigger>
-                <div>
-                  <Form.Control
-                    type="number"
-                    value={metric.weight === null ? "" : metric.weight}
-                    onChange={(e) => updateWeight(metric.id, e.target.value)}
+    try {
+      const response = await fetch("https://your-backend.com/update-weight", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const responseData = await response.json();
+      if (response.ok) {
+        // Handle a successful response
+        console.log("Weight updated successfully:", responseData);
+      } else {
+        // Handle errors if not successful
+        console.error("Failed to update weight:", responseData);
+      }
+    } catch (error) {
+      console.error("Error submitting weight:", error);
+    }
+  };
+
+  return (
+    <>
+      <Card className="metrics-card">
+        <Card.Body>
+          <Card.Title>Indicators</Card.Title>
+          <ListGroup>
+            {metrics.map((metric) => (
+              <ListGroup.Item key={metric.id} className="metric-item">
+                <div className="d-flex justify-content-between align-items-center">
+                  <Form.Check
+                    type="checkbox"
+                    checked={metric.isSelected}
+                    onChange={() => toggleSelection(metric.id)}
+                    label={metric.title}
                   />
-                  {errors[metric.id] && (
-                    <Alert variant="danger">Invalid weight (0-10)</Alert>
-                  )}
-                  <Button
-                    onClick={() => toggleSubMetrics(metric.id)}
-                    size="sm"
-                    style={{ marginLeft: "10px" }}
-                  >
-                    {metric.isOpen ? "Hide Metrics" : "Show Metrics"}
-                  </Button>
-                </div>
-              </div>
-              <Collapse in={metric.isOpen}>
-                <div>
-                  <ListGroup variant="flush">
-                    {metric.subMetrics.map((subMetric) => (
-                      <ListGroup.Item
-                        key={subMetric.id}
-                        className="d-flex align-items-center justify-content-between pe-3"
+                  <div className="d-flex align-items-center">
+                    <Form.Control
+                      className="weight-input"
+                      type="number"
+                      value={metric.weight === null ? "" : metric.weight}
+                      onChange={(e) => updateWeight(metric.id, e.target.value)}
+                    />
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        handleConfirmWeight(metric.id, null, metric.weight)
+                      }
+                      className="ml-2"
+                    >
+                      Confirm
+                    </Button>
+                    <Button
+                      onClick={() => toggleSubMetrics(metric.id)}
+                      size="sm"
+                      style={{ marginLeft: "10px" }}
+                    >
+                      {metric.isOpen ? "Hide Metrics" : "Show Metrics"}
+                    </Button>
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip>
+                          {loading
+                            ? "Loading..."
+                            : tooltipContent[metric.id] ||
+                              "Click to view indicator's information"}
+                        </Tooltip>
+                      }
+                    >
+                      <span
+                        className="info-icon"
+                        onClick={() => fetchMetricsContent(metric.id)}
                       >
-                        {/* Checkbox for sub-metric selection */}
-                        <Form.Check
-                          type="checkbox"
-                          checked={subMetric.isSelected}
-                          onChange={() =>
-                            toggleSelection(metric.id, true, subMetric.id)
-                          }
-                          label={
-                            <div className="label-container">
-                              <span className="label-title">
-                                {subMetric.title}
-                              </span>
-                              <span className="label-score">
-                                {subMetric.score}
-                              </span>
-                            </div>
-                          }
-                          className="me-4" // More right margin
-                        />
-                        <div className="d-flex align-items-center">
-                          {/* Overlay Trigger for tooltips */}
-                          <Form.Control
-                            type="number"
-                            value={metric.weight === null ? "" : metric.weight}
-                            onChange={(e) =>
-                              updateWeight(metric.id, e.target.value)
-                            }
-                          />
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={
-                              <Tooltip>
-                                {loading
-                                  ? "Loading..."
-                                  : tooltipContent[metric.id] ||
-                                    "Default tooltip content"}
-                              </Tooltip>
-                            }
-                          >
-                            {/* Information icon with click event */}
-                            <span
-                              className="info-icon me-3"
-                              onClick={() => fetchIndicatorContent(metric.id)}
-                            >
-                              !
-                            </span>
-                          </OverlayTrigger>
-                          {/* Numeric input for updating weight */}
-                        </div>
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
+                        !
+                      </span>
+                    </OverlayTrigger>
+                  </div>
                 </div>
-              </Collapse>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Card.Body>
-    </Card>
+                <Collapse in={metric.isOpen}>
+                  <div>
+                    <ListGroup variant="flush">
+                      {metric.subMetrics.map((subMetric) => (
+                        <ListGroup.Item
+                          key={subMetric.id}
+                          className="d-flex align-items-center justify-content-between pe-3"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            checked={subMetric.isSelected}
+                            onChange={() =>
+                              toggleSelection(metric.id, true, subMetric.id)
+                            }
+                            label={
+                              <div className="label-container">
+                                <span className="label-title">
+                                  {subMetric.title}
+                                </span>
+                                <span className="label-score">
+                                  {/* {subMetric.score} */}
+                                </span>
+                                <span className="label-score">
+                                  {/* {subMetric.unit} */}
+                                </span>
+                              </div>
+                            }
+                            className="me-4"
+                          />
+                          <div className="d-flex align-items-center">
+                            <Form.Control
+                              className="weight-input"
+                              type="number"
+                              value={
+                                subMetric.weight === null
+                                  ? ""
+                                  : subMetric.weight
+                              }
+                              onChange={(e) =>
+                                updateWeight(
+                                  metric.id,
+                                  e.target.value,
+                                  true,
+                                  subMetric.id
+                                )
+                              }
+                            />
+                            <Button
+                              variant="primary"
+                              onClick={() =>
+                                handleConfirmWeight(
+                                  metric.id,
+                                  subMetric.id,
+                                  subMetric.weight
+                                )
+                              }
+                              className="ml-2"
+                            >
+                              Confirm
+                            </Button>
+                            <OverlayTrigger
+                              placement="top"
+                              overlay={
+                                <Tooltip>
+                                  {loading
+                                    ? "Loading..."
+                                    : renderTextWithLineBreaks(
+                                        tooltipContent[subMetric.id] ||
+                                          "click to view metric's information"
+                                      )}
+                                </Tooltip>
+                              }
+                            >
+                              <span
+                                className="info-icon me-3"
+                                onClick={() =>
+                                  fetchIndicatorContent(subMetric.id)
+                                }
+                              >
+                                !
+                              </span>
+                            </OverlayTrigger>
+                          </div>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </div>
+                </Collapse>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Card.Body>
+      </Card>
+      {/* Modal for displaying metric description */}
+      <Modal
+        show={modalInfo.show}
+        onHide={() => setModalInfo({ ...modalInfo, show: false })}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Metric Description</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{renderModalContent(modalInfo.content)}</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setModalInfo({ ...modalInfo, show: false })}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

@@ -24,6 +24,8 @@ from esg_app.models import (
 from .serializers import (
     FastCompanies,
     FrameworkListSerializer,
+    IndicatorInfoSerializer,
+    MetricInfoSerializer,
     UserSerializer,
     CompanySerializer,
     FrameworkSerializer,
@@ -105,20 +107,6 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         )
         return Response(serializer.data)
 
-
-class MetricViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Metric.objects.all()
-    serializer_class = MetricSerializer
-
-    @action(detail=True, methods=["get"], url_path="indicators")
-    def list_metric_indicators(self, request, pk=None):
-        metric = self.get_object()
-        queryset = metric.metric_indicators.all()
-
-        serializer = MetricIndicatorSerializer(
-            queryset, many=True, context={"request": request}
-        )
-        return Response(serializer.data)
 
 
 class SaveMetricPreference(generics.CreateAPIView):
@@ -220,3 +208,34 @@ class ListUserPreference(viewsets.ReadOnlyModelViewSet):
         queryset = UserMetricPreference.objects.all()
         serializer = UserMetricPreferenceSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class IndicatorViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Indicator.objects.all()
+    serializer_class = IndicatorInfoSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned indicators to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Indicator.objects.all()
+        indicator_id = self.request.query_params.get('id', None)
+        if indicator_id is not None:
+            queryset = queryset.filter(id=indicator_id)
+        return queryset
+
+class MetricViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Metric.objects.all()
+    serializer_class = MetricInfoSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned metrics to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Metric.objects.all()
+        metric_id = self.request.query_params.get('id', None)
+        if metric_id is not None:
+            queryset = queryset.filter(id=metric_id)
+        return queryset
