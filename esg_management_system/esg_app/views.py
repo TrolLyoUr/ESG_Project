@@ -208,3 +208,19 @@ class ListIndicatorValue(generics.ListAPIView):
             {"metric_id": r[0], "indicator_id": r[1], "metric_name": r[2], "indicator_name": r[3], "metric_desc": r[4],
              "indicator_desc": r[5], "value": r[6], "unit": r[7], "year": r[8]} for r in row]
         return Response({'data': row})
+
+
+class ListUserPreference(viewsets.ReadOnlyModelViewSet):
+    queryset = []
+
+    @action(detail=True, methods=['get'])
+    def listindicators(self, request, pk=None):
+        queryset = UserIndicatorPreference.objects.all()
+        serializer = UserIndicatorPreferenceSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def listmetrics(self, request, pk=None):
+        queryset = UserMetricPreference.objects.all()
+        serializer = UserMetricPreferenceSerializer(queryset, many=True)
+        return Response(serializer.data)

@@ -7,7 +7,8 @@ from .views import (
     SaveMetricPreference,
     SaveIndicatorPreference,
     MetricsDataViewSet,
-    ListIndicatorValue
+    ListIndicatorValue,
+    ListUserPreference
 )
 
 router = routers.SimpleRouter()
@@ -18,7 +19,12 @@ router.register(r"fsearch", FastSearch, basename="fsearch")
 # 1. http://127.0.0.1:8000/app/frameworks/ return frameworks
 # 2. http://127.0.0.1:8000/app/frameworks/4/metrics/ return metrics and indicators
 router.register(r"frameworks", FrameworkViewSet)
-router.register(r"metricsdatavalue", MetricsDataViewSet, basename="test")
+# calculate performance based on provided company, framework and metric id
+# http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
+router.register(r"metricsdatavalue", MetricsDataViewSet, basename="calculation")
+# return user personal setting
+# http://127.0.0.1:8000/app/listpreference/1/listindicators/
+router.register(r"listpreference", ListUserPreference, basename="listpreference")
 
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})),
                # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
@@ -42,3 +48,5 @@ curl -X POST --location "http://127.0.0.1:8000/app/saveindicator/" \
 \"custom_weight\": 0.5
 }"
 '''
+for u in urlpatterns:
+    print(u)
