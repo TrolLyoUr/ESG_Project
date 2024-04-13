@@ -37,7 +37,8 @@ from .serializers import (
     UserMetricPreferenceSerializer,
     UserIndicatorPreferenceSerializer,
     FrameworkMetrics,
-    MetricsDataSerializer
+    MetricsDataSerializer,
+    YearSerializer
 )
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -63,6 +64,13 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
     def retrieve(self, request, pk=None, *args, **kwargs):
         queryset = self.get_queryset(pk=pk)
         serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+class YearViewSet(viewsets.ViewSet):
+    def list(self, request):
+        # Querying distinct years from DataValue model
+        distinct_years = DataValue.objects.order_by('year').values('year').distinct()
+        serializer = YearSerializer(distinct_years, many=True)
         return Response(serializer.data)
 
 

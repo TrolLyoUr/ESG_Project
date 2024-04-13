@@ -8,13 +8,17 @@ from .views import (
     SaveIndicatorPreference,
     MetricsDataViewSet,
     ListIndicatorValue,
-    ListUserPreference
+    ListUserPreference,
+    YearViewSet
 )
 
 router = routers.SimpleRouter()
 # search company by name and case insensitive
 # http://127.0.0.1:8000/app/fsearch/Tran/
 router.register(r"fsearch", FastSearch, basename="fsearch")
+# return all years
+# http://127.0.0.1:8000/app/years/
+router.register(r'years', YearViewSet, basename='year')
 # return framework and metrics
 # 1. http://127.0.0.1:8000/app/frameworks/ return frameworks
 # 2. http://127.0.0.1:8000/app/frameworks/4/metrics/ return metrics and indicators

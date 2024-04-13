@@ -118,6 +118,9 @@ class DataValueSerializer(serializers.ModelSerializer):
         model = DataValue
         fields = ['value_id', 'company', 'indicator', 'year', 'value']
 
+class YearSerializer(serializers.Serializer):
+    year = serializers.IntegerField()
+
 
 # Serializer for List Framework Metrics API
 class FrameworkListSerializer(serializers.ModelSerializer):
@@ -216,7 +219,7 @@ class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
 
 
 class MetricsScoresSerializer(serializers.Serializer):
-    metric_id: IntegerField(read_only=True)
+    metric_id: IntegerField(read_only=True) # type: ignore
     metric_name = CharField(read_only=True)
     score = FloatField(read_only=True)
 
