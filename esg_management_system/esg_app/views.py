@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 from django.db import connection
+from rest_framework.views import APIView
 
 from .calculations import calculate_metric_score
 
@@ -26,6 +27,7 @@ from .serializers import (
     FrameworkListSerializer,
     IndicatorInfoSerializer,
     MetricInfoSerializer,
+    UserIndicatorPreferenceItemSerializer,
     UserSerializer,
     CompanySerializer,
     FrameworkSerializer,
@@ -121,14 +123,13 @@ class SaveMetricPreference(generics.CreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SaveIndicatorPreference(generics.CreateAPIView):
-    serializer_class = UserIndicatorPreferenceSerializer
-
+class SaveIndicatorPreferences(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
-        serializer = UserIndicatorPreferenceSerializer(data=data)
+        data['user'] = request.user.id  # Automatically add the user ID to the data.
+        serializer = UserIndicatorPreferenceItemSerializer(data=data, many=True)
         if serializer.is_valid():
-            serializer.create(serializer)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -189,26 +189,27 @@ class UserMetricPreferenceSerializer(serializers.ModelSerializer):
         return newdata
 
 
-class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
+class UserIndicatorPreferenceSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        preferences = []
+        for data in validated_data:
+            user = User.objects.get(id=data['user'])
+            metric = Metric.objects.get(id=data['metric'])
+            indicator = Indicator.objects.get(id=data['indicator'])
+            obj, created = UserIndicatorPreference.objects.update_or_create(
+                user=user,
+                metric=metric,
+                indicator=indicator,
+                defaults={'custom_weight': data['custom_weight']}
+            )
+            preferences.append(obj)
+        return preferences
+
+class UserIndicatorPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
         fields = ['user', 'metric', 'indicator', 'custom_weight']
-
-    def create(self, validated_data):
-        data = validated_data.initial_data
-        user = User.objects.get(id=data['user'])
-        metric = Metric.objects.get(id=data['metric'])
-        indicator = Indicator.objects.get(id=data['indicator'])
-        try:
-            oldData = UserIndicatorPreference.objects.filter(user=user, indicator=indicator, metric=metric).all()
-            oldData.delete()
-            newdata = UserIndicatorPreference(user=user, indicator=indicator, metric=metric,
-                                              custom_weight=data['custom_weight'])
-        except ObjectDoesNotExist:
-            newdata = UserIndicatorPreference(user=user, indicator=indicator, metric=metric,
-                                              custom_weight=data['custom_weight'])
-        newdata.save()
-        return newdata
+        list_serializer_class = UserIndicatorPreferenceSerializer
 
 
 class MetricsScoresSerializer(serializers.Serializer):

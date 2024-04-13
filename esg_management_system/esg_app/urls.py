@@ -7,7 +7,7 @@ from .views import (
     IndicatorViewSet,
     MetricViewSet,
     SaveMetricPreference,
-    SaveIndicatorPreference,
+    SaveIndicatorPreferences,
     MetricsDataViewSet,
     ListIndicatorValue,
     ListUserPreference,
@@ -42,7 +42,7 @@ urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': '
                # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
                re_path(r"savemetrics", SaveMetricPreference.as_view(), name='savemetrics'),
                # just support post method, example can find below
-               re_path(r"saveindicator", SaveIndicatorPreference.as_view(), name='saveindicator'),
+               re_path(r"saveindicator", SaveIndicatorPreferences.as_view(), name='saveindicator'),
                # just support post method, similar as before
                re_path(r"indicatordata", ListIndicatorValue.as_view(), name='listindicatorvalue')
                # http://127.0.0.1:8000/app/indicatordata?company=1
@@ -50,15 +50,21 @@ urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': '
 urlpatterns += router.urls
 '''
 example for post test through curl
-curl -X POST --location "http://127.0.0.1:8000/app/saveindicator/" \
--H "Accept: */*" \
-   -H "Content-Type: application/json" \
-   -d "{
-\"user\": 1,
-\"indicator\": 8,
-\"metric\": 58,
-\"custom_weight\": 0.5
-}"
+curl -X POST "http://localhost:8000/save-preferences/" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Token YOUR_API_TOKEN_HERE" \  # Replace with actual token if authentication is required
+     -d '[
+           {
+             "indicator": 8,
+             "metric": 58,
+             "custom_weight": 0.5
+           },
+           {
+             "indicator": 9,
+             "metric": 88,
+             "custom_weight": 0.7
+           }
+         ]'
 '''
 for u in urlpatterns:
     print(u)
