@@ -17,5 +17,5 @@ router.register(r"metricsdatavalue", MetricsDataViewSet, basename="test")
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})),
                re_path(r"savemetrics", SaveMetricPreference.as_view(), name='savemetrics')]
 urlpatterns += router.urls
-for u in urlpatterns:
-    print(u)
+# for u in urlpatterns:
+#     print(u)
