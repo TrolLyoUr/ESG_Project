@@ -6,18 +6,39 @@ from .views import (
     FrameworkViewSet,
     SaveMetricPreference,
     SaveIndicatorPreference,
-    MetricsDataViewSet
+    MetricsDataViewSet,
+    ListIndicatorValue
 )
 
 router = routers.SimpleRouter()
-# router.register(r'search', ListCompanies, basename="search")
+# search company by name and case insensitive
+# http://127.0.0.1:8000/app/fsearch/Tran/
 router.register(r"fsearch", FastSearch, basename="fsearch")
+# return framework and metrics
+# 1. http://127.0.0.1:8000/app/frameworks/ return frameworks
+# 2. http://127.0.0.1:8000/app/frameworks/4/metrics/ return metrics and indicators
 router.register(r"frameworks", FrameworkViewSet)
 router.register(r"metricsdatavalue", MetricsDataViewSet, basename="test")
 
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})),
+               # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
                re_path(r"savemetrics", SaveMetricPreference.as_view(), name='savemetrics'),
-               re_path(r"saveindicator", SaveIndicatorPreference.as_view(), name='saveindicator')]
+               # just support post method, example can find below
+               re_path(r"saveindicator", SaveIndicatorPreference.as_view(), name='saveindicator'),
+               # just support post method, similar as before
+               re_path(r"indicatordata", ListIndicatorValue.as_view(), name='listindicatorvalue')
+               # http://127.0.0.1:8000/app/indicatordata?company=1
+               ]
 urlpatterns += router.urls
-# for u in urlpatterns:
-#     print(u)
+'''
+example for post test through curl
+curl -X POST --location "http://127.0.0.1:8000/app/saveindicator/" \
+-H "Accept: */*" \
+   -H "Content-Type: application/json" \
+   -d "{
+\"user\": 1,
+\"indicator\": 8,
+\"metric\": 58,
+\"custom_weight\": 0.5
+}"
+'''

@@ -4,6 +4,7 @@ from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
+from django.db import connection
 
 from .calculations import calculate_metric_score
 
@@ -193,3 +194,15 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
             )
 
         return Response({"data": result})
+
+
+class ListIndicatorValue(generics.ListAPIView):
+    def get(self, request, *args, **kwargs):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
+            row = cursor.fetchall()
+        row = [
+            {"metric_id": r[0], "indicator_id": r[1], "metric_name": r[2], "indicator_name": r[3], "metric_desc": r[4],
+             "indicator_desc": r[5], "value": r[6], "unit": r[7], "year": r[8]} for r in row]
+        return Response({'data': row})
