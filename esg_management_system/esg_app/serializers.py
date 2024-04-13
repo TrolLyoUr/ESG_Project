@@ -185,8 +185,8 @@ class UserMetricPreferenceSerializer(serializers.ModelSerializer):
         metrics = validated_data.get('metrics')
 
         try:
-            user = User.objects.get(id=user_id)
-            framework = Framework.objects.get(id=framework_id)
+            user = user.objects.get(id=user_id)
+            framework = framework.objects.get(id=framework_id)
         except (User.DoesNotExist, Framework.DoesNotExist):
             raise serializers.ValidationError('Invalid user or framework ID.')
 
@@ -195,7 +195,7 @@ class UserMetricPreferenceSerializer(serializers.ModelSerializer):
             custom_weight = metric_data[metric_id]
 
             try:
-                metric = Metric.objects.get(id=metric_id)
+                metric = metric.objects.get(id=metric_id)
             except Metric.DoesNotExist:
                 raise serializers.ValidationError(
                     f'Invalid metric ID: {metric_id}.')

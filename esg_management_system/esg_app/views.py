@@ -128,11 +128,14 @@ class SaveMetricPreference(generics.CreateAPIView):
     serializer_class = UserMetricPreferenceSerializer
 
     def post(self, request):
+        permission_classes = [permissions.AllowAny]
         serializer = UserMetricPreferenceSerializer(data=request.data)
         if serializer.is_valid():
+            print("serializer.validated_data")
             serializer.create(serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
+            print("serializer.errors")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
