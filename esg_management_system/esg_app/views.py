@@ -130,7 +130,7 @@ class SaveMetricPreference(generics.CreateAPIView):
     def post(self, request):
         serializer = UserMetricPreferenceSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.create(serializer.validated_data)
+            serializer.create(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -8,7 +8,7 @@ from .views import (
     MetricsDataViewSet
 )
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 # router.register(r'search', ListCompanies, basename="search")
 router.register(r"fsearch", FastSearch, basename="fsearch")
 router.register(r"frameworks", FrameworkViewSet)
