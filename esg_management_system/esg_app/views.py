@@ -28,6 +28,7 @@ from .serializers import (
     IndicatorInfoSerializer,
     MetricInfoSerializer,
     UserIndicatorPreferenceItemSerializer,
+    UserMetricPreferenceItemSerializer,
     UserSerializer,
     CompanySerializer,
     FrameworkSerializer,
@@ -109,15 +110,15 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         )
         return Response(serializer.data)
 
-
-
-class SaveMetricPreference(generics.CreateAPIView):
-    serializer_class = UserMetricPreferenceSerializer
-
+class SaveMetricPreference(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = UserMetricPreferenceSerializer(data=request.data)
+        user_id = request.user.id
+        data = [
+            {**item, "user": user_id} for item in request.data
+        ]
+        serializer = UserMetricPreferenceSerializer(data=data, many=True)
         if serializer.is_valid():
-            serializer.create(serializer)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -125,8 +126,10 @@ class SaveMetricPreference(generics.CreateAPIView):
 
 class SaveIndicatorPreferences(APIView):
     def post(self, request, *args, **kwargs):
-        data = request.data
-        data['user'] = request.user.id  # Automatically add the user ID to the data.
+        user_id = request.user.id
+        data = [
+            {**item, "user": user_id} for item in request.data
+        ]
         serializer = UserIndicatorPreferenceItemSerializer(data=data, many=True)
         if serializer.is_valid():
             serializer.save()
@@ -201,13 +204,13 @@ class ListUserPreference(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['get'])
     def listindicators(self, request, pk=None):
         queryset = UserIndicatorPreference.objects.all()
-        serializer = UserIndicatorPreferenceSerializer(queryset, many=True)
+        serializer = UserIndicatorPreferenceItemSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def listmetrics(self, request, pk=None):
         queryset = UserMetricPreference.objects.all()
-        serializer = UserMetricPreferenceSerializer(queryset, many=True)
+        serializer = UserMetricPreferenceItemSerializer(queryset, many=True)
         return Response(serializer.data)
 
 

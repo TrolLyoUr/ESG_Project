@@ -168,38 +168,33 @@ class MetricIndicatorSerializer(serializers.ModelSerializer):
 
 
 class UserMetricPreferenceSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        preferences = []
+        for data in validated_data:
+            obj, created = UserMetricPreference.objects.update_or_create(
+                user=data['user'],
+                metric=data['framework'],
+                indicator=data['metric'],
+                defaults={'custom_weight': data['custom_weight']}
+            )
+            preferences.append(obj)
+        return preferences
+
+class UserMetricPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMetricPreference
         fields = ['user', 'framework', 'metric', 'custom_weight']
-
-    def create(self, validated_data):
-        data = validated_data.initial_data
-        user = User.objects.get(id=data['user'])
-        framework = Framework.objects.get(id=data['framework'])
-        metric = Metric.objects.get(id=data['metric'])
-        try:
-            oldData = UserMetricPreference.objects.filter(user=user, framework=framework, metric=metric).all()
-            oldData.delete()
-            newdata = UserMetricPreference(user=user, framework=framework, metric=metric,
-                                           custom_weight=data['custom_weight'])
-        except ObjectDoesNotExist:
-            newdata = UserMetricPreference(user=user, framework=framework, metric=metric,
-                                           custom_weight=data['custom_weight'])
-        newdata.save()
-        return newdata
+        list_serializer_class = UserMetricPreferenceSerializer
 
 
 class UserIndicatorPreferenceSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         preferences = []
         for data in validated_data:
-            user = User.objects.get(id=data['user'])
-            metric = Metric.objects.get(id=data['metric'])
-            indicator = Indicator.objects.get(id=data['indicator'])
             obj, created = UserIndicatorPreference.objects.update_or_create(
-                user=user,
-                metric=metric,
-                indicator=indicator,
+                user=data['user'],
+                metric=data['metric'],
+                indicator=data['indicator'],
                 defaults={'custom_weight': data['custom_weight']}
             )
             preferences.append(obj)

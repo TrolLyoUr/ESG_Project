@@ -50,18 +50,17 @@ urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': '
 urlpatterns += router.urls
 '''
 example for post test through curl
-curl -X POST "http://localhost:8000/save-preferences/" \
+curl -X POST "http://localhost:8000/saveindicator/" \
      -H "Content-Type: application/json" \
-     -H "Authorization: Token YOUR_API_TOKEN_HERE" \  # Replace with actual token if authentication is required
      -d '[
            {
              "indicator": 8,
-             "metric": 58,
+             "metric": 98,
              "custom_weight": 0.5
            },
            {
              "indicator": 9,
-             "metric": 88,
+             "metric": 98,
              "custom_weight": 0.7
            }
          ]'
