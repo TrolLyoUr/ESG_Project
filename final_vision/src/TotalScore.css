@@ -26,3 +26,30 @@
     right: 10px; /* 避免紧贴屏幕边缘 */
   }
 }
+
+
+
+.total-score {
+  display: flex;
+  flex-direction: column; /* 确保总体布局是垂直的 */
+  align-items: center;    /* 子项在水平方向上居中 */
+  padding: 20px;          /* 增加内边距 */
+}
+
+.total-score .numbers {
+  display: flex;          /* 设置数字容器为水平布局 */
+  justify-content: center;/* 数字在水平方向上居中对齐 */
+  gap: 30px;              /* 设置数字之间的间隙 */
+}
+
+.total-score .numbers .number-small {
+  font-size: 30px;
+  color: #666;
+ 
+}
+
+.total-score .average h1 {
+  font-size: 70px;
+  color: #333;
+  margin-top: -40px;       /* 在平均值上方添加间距 */
+}
