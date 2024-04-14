@@ -19,6 +19,7 @@ const MetricsCard = ({ currentFramework }) => {
   const [metrics, setMetrics] = useState([]);
   const [errors, setErrors] = useState({});
   const [modalInfo, setModalInfo] = useState({ show: false, content: "" });
+  const [weights, setWeights] = useState({}); // To store all weights
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,30 +27,33 @@ const MetricsCard = ({ currentFramework }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${SERVER_URL}/app/frameworks/${currentFramework}/metrics/`
+          `${SERVER_URL}/app/frameworks/${currentFramework}/metrics/`,
+          { withCredentials: true }
         );
-        setMetrics(
-          response.data.map(
-            (metric) => (
-              console.log(metric),
-              {
-                id: metric.metric.id,
-                title: metric.metric.name,
-                isSelected: true,
-                isOpen: false,
-                subMetrics: metric.metric.metric_indicators.map(
-                  (indicator) => ({
-                    id: indicator.indicator.id,
-                    title: indicator.indicator.name,
-                    isSelected: true,
-                    weight: indicator.predefined_weight,
-                  })
-                ),
-                weight: metric.predefined_weight,
-              }
-            )
-          )
-        );
+        const newMetrics = response.data.map((metric) => ({
+          id: metric.metric.id,
+          title: metric.metric.name,
+          isSelected: true,
+          isOpen: false,
+          subMetrics: metric.metric.metric_indicators.map((indicator) => ({
+            id: indicator.indicator.id,
+            title: indicator.indicator.name,
+            isSelected: true,
+            weight: indicator.predefined_weight,
+          })),
+          weight: metric.predefined_weight,
+        }));
+
+        setMetrics(newMetrics);
+        // Initialize weights state
+        const initialWeights = {};
+        newMetrics.forEach((m) => {
+          initialWeights[`metric_${m.id}`] = m.weight;
+          m.subMetrics.forEach((sm) => {
+            initialWeights[`indicator_${m.id}_${sm.id}`] = sm.weight;
+          });
+        });
+        setWeights(initialWeights);
       } catch (error) {
         console.error("Failed to fetch metrics:", error);
         setErrors({ global: "Failed to load metrics" });
@@ -62,6 +66,52 @@ const MetricsCard = ({ currentFramework }) => {
       fetchMetrics();
     }
   }, [currentFramework]);
+
+  const handleWeightChange = (key, value) => {
+    setWeights({ ...weights, [key]: value });
+  };
+
+  const handleSubmitAllWeights = async () => {
+    // Prepare data for API requests
+    const indicatorsData = [];
+    const metricsData = [];
+    metrics.forEach((metric) => {
+      if (weights[`metric_${metric.id}`] !== undefined) {
+        metricsData.push({
+          metric: metric.id,
+          framework: currentFramework, // assuming the framework ID is stored in each metric
+          custom_weight: parseFloat(weights[`metric_${metric.id}`]),
+        });
+      }
+      metric.subMetrics.forEach((subMetric) => {
+        if (weights[`indicator_${metric.id}_${subMetric.id}`] !== undefined) {
+          indicatorsData.push({
+            metric: metric.id,
+            indicator: subMetric.id,
+            custom_weight: parseFloat(
+              weights[`indicator_${metric.id}_${subMetric.id}`]
+            ),
+          });
+        }
+      });
+    });
+
+    // Call APIs
+    try {
+      console.log(metricsData);
+      console.log(indicatorsData);
+      await axios.post(`${SERVER_URL}/app/saveindicator/`, indicatorsData, {
+        withCredentials: true,
+      });
+      await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData, {
+        withCredentials: true,
+      });
+      alert("Weights updated successfully!");
+    } catch (error) {
+      console.error("Error submitting weights:", error);
+      alert("Failed to update weights.");
+    }
+  };
 
   const [tooltipContent, setTooltipContent] = useState({}); // 存储每个提示的内容
 
@@ -94,7 +144,8 @@ const MetricsCard = ({ currentFramework }) => {
     try {
       // Make sure to replace the URL with the correct endpoint if necessary
       const response = await axios.get(
-        `${SERVER_URL}/app/indicators/?id=${indicatorId}`
+        `${SERVER_URL}/app/indicators/?id=${indicatorId}`,
+        { withCredentials: true }
       );
       console.log(response.data);
       const data = response.data[0]; // Assuming the response is an array with one object
@@ -186,35 +237,6 @@ const MetricsCard = ({ currentFramework }) => {
     // Optional: Send the selection status to the backend
   };
 
-  const handleConfirmWeight = async (metricId, subMetricId, weight) => {
-    const payload = {
-      metricId: metricId,
-      subMetricId: subMetricId,
-      weight: weight,
-    };
-
-    try {
-      const response = await fetch("https://your-backend.com/update-weight", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const responseData = await response.json();
-      if (response.ok) {
-        // Handle a successful response
-        console.log("Weight updated successfully:", responseData);
-      } else {
-        // Handle errors if not successful
-        console.error("Failed to update weight:", responseData);
-      }
-    } catch (error) {
-      console.error("Error submitting weight:", error);
-    }
-  };
-
   return (
     <>
       <Card className="metrics-card">
@@ -234,18 +256,14 @@ const MetricsCard = ({ currentFramework }) => {
                     <Form.Control
                       className="weight-input"
                       type="number"
-                      value={metric.weight === null ? "" : metric.weight}
-                      onChange={(e) => updateWeight(metric.id, e.target.value)}
-                    />
-                    <Button
-                      variant="primary"
-                      onClick={() =>
-                        handleConfirmWeight(metric.id, null, metric.weight)
+                      value={weights[`metric_${metric.id}`]}
+                      onChange={(e) =>
+                        handleWeightChange(
+                          `metric_${metric.id}`,
+                          e.target.value
+                        )
                       }
-                      className="ml-2"
-                    >
-                      Confirm
-                    </Button>
+                    />
                     <Button
                       onClick={() => toggleSubMetrics(metric.id)}
                       size="sm"
@@ -307,32 +325,17 @@ const MetricsCard = ({ currentFramework }) => {
                               className="weight-input"
                               type="number"
                               value={
-                                subMetric.weight === null
-                                  ? ""
-                                  : subMetric.weight
+                                weights[
+                                  `indicator_${metric.id}_${subMetric.id}`
+                                ]
                               }
                               onChange={(e) =>
-                                updateWeight(
-                                  metric.id,
-                                  e.target.value,
-                                  true,
-                                  subMetric.id
+                                handleWeightChange(
+                                  `indicator_${metric.id}_${subMetric.id}`,
+                                  e.target.value
                                 )
                               }
                             />
-                            <Button
-                              variant="primary"
-                              onClick={() =>
-                                handleConfirmWeight(
-                                  metric.id,
-                                  subMetric.id,
-                                  subMetric.weight
-                                )
-                              }
-                              className="ml-2"
-                            >
-                              Confirm
-                            </Button>
                             <OverlayTrigger
                               placement="top"
                               overlay={
@@ -364,9 +367,11 @@ const MetricsCard = ({ currentFramework }) => {
               </ListGroup.Item>
             ))}
           </ListGroup>
+          <Button variant="success" onClick={handleSubmitAllWeights}>
+            Save Weights Changes
+          </Button>
         </Card.Body>
       </Card>
-      {/* Modal for displaying metric description */}
       <Modal
         show={modalInfo.show}
         onHide={() => setModalInfo({ ...modalInfo, show: false })}
