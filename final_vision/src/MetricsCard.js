@@ -57,28 +57,32 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
           });
         });
         setWeights(initialWeights);
+        return newMetrics; // Return newMetrics for potential chain usage
       } catch (error) {
         console.error("Failed to fetch metrics:", error);
         setErrors({ global: "Failed to load metrics" });
+        return null; // Return null to indicate failure
       } finally {
         setLoading(false);
       }
     };
 
-    if (currentFramework) {
-      fetchMetrics();
-    }
-  }, [currentFramework]);
-
-  useEffect(() => {
-    const fetchIndicatorData = async () => {
+    const fetchIndicatorData = async (metrics) => {
+      if (!metrics) return; // Skip if metrics fetch failed
       setLoading(true);
       try {
         const url = `${SERVER_URL}/app/indicatordata?company=${selectedCompany}&framework=${currentFramework}&year=${selectedYear}`;
+        console.log(url);
         const response = await axios.get(url);
         const data = response.data;
-        console.log(data);
-        updateMetricsWithValues(data);
+        console.log(response);
+        console.log(data.length);
+        if (Object.keys(data).length === 0 && data.constructor === Object) {
+          console.log("No data available for the selected company and year.");
+          alert("No data available for the selected company and year.");
+          return;
+        }
+        updateMetricsWithValues(data, metrics);
       } catch (error) {
         console.error("Failed to fetch indicator data:", error);
       } finally {
@@ -86,8 +90,11 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
       }
     };
 
+    if (selectedCompany == "" || selectedYear == "") {
+      fetchMetrics();
+    }
     if (currentFramework && selectedCompany && selectedYear) {
-      fetchIndicatorData();
+      fetchMetrics().then(fetchIndicatorData); // Chain the promise
     }
   }, [currentFramework, selectedCompany, selectedYear]);
 
