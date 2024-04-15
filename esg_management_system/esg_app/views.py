@@ -193,16 +193,24 @@ class ListIndicatorValue(generics.ListAPIView):
         data = defaultdict(dict)
         with connection.cursor() as cursor:
             year = request.query_params.get("year")
-            if year is None:
-                cursor.execute(
-                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
+            framework = request.query_params.get("framework")
+            if year is None or framework is None:
+                if framework is None:
+                    cursor.execute(
+                        f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
+                elif year is None:
+                    cursor.execute(
+                        f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id join esg_app_frameworkmetric on esg_app_frameworkmetric.metric_id=esg_app_metric.id where company_id={request.query_params.get("company")} and framework_id={framework};')
+                else:
+                    cursor.execute(
+                        f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id join esg_app_frameworkmetric on esg_app_frameworkmetric.metric_id=esg_app_metric.id where company_id={request.query_params.get("company")} and framework_id={framework} and year={year};')
             else:
                 cursor.execute(
-                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
+                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
             row = cursor.fetchall()
         for r in row:
             if r[0] not in data.keys():
-                data[r[0]] = {'metric_id': r[0], 'metric_name': r[2], 'indicators': []}
+                data[r[0]] = {'metric_id': r[0], 'metric_name': r[2], 'pillar': r[8], 'indicators': []}
                 data[r[0]]['indicators'].append(
                     {"indicator_id": r[1], "indicator_name": r[3], "value": r[4], "unit": r[5],
                      "year": r[6], "source": r[7]})
