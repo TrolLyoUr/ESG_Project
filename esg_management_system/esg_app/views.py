@@ -195,16 +195,16 @@ class ListIndicatorValue(generics.ListAPIView):
         with connection.cursor() as cursor:
             year = request.query_params.get("year")
             framework = request.query_params.get("framework")
-            if year is None or framework is None:
-                if framework is None:
-                    cursor.execute(
-                        f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
-                elif year is None:
-                    cursor.execute(
-                        f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id join esg_app_frameworkmetric on esg_app_frameworkmetric.metric_id=esg_app_metric.id where company_id={request.query_params.get("company")} and framework_id={framework};')
-                else:
+            if year is not None or framework is not None:
+                if year is not None and framework is not None:
                     cursor.execute(
                         f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id join esg_app_frameworkmetric on esg_app_frameworkmetric.metric_id=esg_app_metric.id where company_id={request.query_params.get("company")} and framework_id={framework} and year={year};')
+                elif year is not None:
+                    cursor.execute(
+                        f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
+                elif framework is not None:
+                    cursor.execute(
+                        f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id join esg_app_frameworkmetric on esg_app_frameworkmetric.metric_id=esg_app_metric.id where company_id={request.query_params.get("company")} and framework_id={framework};')
             else:
                 cursor.execute(
                     f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source, pillar from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
@@ -218,7 +218,7 @@ class ListIndicatorValue(generics.ListAPIView):
             else:
                 same = False
                 for i in data[r[0]]['indicators']:
-                    if i["indicator_id"] == r[1]:
+                    if i["indicator_id"] == r[1] and i["year"] == r[6]:
                         same = True
                 if not same:
                     data[r[0]]['indicators'].append(
