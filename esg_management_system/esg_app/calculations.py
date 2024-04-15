@@ -3,6 +3,64 @@ from django.db.models.functions import Coalesce
 from .models import MetricIndicator, DataValue, FrameworkMetric
 
 
+# 计算某公司在所有三个框架下的所有年份的分数
+def calculate_all_framework_scores_all_years(company):
+    all_framework_scores = {}
+
+    frameworks = FrameworkMetric.objects.values_list("framework", flat=True).distinct()
+
+    for framework in frameworks:
+        framework_scores = calculate_framework_scores_all_years(company, framework)
+        all_framework_scores[framework.name] = framework_scores
+
+    return all_framework_scores
+
+
+# 计算某公司某框架下所有年份的分数
+def calculate_framework_scores_all_years(company, framework):
+    framework_metrics = FrameworkMetric.objects.filter(framework=framework)
+    framework_scores = {}
+
+    for framework_metric in framework_metrics:
+        metric = framework_metric.metric
+        metric_indicators = MetricIndicator.objects.filter(metric=metric)
+
+        for metric_indicator in metric_indicators:
+            indicator = metric_indicator.indicator
+            predefined_weight = metric_indicator.predefined_weight
+
+            data_values = (
+                DataValue.objects.filter(company=company, indicator=indicator)
+                .filter(
+                    Q(
+                        company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
+                    )
+                )
+                .order_by("-year")
+                .values("year", "value")
+            )
+
+            for data_value in data_values:
+                year = data_value["year"]
+                value = data_value["value"]
+                indicator_name = indicator.name
+
+                if year not in framework_scores:
+                    framework_scores[year] = {}
+
+                if indicator_name not in framework_scores[year]:
+                    framework_scores[year][indicator_name] = value * predefined_weight
+                else:
+                    framework_scores[year][indicator_name] += value * predefined_weight
+
+    calculated_framework_scores = {}
+    for year, indicator_values in framework_scores.items():
+        framework_score = calculate_metric_formula(framework.name, indicator_values)
+        calculated_framework_scores[year] = framework_score
+
+    return calculated_framework_scores
+
+
 # 计算某公司某年某Framework下的分数
 def calculate_framework_score_by_year(company, framework, year):
     framework_metrics = FrameworkMetric.objects.filter(framework=framework)
