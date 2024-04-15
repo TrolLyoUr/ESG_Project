@@ -6,7 +6,7 @@ import { SERVER_URL } from "./config";
 const serverUrl = SERVER_URL;
 axios.defaults.withCredentials = true;
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
   const sidebarClasses = `sidebar ${isOpen ? "open" : "hidden"}`;
   const [selectedCompany, setSelectedCompany] = useState("");
   const [filteredCompanies, setFilteredCompanies] = useState([]);
@@ -17,11 +17,10 @@ const Sidebar = ({ isOpen }) => {
   const [selectedYear2, setSelectedYear2] = useState("");
 
   useEffect(() => {
-    // Fetch years when the component mounts
     const fetchYears = async () => {
       try {
         const response = await axios.get(`${serverUrl}/app/years/`);
-        setYears(response.data.map((item) => item.year)); // Assume the API returns an array of objects with a year property
+        setYears(response.data.map((item) => item.year));
       } catch (error) {
         console.error("Failed to fetch years:", error);
       }
@@ -42,11 +41,14 @@ const Sidebar = ({ isOpen }) => {
       try {
         const apiURL = `${serverUrl}/app/fsearch/${value}/`;
         const response = await axios.get(apiURL, { withCredentials: true });
-        const companyName = response.data.map((company) => company.name);
+        const companies = response.data.map((company) => ({
+          name: company.name,
+          id: company.id,
+        }));
         if (!isSecondCompany) {
-          setFilteredCompanies(companyName);
+          setFilteredCompanies(companies);
         } else {
-          // Handle second company filtered list
+          // Handle second company filtered list similarly if required
         }
       } catch (error) {
         console.error("Failed to fetch filtered companies:", error);
@@ -57,6 +59,13 @@ const Sidebar = ({ isOpen }) => {
       } else {
         // Clear second company's filtered companies if needed
       }
+    }
+  };
+
+  const finalizeSelection = () => {
+    const company = filteredCompanies.find((c) => c.name === selectedCompany);
+    if (company) {
+      setCompanyId(company.id);
     }
   };
 
@@ -82,12 +91,13 @@ const Sidebar = ({ isOpen }) => {
               list="company-options"
               id="company"
               value={selectedCompany}
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e)}
+              onBlur={finalizeSelection}
               placeholder="Search a company"
             />
             <datalist id="company-options">
               {filteredCompanies.map((company, index) => (
-                <option key={index} value={company} />
+                <option key={index} value={company.name} />
               ))}
             </datalist>
           </li>
@@ -99,7 +109,10 @@ const Sidebar = ({ isOpen }) => {
               className="select"
               id="year"
               value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
+              onChange={(e) => {
+                setSelectedYear(e.target.value);
+                setYear(e.target.value);
+              }}
             >
               <option value="" disabled hidden>
                 Choose a year

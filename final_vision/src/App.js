@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import Sidebar from './Sidebar';
-import TopBar from './Topbar';
-import FrameworkChoose from './FrameworkChoose'; 
-import MetricsCard from './MetricsCard'; 
-import TotalScore from './TotalScore'; 
-import ChartsContainer from './ChartsContainer';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import React, { useState } from "react";
+import Sidebar from "./Sidebar";
+import TopBar from "./Topbar";
+import FrameworkChoose from "./FrameworkChoose";
+import MetricsCard from "./MetricsCard";
+import TotalScore from "./TotalScore";
+import ChartsContainer from "./ChartsContainer";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  
+
   const [profile, setProfile] = useState({
-    company: 'Default Company',
-    year: 'Default Year',
-    framework: 'React', // 确保这里的属性名称与其他地方一致
+    company: "Default Company",
+    year: "Default Year",
+    framework: "React", // 确保这里的属性名称与其他地方一致
   });
 
   const toggleSidebar = () => {
@@ -23,12 +23,20 @@ const App = () => {
   };
 
   const handleFrameworkChange = (framework) => {
-    setProfile(prevProfile => ({ ...prevProfile, framework }));
+    setProfile((prevProfile) => ({ ...prevProfile, ["framework"]: framework }));
+  };
+
+  const handleCompanyChange = (company) => {
+    setProfile((prevProfile) => ({ ...prevProfile, ["company"]: company }));
+  };
+
+  const handleYearChange = (year) => {
+    setProfile((prevProfile) => ({ ...prevProfile, ["year"]: year }));
   };
 
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
-    setProfile(prevProfile => ({ ...prevProfile, [name]: value }));
+    setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
   };
 
   const saveProfile = () => {
@@ -37,20 +45,20 @@ const App = () => {
   };
 
   const contentStyle = {
-    marginLeft: isSidebarOpen ? '20%' : '0',
-    width: isSidebarOpen ? '80%' : '100%',
-    transition: 'margin-left 0.3s, width 0.3s',
+    marginLeft: isSidebarOpen ? "20%" : "0",
+    width: isSidebarOpen ? "80%" : "100%",
+    transition: "margin-left 0.3s, width 0.3s",
   };
 
   const featureBarsStyle = {
-    marginLeft: isSidebarOpen ? '20%' : '0',
-    transition: 'margin-left 0.3s',
+    marginLeft: isSidebarOpen ? "20%" : "0",
+    transition: "margin-left 0.3s",
   };
 
   return (
     <div className="App">
       <button onClick={toggleSidebar} className="toggle-button">
-        {isSidebarOpen ? '<' : '>'}
+        {isSidebarOpen ? "<" : ">"}
       </button>
       <div className="content-area" style={contentStyle}>
         <TopBar
@@ -67,12 +75,24 @@ const App = () => {
             year={profile.year}
             framework={profile.framework}
           />
-          <FrameworkChoose className="feature-bar-item" setFramework={handleFrameworkChange} />
-          <MetricsCard className="feature-bar-item" currentFramework={profile.framework} />
+          <FrameworkChoose
+            className="feature-bar-item"
+            setFramework={handleFrameworkChange}
+          />
+          <MetricsCard
+            className="feature-bar-item"
+            selectedCompany={profile.company}
+            selectedYear={profile.year}
+            currentFramework={profile.framework}
+          />
           <ChartsContainer className="feature-bar-item" />
         </div>
       </div>
-      <Sidebar isOpen={isSidebarOpen} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        setCompanyId={handleCompanyChange}
+        setYear={handleYearChange}
+      />
     </div>
   );
 };
