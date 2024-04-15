@@ -8,7 +8,7 @@ from django.db import connection
 from rest_framework.views import APIView
 from collections import defaultdict
 
-from .calculations import calculate_metric_score
+from .calculations import calculate_metric_score, calculate_all_framework_scores_all_years
 
 # 引入所有的model
 from esg_app.models import (
@@ -272,3 +272,11 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
         if metric_id is not None:
             queryset = queryset.filter(id=metric_id)
         return queryset
+
+
+class CompanyPerformance(generics.ListAPIView):
+    def get(self, request, *args, **kwargs):
+        com_id = request.query_params.get("company")
+        company = Company.objects.get(id=com_id)
+        result = calculate_all_framework_scores_all_years(company)
+        return Response({"result": result})
