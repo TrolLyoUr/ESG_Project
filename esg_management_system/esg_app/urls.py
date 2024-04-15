@@ -46,6 +46,7 @@ urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': '
                # just support post method, similar as before
                re_path(r"indicatordata", ListIndicatorValue.as_view(), name='listindicatorvalue')
                # http://127.0.0.1:8000/app/indicatordata?company=1
+               # http://127.0.0.1:8000/app/indicatordata?company=1&year=2021
                ]
 urlpatterns += router.urls
 '''
