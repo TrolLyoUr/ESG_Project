@@ -8,7 +8,8 @@ from .views import (
     SaveIndicatorPreference,
     MetricsDataViewSet,
     ListIndicatorValue,
-    ListUserPreference
+    ListUserPreference,
+    GetUserID
 )
 
 router = routers.SimpleRouter()
@@ -33,8 +34,11 @@ urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': '
                # just support post method, example can find below
                re_path(r"saveindicator", SaveIndicatorPreference.as_view(), name='saveindicator'),
                # just support post method, similar as before
-               re_path(r"indicatordata", ListIndicatorValue.as_view(), name='listindicatorvalue')
+               re_path(r"indicatordata", ListIndicatorValue.as_view(), name='listindicatorvalue'),
                # http://127.0.0.1:8000/app/indicatordata?company=1
+               re_path(r"currentuser", GetUserID.as_view(), name='currentuser')
+               # return current user ID
+               # http://127.0.0.1:8000/app/currentuser
                ]
 urlpatterns += router.urls
 '''

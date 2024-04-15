@@ -201,8 +201,13 @@ class ListIndicatorValue(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         with connection.cursor() as cursor:
-            cursor.execute(
-                f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
+            year = request.query_params.get("year")
+            if year is None:
+                cursor.execute(
+                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
+            else:
+                cursor.execute(
+                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
             row = cursor.fetchall()
         row = [
             {"metric_id": r[0], "indicator_id": r[1], "metric_name": r[2], "indicator_name": r[3], "metric_desc": r[4],
@@ -224,3 +229,9 @@ class ListUserPreference(viewsets.ReadOnlyModelViewSet):
         queryset = UserMetricPreference.objects.all()
         serializer = UserMetricPreferenceSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class GetUserID(generics.ListAPIView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        return Response({"id": user.id})
