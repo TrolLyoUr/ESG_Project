@@ -1,6 +1,6 @@
 from django.db.models import Sum, F, FloatField, Q
 from django.db.models.functions import Coalesce
-from .models import MetricIndicator, DataValue, FrameworkMetric
+from .models import MetricIndicator, DataValue, FrameworkMetric, Framework
 
 
 # 计算某公司在所有三个框架下的所有年份的分数
@@ -10,6 +10,7 @@ def calculate_all_framework_scores_all_years(company):
     frameworks = FrameworkMetric.objects.values_list("framework", flat=True).distinct()
 
     for framework in frameworks:
+        framework = Framework.objects.get(id=framework)
         framework_scores = calculate_framework_scores_all_years(company, framework)
         all_framework_scores[framework.name] = framework_scores
 
@@ -56,7 +57,7 @@ def calculate_framework_scores_all_years(company, framework):
 
     calculated_framework_scores = {}
     for year, indicator_values in framework_scores.items():
-        framework_score = calculate_metric_formula(framework., indicator_values)
+        framework_score = calculate_metric_formula(framework.name, indicator_values)
         calculated_framework_scores[year] = framework_score
 
     return calculated_framework_scores
@@ -247,8 +248,8 @@ class ModelFormulas:
         lost_working_days = indicator_values.get("LOSTWORKINGDAYS", 0)
         employee_fatalities = indicator_values.get("EMPLOYEEFATALITIES", 0)
         metric_score = (
-            tir_total + (lost_working_days / 1000) + employee_fatalities
-        ) / 3
+                               tir_total + (lost_working_days / 1000) + employee_fatalities
+                       ) / 3
         return metric_score
 
     def employee_wellbeing_and_engagement(self, indicator_values):
@@ -306,8 +307,8 @@ class ModelFormulas:
             "BOARDMEETINGATTENDANCEAVG", 0
         )
         metric_score = (
-            non_exec_board + indep_board + (board_meeting_attendance_avg / 100)
-        ) / 3
+                               non_exec_board + indep_board + (board_meeting_attendance_avg / 100)
+                       ) / 3
         return metric_score
 
     def transparency_and_accountability(self, indicator_values):
@@ -317,11 +318,11 @@ class ModelFormulas:
         audit_comm_non_exec_members = indicator_values.get("AUDITCOMMNONEXECMEMBERS", 0)
         comp_comm_non_exec_members = indicator_values.get("COMPCOMMNONEXECMEMBERS", 0)
         metric_score = (
-            1
-            - non_audit_audit_fees_ratio
-            + audit_comm_non_exec_members
-            + comp_comm_non_exec_members
-        ) / 3
+                               1
+                               - non_audit_audit_fees_ratio
+                               + audit_comm_non_exec_members
+                               + comp_comm_non_exec_members
+                       ) / 3
         return metric_score
 
     def gri(self, indicator_values):
@@ -345,28 +346,28 @@ class ModelFormulas:
         committee_independence = indicator_values.get("Committee Independence", 0)
         governance_structure_effectiveness = indicator_values.get("Governance Structure Effectiveness", 0)
         transparency_and_accountability = indicator_values.get("Transparency and Accountability", 0)
-    
+
         metric_score = (
-            greenhouse_gas_emissions_intensity * 0.10
-            + water_efficiency * 0.05
-            + renewable_energy_utilization * 0.10
-            + waste_recycling_rate * 0.05
-            + carbon_intensity * 0.10
-            + air_quality_impact * 0.05
-            + gender_pay_equity * 0.05
-            + diversity_in_leadership * 0.05
-            + employee_turnover_rate * 0.03
-            + workforce_training_investment * 0.03
-            + labor_relations_quality * 0.05
-            + health_and_safety_performance * 0.10
-            + employee_well_being_and_engagement * 0.05
-            + workforce_diversity * 0.05
-            + board_composition_and_diversity * 0.05
-            + board_meeting_engagement * 0.03
-            + executive_compensation_alignment * 0.05
-            + committee_independence * 0.05
-            + governance_structure_effectiveness * 0.05
-            + transparency_and_accountability * 0.10
+                greenhouse_gas_emissions_intensity * 0.10
+                + water_efficiency * 0.05
+                + renewable_energy_utilization * 0.10
+                + waste_recycling_rate * 0.05
+                + carbon_intensity * 0.10
+                + air_quality_impact * 0.05
+                + gender_pay_equity * 0.05
+                + diversity_in_leadership * 0.05
+                + employee_turnover_rate * 0.03
+                + workforce_training_investment * 0.03
+                + labor_relations_quality * 0.05
+                + health_and_safety_performance * 0.10
+                + employee_well_being_and_engagement * 0.05
+                + workforce_diversity * 0.05
+                + board_composition_and_diversity * 0.05
+                + board_meeting_engagement * 0.03
+                + executive_compensation_alignment * 0.05
+                + committee_independence * 0.05
+                + governance_structure_effectiveness * 0.05
+                + transparency_and_accountability * 0.10
         )
         return metric_score
 
@@ -391,28 +392,28 @@ class ModelFormulas:
         committee_independence = indicator_values.get("Committee Independence", 0)
         governance_structure_effectiveness = indicator_values.get("Governance Structure Effectiveness", 0)
         transparency_and_accountability = indicator_values.get("Transparency and Accountability", 0)
-        
+
         metric_score = (
-            greenhouse_gas_emissions_intensity * 0.08
-            + water_efficiency * 0.04
-            + renewable_energy_utilization * 0.08
-            + waste_recycling_rate * 0.04
-            + carbon_intensity * 0.08
-            + air_quality_impact * 0.04
-            + gender_pay_equity * 0.04
-            + diversity_in_leadership * 0.04
-            + employee_turnover_rate * 0.03
-            + workforce_training_investment * 0.03
-            + labor_relations_quality * 0.04
-            + health_and_safety_performance * 0.08
-            + employee_well_being_and_engagement * 0.04
-            + workforce_diversity * 0.04
-            + board_composition_and_diversity * 0.04
-            + board_meeting_engagement * 0.03
-            + executive_compensation_alignment * 0.05
-            + committee_independence * 0.05
-            + governance_structure_effectiveness * 0.05
-            + transparency_and_accountability * 0.08
+                greenhouse_gas_emissions_intensity * 0.08
+                + water_efficiency * 0.04
+                + renewable_energy_utilization * 0.08
+                + waste_recycling_rate * 0.04
+                + carbon_intensity * 0.08
+                + air_quality_impact * 0.04
+                + gender_pay_equity * 0.04
+                + diversity_in_leadership * 0.04
+                + employee_turnover_rate * 0.03
+                + workforce_training_investment * 0.03
+                + labor_relations_quality * 0.04
+                + health_and_safety_performance * 0.08
+                + employee_well_being_and_engagement * 0.04
+                + workforce_diversity * 0.04
+                + board_composition_and_diversity * 0.04
+                + board_meeting_engagement * 0.03
+                + executive_compensation_alignment * 0.05
+                + committee_independence * 0.05
+                + governance_structure_effectiveness * 0.05
+                + transparency_and_accountability * 0.08
         )
         return metric_score
 
@@ -423,14 +424,14 @@ class ModelFormulas:
         health_and_safety_performance = indicator_values.get("Health and Safety Performance", 0)
         governance_structure_effectiveness = indicator_values.get("Governance Structure Effectiveness", 0)
         transparency_and_accountability = indicator_values.get("Transparency and Accountability", 0)
-        
+
         metric_score = (
-            greenhouse_gas_emissions_intensity * 0.20
-            + renewable_energy_utilization * 0.20
-            + carbon_intensity * 0.20
-            + health_and_safety_performance * 0.10
-            + governance_structure_effectiveness * 0.15
-            + transparency_and_accountability * 0.15
+                greenhouse_gas_emissions_intensity * 0.20
+                + renewable_energy_utilization * 0.20
+                + carbon_intensity * 0.20
+                + health_and_safety_performance * 0.10
+                + governance_structure_effectiveness * 0.15
+                + transparency_and_accountability * 0.15
         )
         return metric_score
 
