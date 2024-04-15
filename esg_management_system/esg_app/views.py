@@ -219,17 +219,25 @@ class ListIndicatorValue(generics.ListAPIView):
 
 
 class ListUserPreference(viewsets.ReadOnlyModelViewSet):
-    queryset = []
+    queryset = UserIndicatorPreference.objects.none()  # Default queryset doesn't fetch anything
 
-    @action(detail=True, methods=['get'])
-    def listindicators(self, request, pk=None):
-        queryset = UserIndicatorPreference.objects.all()
+    @action(detail=False, methods=['get'])
+    def listindicators(self, request):
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response({'error': 'user_id parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = UserIndicatorPreference.objects.filter(user__id=user_id)
         serializer = UserIndicatorPreferenceItemSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'])
-    def listmetrics(self, request, pk=None):
-        queryset = UserMetricPreference.objects.all()
+    @action(detail=False, methods=['get'])
+    def listmetrics(self, request):
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response({'error': 'user_id parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = UserMetricPreference.objects.filter(user__id=user_id)
         serializer = UserMetricPreferenceItemSerializer(queryset, many=True)
         return Response(serializer.data)
 
