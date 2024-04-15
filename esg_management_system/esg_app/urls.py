@@ -6,7 +6,7 @@ from .views import (
     FrameworkViewSet,
     IndicatorViewSet,
     MetricViewSet,
-    SaveMetricPreference,
+    SaveMetricPreferences,
     SaveIndicatorPreferences,
     MetricsDataViewSet,
     ListIndicatorValue,
@@ -40,7 +40,7 @@ router.register(r"listpreference", ListUserPreference, basename="listpreference"
 
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})),
                # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
-               re_path(r"savemetrics", SaveMetricPreference.as_view(), name='savemetrics'),
+               re_path(r"savemetrics", SaveMetricPreferences.as_view(), name='savemetrics'),
                # just support post method, example can find below
                re_path(r"saveindicator", SaveIndicatorPreferences.as_view(), name='saveindicator'),
                # just support post method, similar as before

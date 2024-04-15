@@ -69,7 +69,8 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
         queryset = self.get_queryset(pk=pk)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+
+
 class YearViewSet(viewsets.ViewSet):
     def list(self, request):
         # Querying distinct years from DataValue model
@@ -94,7 +95,6 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-
     @action(detail=True, methods=["get"], url_path="metrics")
     def list_framework_metrics(self, request, pk=None):
         framework = self.get_object()
@@ -110,7 +110,8 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         )
         return Response(serializer.data)
 
-class SaveMetricPreference(APIView):
+
+class SaveMetricPreferences(APIView):
     def post(self, request, *args, **kwargs):
         user_id = request.user.id
         data = [
@@ -228,6 +229,7 @@ class IndicatorViewSet(viewsets.ReadOnlyModelViewSet):
         if indicator_id is not None:
             queryset = queryset.filter(id=indicator_id)
         return queryset
+
 
 class MetricViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Metric.objects.all()
