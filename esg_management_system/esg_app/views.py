@@ -8,7 +8,7 @@ from django.db import connection
 from rest_framework.views import APIView
 from collections import defaultdict
 
-from .calculations import calculate_metric_score, calculate_all_framework_scores_all_years
+from .calculations import calculate_metric_score_by_year, calculate_all_framework_scores_all_years
 
 # 引入所有的model
 from esg_app.models import (
@@ -156,6 +156,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         company_ids = request.query_params.getlist("companies")
         framework_id = request.query_params.get("framework")
         metric_ids = request.query_params.getlist("metrics")
+        years = DataValue.objects.order_by('year').values('year').distinct()
 
         # 查询指定的公司、框架和指标
         companies = Company.objects.filter(id__in=company_ids)
@@ -167,16 +168,18 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         for company in companies:
             company_data = CompanySerializer(company).data
             metrics_scores = []
-            for metric in metrics:
-                score = calculate_metric_score(company, framework, metric)
-                metric_data = MetricSerializer(metric).data
-                metrics_scores.append(
-                    {
-                        "metric_id": metric_data["id"],
-                        "metric_name": metric_data["name"],
-                        "score": score,
-                    }
-                )
+            for year in years:
+                for metric in metrics:
+                    score = calculate_metric_score_by_year(company, framework, metric, year['year'])
+                    metric_data = MetricSerializer(metric).data
+                    metrics_scores.append(
+                        {
+                            "year": year['year'],
+                            "metric_id": metric_data["id"],
+                            "metric_name": metric_data["name"],
+                            "score": score,
+                        }
+                    )
             result.append(
                 {
                     "company_id": company_data["id"],
