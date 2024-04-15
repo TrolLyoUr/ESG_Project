@@ -1,14 +1,50 @@
 from django.db.models import Sum, F, FloatField, Q
 from django.db.models.functions import Coalesce
-from .models import MetricIndicator, DataValue
+from .models import MetricIndicator, DataValue, FrameworkMetric
 
 
+# 计算某公司某年某Framework下的分数
+def calculate_framework_score_by_year(company, framework, year):
+    framework_metrics = FrameworkMetric.objects.filter(framework=framework)
+    indicator_values = {}
+
+    for framework_metric in framework_metrics:
+        metric = framework_metric.metric
+
+        metric_indicators = MetricIndicator.objects.filter(metric=metric)
+
+        for metric_indicator in metric_indicators:
+            indicator = metric_indicator.indicator
+            predefined_weight = metric_indicator.predefined_weight
+
+            data_value = (
+                DataValue.objects.filter(company=company, indicator=indicator)
+                .filter(
+                    Q(
+                        company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
+                    )
+                )
+                .filter(year=year)
+                .order_by("-year")
+                .first()
+            )
+
+            if data_value:
+                value = data_value.value
+                indicator_values[indicator.name] = value * predefined_weight
+
+    framework_score = calculate_metric_formula(framework.name, indicator_values)
+    return framework_score
+
+
+# 返回某公司在某框架下最新一年的指定metric值，已过时。但为了已实现API保留。
 def calculate_metric_score(company, framework, metric):
     metric_indicators = MetricIndicator.objects.filter(metric=metric)
     indicator_values = {}
 
     for metric_indicator in metric_indicators:
         indicator = metric_indicator.indicator
+        # 这里的weight需要改为用户自定义的weight
         predefined_weight = metric_indicator.predefined_weight
 
         data_value = (
@@ -18,6 +54,37 @@ def calculate_metric_score(company, framework, metric):
                     company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
                 )
             )
+            .order_by("-year")
+            # 想要检索特定年份只需修改这里
+            .first()
+        )
+
+        if data_value:
+            value = data_value.value
+            indicator_values[indicator.name] = value * predefined_weight
+
+    metric_score = calculate_metric_formula(metric.name, indicator_values)
+    return metric_score
+
+
+# 替代calculate_metric_score，添加了一个年份参数
+def calculate_metric_score_by_year(company, framework, metric, year):
+    metric_indicators = MetricIndicator.objects.filter(metric=metric)
+    indicator_values = {}
+
+    for metric_indicator in metric_indicators:
+        indicator = metric_indicator.indicator
+        # 这里的weight需要改为用户自定义的weight
+        predefined_weight = metric_indicator.predefined_weight
+
+        data_value = (
+            DataValue.objects.filter(company=company, indicator=indicator)
+            .filter(
+                Q(
+                    company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
+                )
+            )
+            .filter(year=year)
             .order_by("-year")
             .first()
         )
@@ -30,15 +97,16 @@ def calculate_metric_score(company, framework, metric):
     return metric_score
 
 
-class MetricFormulas:
+class ModelFormulas:
     def greenhouse_gas_emissions_intensity(self, indicator_values):
         co2_direct_scope1 = indicator_values.get("CO2DIRECTSCOPE1", 0)
         co2_indirect_scope2 = indicator_values.get("CO2INDIRECTSCOPE2", 0)
         energy_use_total = indicator_values.get("ENERGYUSETOTAL", 0)
+        print(co2_direct_scope1, co2_indirect_scope2, energy_use_total)
         if energy_use_total > 0:
             metric_score = (co2_direct_scope1 + co2_indirect_scope2) / energy_use_total
         else:
-            metric_score = -1
+            metric_score = 0
         return metric_score
 
     def water_efficiency(self, indicator_values):
@@ -196,39 +264,104 @@ class MetricFormulas:
         ) / 3
         return metric_score
 
+    def gri(self, indicator_values):
+        metric_score = (
+            indicator_values["Greenhouse Gas (GHG) Emissions Intensity"] * 0.10
+            + indicator_values["Water Efficiency"] * 0.05
+            + indicator_values["Renewable Energy Utilization"] * 0.10
+            + indicator_values["Waste Recycling Rate"] * 0.05
+            + indicator_values["Carbon Intensity"] * 0.10
+            + indicator_values["Air Quality Impact"] * 0.05
+            + indicator_values["Gender Pay Equity"] * 0.05
+            + indicator_values["Diversity in Leadership"] * 0.05
+            + indicator_values["Employee Turnover Rate"] * 0.03
+            + indicator_values["Workforce Training Investment"] * 0.03
+            + indicator_values["Labor Relations Quality"] * 0.05
+            + indicator_values["Health and Safety Performance"] * 0.10
+            + indicator_values["Employee Well-being and Engagement"] * 0.05
+            + indicator_values["Workforce Diversity"] * 0.05
+            + indicator_values["Board Composition and Diversity"] * 0.05
+            + indicator_values["Board Meeting Engagement"] * 0.03
+            + indicator_values["Executive Compensation Alignment"] * 0.05
+            + indicator_values["Committee Independence"] * 0.05
+            + indicator_values["Governance Structure Effectiveness"] * 0.05
+            + indicator_values["Transparency and Accountability"] * 0.10
+        )
+        return metric_score
+
+    def sasb(self, indicator_scores):
+        metric_score = (
+            indicator_scores["Greenhouse Gas (GHG) Emissions Intensity"] * 0.08
+            + indicator_scores["Water Efficiency"] * 0.04
+            + indicator_scores["Renewable Energy Utilization"] * 0.08
+            + indicator_scores["Waste Recycling Rate"] * 0.04
+            + indicator_scores["Carbon Intensity"] * 0.08
+            + indicator_scores["Air Quality Impact"] * 0.04
+            + indicator_scores["Gender Pay Equity"] * 0.04
+            + indicator_scores["Diversity in Leadership"] * 0.04
+            + indicator_scores["Employee Turnover Rate"] * 0.03
+            + indicator_scores["Workforce Training Investment"] * 0.03
+            + indicator_scores["Labor Relations Quality"] * 0.04
+            + indicator_scores["Health and Safety Performance"] * 0.08
+            + indicator_scores["Employee Well-being and Engagement"] * 0.04
+            + indicator_scores["Workforce Diversity"] * 0.04
+            + indicator_scores["Board Composition and Diversity"] * 0.04
+            + indicator_scores["Board Meeting Engagement"] * 0.03
+            + indicator_scores["Executive Compensation Alignment"] * 0.05
+            + indicator_scores["Committee Independence"] * 0.05
+            + indicator_scores["Governance Structure Effectiveness"] * 0.05
+            + indicator_scores["Transparency and Accountability"] * 0.08
+        )
+        return metric_score
+
+    def tcfd(self, indicator_scores):
+        metric_score = (
+            indicator_scores["Greenhouse Gas (GHG) Emissions Intensity"] * 0.20
+            + indicator_scores["Renewable Energy Utilization"] * 0.20
+            + indicator_scores["Carbon Intensity"] * 0.20
+            + indicator_scores["Health and Safety Performance"] * 0.10
+            + indicator_scores["Governance Structure Effectiveness"] * 0.15
+            + indicator_scores["Transparency and Accountability"] * 0.15
+        )
+        return metric_score
+
     # 继续添加其他指标的计算公式...
 
     def default(self, indicator_values):
         return 0
 
 
-metric_formulas = {
-    "Greenhouse Gas (GHG) Emissions Intensity": MetricFormulas.greenhouse_gas_emissions_intensity,
-    "Water Efficiency": MetricFormulas.water_efficiency,
-    "Renewable Energy Utilization": MetricFormulas.renewable_energy_utilization,
-    "Waste Recycling Rate": MetricFormulas.waste_recycling_rate,
-    "Carbon Intensity": MetricFormulas.carbon_intensity,
-    "Air Quality Impact": MetricFormulas.air_quality_impact,
-    "Gender Pay Equity": MetricFormulas.gender_pay_equity,
-    "Diversity in Leadership": MetricFormulas.diversity_in_leadership,
-    "Employee Turnover Rate": MetricFormulas.employee_turnover_rate,
-    "Workforce Training Investment": MetricFormulas.workforce_training_investment,
-    "Labor Relations Quality": MetricFormulas.labor_relations_quality,
-    "Health and Safety Performance": MetricFormulas.health_and_safety_performance,
-    "Employee Well-being and Engagement": MetricFormulas.employee_wellbeing_and_engagement,
-    "Workforce Diversity": MetricFormulas.workforce_diversity,
-    "Board Composition and Diversity": MetricFormulas.board_composition_and_diversity,
-    "Board Meeting Engagement": MetricFormulas.board_meeting_engagement,
-    "Executive Compensation Alignment": MetricFormulas.executive_compensation_alignment,
-    "Committee Independence": MetricFormulas.committee_independence,
-    "Governance Structure Effectiveness": MetricFormulas.governance_structure_effectiveness,
-    "Transparency and Accountability": MetricFormulas.transparency_and_accountability,
+model_formulas = {
+    "Greenhouse Gas (GHG) Emissions Intensity": ModelFormulas.greenhouse_gas_emissions_intensity,
+    "Water Efficiency": ModelFormulas.water_efficiency,
+    "Renewable Energy Utilization": ModelFormulas.renewable_energy_utilization,
+    "Waste Recycling Rate": ModelFormulas.waste_recycling_rate,
+    "Carbon Intensity": ModelFormulas.carbon_intensity,
+    "Air Quality Impact": ModelFormulas.air_quality_impact,
+    "Gender Pay Equity": ModelFormulas.gender_pay_equity,
+    "Diversity in Leadership": ModelFormulas.diversity_in_leadership,
+    "Employee Turnover Rate": ModelFormulas.employee_turnover_rate,
+    "Workforce Training Investment": ModelFormulas.workforce_training_investment,
+    "Labor Relations Quality": ModelFormulas.labor_relations_quality,
+    "Health and Safety Performance": ModelFormulas.health_and_safety_performance,
+    "Employee Well-being and Engagement": ModelFormulas.employee_wellbeing_and_engagement,
+    "Workforce Diversity": ModelFormulas.workforce_diversity,
+    "Board Composition and Diversity": ModelFormulas.board_composition_and_diversity,
+    "Board Meeting Engagement": ModelFormulas.board_meeting_engagement,
+    "Executive Compensation Alignment": ModelFormulas.executive_compensation_alignment,
+    "Committee Independence": ModelFormulas.committee_independence,
+    "Governance Structure Effectiveness": ModelFormulas.governance_structure_effectiveness,
+    "Transparency and Accountability": ModelFormulas.transparency_and_accountability,
+    "GRI": ModelFormulas.gri,
+    "SASB": ModelFormulas.sasb,
+    "TCFD": ModelFormulas.tcfd,
     # 继续添加其他指标名称和对应的函数映射...
 }
 
 
-def calculate_metric_formula(metric_name, indicator_values):
-    formula_func = metric_formulas.get(metric_name, MetricFormulas.default)
-    metric_formulas_instance = MetricFormulas()
-    metric_score = formula_func(metric_formulas_instance, indicator_values)
-    return metric_score
+def calculate_metric_formula(model_name, indicator_values):
+    formula_func = model_formulas.get(model_name, ModelFormulas.default)
+    model_formulas_instance = ModelFormulas()
+    model_score = formula_func(model_formulas_instance, indicator_values)
+
+    return model_score

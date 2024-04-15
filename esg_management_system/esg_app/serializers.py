@@ -104,19 +104,15 @@ class CompanySerializer(serializers.ModelSerializer):
 class FrameworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Framework
-        fields = ['id', 'name']
-
-
-class FrameworkDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Framework
         fields = ['id', 'name', 'description']
-
 
 class DataValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataValue
         fields = ['value_id', 'company', 'indicator', 'year', 'value']
+
+class YearSerializer(serializers.Serializer):
+    year = serializers.IntegerField()
 
 
 # Serializer for List Framework Metrics API
@@ -140,7 +136,7 @@ class MetricSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Metric
-        fields = ['id', 'name', 'description', 'pillar', 'metric_indicators']
+        fields = ['id', 'name', 'pillar', 'metric_indicators']
 
     def get_metric_indicators(self, metric):
         # Get all associated MetricIndicator objects for the metric
@@ -160,7 +156,7 @@ class FrameworkMetricSerializer(serializers.ModelSerializer):
 class IndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
-        fields = ['id', 'name', 'description', 'unit', 'source']
+        fields = ['id', 'name']
 
 
 class MetricIndicatorSerializer(serializers.ModelSerializer):
@@ -172,51 +168,47 @@ class MetricIndicatorSerializer(serializers.ModelSerializer):
 
 
 class UserMetricPreferenceSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        preferences = []
+        for data in validated_data:
+            obj, created = UserMetricPreference.objects.update_or_create(
+                user=data['user'],
+                metric=data['framework'],
+                indicator=data['metric'],
+                defaults={'custom_weight': data['custom_weight']}
+            )
+            preferences.append(obj)
+        return preferences
+
+class UserMetricPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMetricPreference
         fields = ['user', 'framework', 'metric', 'custom_weight']
+        list_serializer_class = UserMetricPreferenceSerializer
 
+
+class UserIndicatorPreferenceSerializer(serializers.ListSerializer):
     def create(self, validated_data):
-        data = validated_data.initial_data
-        user = User.objects.get(id=data['user'])
-        framework = Framework.objects.get(id=data['framework'])
-        metric = Metric.objects.get(id=data['metric'])
-        try:
-            oldData = UserMetricPreference.objects.filter(user=user, framework=framework, metric=metric).all()
-            oldData.delete()
-            newdata = UserMetricPreference(user=user, framework=framework, metric=metric,
-                                           custom_weight=data['custom_weight'])
-        except ObjectDoesNotExist:
-            newdata = UserMetricPreference(user=user, framework=framework, metric=metric,
-                                           custom_weight=data['custom_weight'])
-        newdata.save()
-        return newdata
+        preferences = []
+        for data in validated_data:
+            obj, created = UserIndicatorPreference.objects.update_or_create(
+                user=data['user'],
+                metric=data['metric'],
+                indicator=data['indicator'],
+                defaults={'custom_weight': data['custom_weight']}
+            )
+            preferences.append(obj)
+        return preferences
 
-
-class UserIndicatorPreferenceSerializer(serializers.ModelSerializer):
+class UserIndicatorPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
         fields = ['user', 'metric', 'indicator', 'custom_weight']
-
-    def create(self, validated_data):
-        data = validated_data.initial_data
-        user = User.objects.get(id=data['user'])
-        metric = Metric.objects.get(id=data['metric'])
-        indicator = Indicator.objects.get(id=data['indicator'])
-        try:
-            oldData = UserIndicatorPreference.objects.filter(user=user, indicator=indicator, metric=metric).all()
-            oldData.delete()
-            newdata = UserIndicatorPreference(user=user, indicator=indicator, metric=metric,
-                                              custom_weight=data['custom_weight'])
-        except ObjectDoesNotExist:
-            newdata = UserIndicatorPreference(user=user, indicator=indicator, metric=metric,
-                                              custom_weight=data['custom_weight'])
-        newdata.save()
-        return newdata
+        list_serializer_class = UserIndicatorPreferenceSerializer
 
 
 class MetricsScoresSerializer(serializers.Serializer):
-    metric_id: IntegerField(read_only=True)
+    metric_id: IntegerField(read_only=True) # type: ignore
     metric_name = CharField(read_only=True)
     score = FloatField(read_only=True)
 
@@ -225,3 +217,14 @@ class MetricsDataSerializer(serializers.Serializer):
     company_id = IntegerField(read_only=True)
     company_name = CharField(read_only=True)
     metrics_scores = MetricsScoresSerializer(read_only=True)
+
+
+class IndicatorInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Indicator
+        fields = ('description', 'unit', 'source')
+
+class MetricInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metric
+        fields = ('description',)

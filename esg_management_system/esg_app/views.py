@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 from django.db import connection
+from rest_framework.views import APIView
 
 from .calculations import calculate_metric_score
 
@@ -23,8 +24,11 @@ from esg_app.models import (
 )
 from .serializers import (
     FastCompanies,
-    FrameworkDetailSerializer,
     FrameworkListSerializer,
+    IndicatorInfoSerializer,
+    MetricInfoSerializer,
+    UserIndicatorPreferenceItemSerializer,
+    UserMetricPreferenceItemSerializer,
     UserSerializer,
     CompanySerializer,
     FrameworkSerializer,
@@ -37,7 +41,8 @@ from .serializers import (
     UserMetricPreferenceSerializer,
     UserIndicatorPreferenceSerializer,
     FrameworkMetrics,
-    MetricsDataSerializer
+    MetricsDataSerializer,
+    YearSerializer
 )
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -64,6 +69,13 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
         queryset = self.get_queryset(pk=pk)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+class YearViewSet(viewsets.ViewSet):
+    def list(self, request):
+        # Querying distinct years from DataValue model
+        distinct_years = DataValue.objects.order_by('year').values('year').distinct()
+        serializer = YearSerializer(distinct_years, many=True)
+        return Response(serializer.data)
 
 
 class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
@@ -72,8 +84,6 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return FrameworkSerializer
-        elif self.action == "retrieve":
-            return FrameworkDetailSerializer
         elif self.action == "list_framework_metrics":
             # Use the FrameworkMetricSerializer when listing framework metrics
             return FrameworkMetricSerializer
@@ -82,17 +92,8 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response({"frameworks": serializer.data})
+        return Response(serializer.data)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        response_data = {
-            "id": serializer.data.get("id"),
-            "name": serializer.data.get("name"),
-            "description": serializer.data.get("description"),
-        }
-        return Response(response_data)
 
     @action(detail=True, methods=["get"], url_path="metrics")
     def list_framework_metrics(self, request, pk=None):
@@ -109,42 +110,29 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         )
         return Response(serializer.data)
 
-
-class MetricViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Metric.objects.all()
-    serializer_class = MetricSerializer
-
-    @action(detail=True, methods=["get"], url_path="indicators")
-    def list_metric_indicators(self, request, pk=None):
-        metric = self.get_object()
-        queryset = metric.metric_indicators.all()
-
-        serializer = MetricIndicatorSerializer(
-            queryset, many=True, context={"request": request}
-        )
-        return Response(serializer.data)
-
-
-class SaveMetricPreference(generics.CreateAPIView):
-    serializer_class = UserMetricPreferenceSerializer
-
+class SaveMetricPreference(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = UserMetricPreferenceSerializer(data=request.data)
+        user_id = request.user.id
+        data = [
+            {**item, "user": user_id} for item in request.data
+        ]
+        serializer = UserMetricPreferenceSerializer(data=data, many=True)
         if serializer.is_valid():
-            serializer.create(serializer)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SaveIndicatorPreference(generics.CreateAPIView):
-    serializer_class = UserIndicatorPreferenceSerializer
-
+class SaveIndicatorPreferences(APIView):
     def post(self, request, *args, **kwargs):
-        data = request.data
-        serializer = UserIndicatorPreferenceSerializer(data=data)
+        user_id = request.user.id
+        data = [
+            {**item, "user": user_id} for item in request.data
+        ]
+        serializer = UserIndicatorPreferenceItemSerializer(data=data, many=True)
         if serializer.is_valid():
-            serializer.create(serializer)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -201,13 +189,8 @@ class ListIndicatorValue(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         with connection.cursor() as cursor:
-            year = request.query_params.get("year")
-            if year is None:
-                cursor.execute(
-                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
-            else:
-                cursor.execute(
-                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
+            cursor.execute(
+                f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
             row = cursor.fetchall()
         row = [
             {"metric_id": r[0], "indicator_id": r[1], "metric_name": r[2], "indicator_name": r[3], "metric_desc": r[4],
@@ -221,17 +204,42 @@ class ListUserPreference(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['get'])
     def listindicators(self, request, pk=None):
         queryset = UserIndicatorPreference.objects.all()
-        serializer = UserIndicatorPreferenceSerializer(queryset, many=True)
+        serializer = UserIndicatorPreferenceItemSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def listmetrics(self, request, pk=None):
         queryset = UserMetricPreference.objects.all()
-        serializer = UserMetricPreferenceSerializer(queryset, many=True)
+        serializer = UserMetricPreferenceItemSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
-class GetUserID(generics.ListAPIView):
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        return Response({"id": user.id})
+class IndicatorViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Indicator.objects.all()
+    serializer_class = IndicatorInfoSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned indicators to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Indicator.objects.all()
+        indicator_id = self.request.query_params.get('id', None)
+        if indicator_id is not None:
+            queryset = queryset.filter(id=indicator_id)
+        return queryset
+
+class MetricViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Metric.objects.all()
+    serializer_class = MetricInfoSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned metrics to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Metric.objects.all()
+        metric_id = self.request.query_params.get('id', None)
+        if metric_id is not None:
+            queryset = queryset.filter(id=metric_id)
+        return queryset
