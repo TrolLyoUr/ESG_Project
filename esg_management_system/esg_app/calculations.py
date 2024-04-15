@@ -27,6 +27,7 @@ def calculate_framework_scores_all_years(company, framework):
 
         for metric_indicator in metric_indicators:
             indicator = metric_indicator.indicator
+            # 检查weight获取方式
             predefined_weight = metric_indicator.predefined_weight
 
             data_values = (
@@ -55,7 +56,7 @@ def calculate_framework_scores_all_years(company, framework):
 
     calculated_framework_scores = {}
     for year, indicator_values in framework_scores.items():
-        framework_score = calculate_metric_formula(framework.name, indicator_values)
+        framework_score = calculate_metric_formula(framework., indicator_values)
         calculated_framework_scores[year] = framework_score
 
     return calculated_framework_scores
@@ -73,6 +74,7 @@ def calculate_framework_score_by_year(company, framework, year):
 
         for metric_indicator in metric_indicators:
             indicator = metric_indicator.indicator
+            # 检查weight获取方式
             predefined_weight = metric_indicator.predefined_weight
 
             data_value = (
@@ -323,67 +325,116 @@ class ModelFormulas:
         return metric_score
 
     def gri(self, indicator_values):
+        greenhouse_gas_emissions_intensity = indicator_values.get("Greenhouse Gas (GHG) Emissions Intensity", 0)
+        water_efficiency = indicator_values.get("Water Efficiency", 0)
+        renewable_energy_utilization = indicator_values.get("Renewable Energy Utilization", 0)
+        waste_recycling_rate = indicator_values.get("Waste Recycling Rate", 0)
+        carbon_intensity = indicator_values.get("Carbon Intensity", 0)
+        air_quality_impact = indicator_values.get("Air Quality Impact", 0)
+        gender_pay_equity = indicator_values.get("Gender Pay Equity", 0)
+        diversity_in_leadership = indicator_values.get("Diversity in Leadership", 0)
+        employee_turnover_rate = indicator_values.get("Employee Turnover Rate", 0)
+        workforce_training_investment = indicator_values.get("Workforce Training Investment", 0)
+        labor_relations_quality = indicator_values.get("Labor Relations Quality", 0)
+        health_and_safety_performance = indicator_values.get("Health and Safety Performance", 0)
+        employee_well_being_and_engagement = indicator_values.get("Employee Well-being and Engagement", 0)
+        workforce_diversity = indicator_values.get("Workforce Diversity", 0)
+        board_composition_and_diversity = indicator_values.get("Board Composition and Diversity", 0)
+        board_meeting_engagement = indicator_values.get("Board Meeting Engagement", 0)
+        executive_compensation_alignment = indicator_values.get("Executive Compensation Alignment", 0)
+        committee_independence = indicator_values.get("Committee Independence", 0)
+        governance_structure_effectiveness = indicator_values.get("Governance Structure Effectiveness", 0)
+        transparency_and_accountability = indicator_values.get("Transparency and Accountability", 0)
+    
         metric_score = (
-            indicator_values["Greenhouse Gas (GHG) Emissions Intensity"] * 0.10
-            + indicator_values["Water Efficiency"] * 0.05
-            + indicator_values["Renewable Energy Utilization"] * 0.10
-            + indicator_values["Waste Recycling Rate"] * 0.05
-            + indicator_values["Carbon Intensity"] * 0.10
-            + indicator_values["Air Quality Impact"] * 0.05
-            + indicator_values["Gender Pay Equity"] * 0.05
-            + indicator_values["Diversity in Leadership"] * 0.05
-            + indicator_values["Employee Turnover Rate"] * 0.03
-            + indicator_values["Workforce Training Investment"] * 0.03
-            + indicator_values["Labor Relations Quality"] * 0.05
-            + indicator_values["Health and Safety Performance"] * 0.10
-            + indicator_values["Employee Well-being and Engagement"] * 0.05
-            + indicator_values["Workforce Diversity"] * 0.05
-            + indicator_values["Board Composition and Diversity"] * 0.05
-            + indicator_values["Board Meeting Engagement"] * 0.03
-            + indicator_values["Executive Compensation Alignment"] * 0.05
-            + indicator_values["Committee Independence"] * 0.05
-            + indicator_values["Governance Structure Effectiveness"] * 0.05
-            + indicator_values["Transparency and Accountability"] * 0.10
+            greenhouse_gas_emissions_intensity * 0.10
+            + water_efficiency * 0.05
+            + renewable_energy_utilization * 0.10
+            + waste_recycling_rate * 0.05
+            + carbon_intensity * 0.10
+            + air_quality_impact * 0.05
+            + gender_pay_equity * 0.05
+            + diversity_in_leadership * 0.05
+            + employee_turnover_rate * 0.03
+            + workforce_training_investment * 0.03
+            + labor_relations_quality * 0.05
+            + health_and_safety_performance * 0.10
+            + employee_well_being_and_engagement * 0.05
+            + workforce_diversity * 0.05
+            + board_composition_and_diversity * 0.05
+            + board_meeting_engagement * 0.03
+            + executive_compensation_alignment * 0.05
+            + committee_independence * 0.05
+            + governance_structure_effectiveness * 0.05
+            + transparency_and_accountability * 0.10
         )
         return metric_score
 
-    def sasb(self, indicator_scores):
+    def sasb(self, indicator_values):
+        greenhouse_gas_emissions_intensity = indicator_values.get("Greenhouse Gas (GHG) Emissions Intensity", 0)
+        water_efficiency = indicator_values.get("Water Efficiency", 0)
+        renewable_energy_utilization = indicator_values.get("Renewable Energy Utilization", 0)
+        waste_recycling_rate = indicator_values.get("Waste Recycling Rate", 0)
+        carbon_intensity = indicator_values.get("Carbon Intensity", 0)
+        air_quality_impact = indicator_values.get("Air Quality Impact", 0)
+        gender_pay_equity = indicator_values.get("Gender Pay Equity", 0)
+        diversity_in_leadership = indicator_values.get("Diversity in Leadership", 0)
+        employee_turnover_rate = indicator_values.get("Employee Turnover Rate", 0)
+        workforce_training_investment = indicator_values.get("Workforce Training Investment", 0)
+        labor_relations_quality = indicator_values.get("Labor Relations Quality", 0)
+        health_and_safety_performance = indicator_values.get("Health and Safety Performance", 0)
+        employee_well_being_and_engagement = indicator_values.get("Employee Well-being and Engagement", 0)
+        workforce_diversity = indicator_values.get("Workforce Diversity", 0)
+        board_composition_and_diversity = indicator_values.get("Board Composition and Diversity", 0)
+        board_meeting_engagement = indicator_values.get("Board Meeting Engagement", 0)
+        executive_compensation_alignment = indicator_values.get("Executive Compensation Alignment", 0)
+        committee_independence = indicator_values.get("Committee Independence", 0)
+        governance_structure_effectiveness = indicator_values.get("Governance Structure Effectiveness", 0)
+        transparency_and_accountability = indicator_values.get("Transparency and Accountability", 0)
+        
         metric_score = (
-            indicator_scores["Greenhouse Gas (GHG) Emissions Intensity"] * 0.08
-            + indicator_scores["Water Efficiency"] * 0.04
-            + indicator_scores["Renewable Energy Utilization"] * 0.08
-            + indicator_scores["Waste Recycling Rate"] * 0.04
-            + indicator_scores["Carbon Intensity"] * 0.08
-            + indicator_scores["Air Quality Impact"] * 0.04
-            + indicator_scores["Gender Pay Equity"] * 0.04
-            + indicator_scores["Diversity in Leadership"] * 0.04
-            + indicator_scores["Employee Turnover Rate"] * 0.03
-            + indicator_scores["Workforce Training Investment"] * 0.03
-            + indicator_scores["Labor Relations Quality"] * 0.04
-            + indicator_scores["Health and Safety Performance"] * 0.08
-            + indicator_scores["Employee Well-being and Engagement"] * 0.04
-            + indicator_scores["Workforce Diversity"] * 0.04
-            + indicator_scores["Board Composition and Diversity"] * 0.04
-            + indicator_scores["Board Meeting Engagement"] * 0.03
-            + indicator_scores["Executive Compensation Alignment"] * 0.05
-            + indicator_scores["Committee Independence"] * 0.05
-            + indicator_scores["Governance Structure Effectiveness"] * 0.05
-            + indicator_scores["Transparency and Accountability"] * 0.08
+            greenhouse_gas_emissions_intensity * 0.08
+            + water_efficiency * 0.04
+            + renewable_energy_utilization * 0.08
+            + waste_recycling_rate * 0.04
+            + carbon_intensity * 0.08
+            + air_quality_impact * 0.04
+            + gender_pay_equity * 0.04
+            + diversity_in_leadership * 0.04
+            + employee_turnover_rate * 0.03
+            + workforce_training_investment * 0.03
+            + labor_relations_quality * 0.04
+            + health_and_safety_performance * 0.08
+            + employee_well_being_and_engagement * 0.04
+            + workforce_diversity * 0.04
+            + board_composition_and_diversity * 0.04
+            + board_meeting_engagement * 0.03
+            + executive_compensation_alignment * 0.05
+            + committee_independence * 0.05
+            + governance_structure_effectiveness * 0.05
+            + transparency_and_accountability * 0.08
         )
         return metric_score
 
-    def tcfd(self, indicator_scores):
+    def tcfd(self, indicator_values):
+        greenhouse_gas_emissions_intensity = indicator_values.get("Greenhouse Gas (GHG) Emissions Intensity", 0)
+        renewable_energy_utilization = indicator_values.get("Renewable Energy Utilization", 0)
+        carbon_intensity = indicator_values.get("Carbon Intensity", 0)
+        health_and_safety_performance = indicator_values.get("Health and Safety Performance", 0)
+        governance_structure_effectiveness = indicator_values.get("Governance Structure Effectiveness", 0)
+        transparency_and_accountability = indicator_values.get("Transparency and Accountability", 0)
+        
         metric_score = (
-            indicator_scores["Greenhouse Gas (GHG) Emissions Intensity"] * 0.20
-            + indicator_scores["Renewable Energy Utilization"] * 0.20
-            + indicator_scores["Carbon Intensity"] * 0.20
-            + indicator_scores["Health and Safety Performance"] * 0.10
-            + indicator_scores["Governance Structure Effectiveness"] * 0.15
-            + indicator_scores["Transparency and Accountability"] * 0.15
+            greenhouse_gas_emissions_intensity * 0.20
+            + renewable_energy_utilization * 0.20
+            + carbon_intensity * 0.20
+            + health_and_safety_performance * 0.10
+            + governance_structure_effectiveness * 0.15
+            + transparency_and_accountability * 0.15
         )
         return metric_score
 
-    # 继续添加其他指标的计算公式...
+        # 继续添加其他指标的计算公式...
 
     def default(self, indicator_values):
         return 0
