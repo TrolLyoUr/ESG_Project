@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.db import connection
 from rest_framework.views import APIView
+from collections import defaultdict
 
 from .calculations import calculate_metric_score
 
@@ -189,19 +190,32 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
 class ListIndicatorValue(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
+        data = defaultdict(dict)
         with connection.cursor() as cursor:
             year = request.query_params.get("year")
             if year is None:
                 cursor.execute(
-                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
+                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")};')
             else:
                 cursor.execute(
-                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, esg_app_metric.description, esg_app_indicator.description, value, unit, year from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
+                    f'select esg_app_metricindicator.metric_id, esg_app_metricindicator.indicator_id, esg_app_metric.name, esg_app_indicator.name, value, unit, year, source from esg_app_datavalue join esg_app_indicator on esg_app_datavalue.indicator_id=esg_app_indicator.id join esg_app_metricindicator on esg_app_indicator.id=esg_app_metricindicator.indicator_id join esg_app_metric on esg_app_metric.id=esg_app_metricindicator.metric_id where company_id={request.query_params.get("company")} and year={year};')
             row = cursor.fetchall()
-        row = [
-            {"metric_id": r[0], "indicator_id": r[1], "metric_name": r[2], "indicator_name": r[3], "metric_desc": r[4],
-             "indicator_desc": r[5], "value": r[6], "unit": r[7], "year": r[8]} for r in row]
-        return Response({'data': row})
+        for r in row:
+            if r[0] not in data.keys():
+                data[r[0]] = {'metric_id': r[0], 'metric_name': r[2], 'indicators': []}
+                data[r[0]]['indicators'].append(
+                    {"indicator_id": r[1], "indicator_name": r[3], "value": r[4], "unit": r[5],
+                     "year": r[6], "source": r[7]})
+            else:
+                same = False
+                for i in data[r[0]]['indicators']:
+                    if i["indicator_id"] == r[1]:
+                        same = True
+                if not same:
+                    data[r[0]]['indicators'].append(
+                        {"indicator_id": r[1], "indicator_name": r[3], "value": r[4], "unit": r[5],
+                         "year": r[6], "source": r[7]})
+        return Response(data)
 
 
 class ListUserPreference(viewsets.ReadOnlyModelViewSet):
