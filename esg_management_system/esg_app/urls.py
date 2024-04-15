@@ -34,8 +34,8 @@ router.register(r'metrics', MetricViewSet)
 # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
 router.register(r"metricsdatavalue", MetricsDataViewSet, basename="calculation")
 # return user personal setting
-# http://127.0.0.1:8000/app/listpreference/1/listindicators/
-# http://127.0.0.1:8000/app/listpreference/1/listmetrics/
+# http://127.0.0.1:8000/app/listpreference/listindicators/?user_id=1
+# http://127.0.0.1:8000/app/listpreference/listmetrics/?user_id=1
 router.register(r"listpreference", ListUserPreference, basename="listpreference")
 
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})),
