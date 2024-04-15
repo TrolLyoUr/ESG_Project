@@ -28,28 +28,31 @@ router.register(r'years', YearViewSet, basename='year')
 router.register(r"frameworks", FrameworkViewSet)
 # return information of indicators and metrics
 # http://127.0.0.1:8000/app/indicators/?id=3
-# http://127.0.0.1:8000/app/metrics/?id=3
+# http://127.0.0.1:8000/app/metrics/?id=97
 router.register(r'indicators', IndicatorViewSet)
 router.register(r'metrics', MetricViewSet)
-# calculate performance based on provided company, framework and metric id
-# http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
+# calculate performance based on provided company, framework and metric id. return whole year data(from 2012-2023)
+# http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=97
 router.register(r"metricsdatavalue", MetricsDataViewSet, basename="calculation")
-# return user personal setting
+# return user personal weight setting
 # http://127.0.0.1:8000/app/listpreference/listindicators/?user_id=1
 # http://127.0.0.1:8000/app/listpreference/listmetrics/?user_id=1
 router.register(r"listpreference", ListUserPreference, basename="listpreference")
 
 urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': 'retrieve'})),
-               # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=62
+               # calculate performance based on provided company, framework and metric id. return whole year data(from 2012-2023)
+               # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=97
                re_path(r"savemetrics", SaveMetricPreferences.as_view(), name='savemetrics'),
                # just support post method, example can find below
                re_path(r"saveindicator", SaveIndicatorPreferences.as_view(), name='saveindicator'),
                # just support post method, similar as before
                re_path(r"indicatordata", ListIndicatorValue.as_view(), name='listindicatorvalue'),
+               # return detail value
                # http://127.0.0.1:8000/app/indicatordata?company=1
                # http://127.0.0.1:8000/app/indicatordata?company=1&year=2021
                # http://127.0.0.1:8000/app/indicatordata?company=1&year=2021&framework=4
                re_path(r"calculateperformance", CompanyPerformance.as_view(), name='calculateperformance')
+               # calculate whole performance
                # http://127.0.0.1:8000/app/calculateperformance?company=1
                ]
 urlpatterns += router.urls
