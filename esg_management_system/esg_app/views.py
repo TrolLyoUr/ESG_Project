@@ -118,7 +118,8 @@ class SaveMetricPreferences(APIView):
         data = [
             {**item, "user": user_id} for item in request.data
         ]
-        serializer = UserMetricPreferenceSerializer(data=data, many=True)
+        print(data)
+        serializer = UserMetricPreferenceItemSerializer(data=data, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -231,9 +232,9 @@ class ListUserPreference(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'])
     def listindicators(self, request):
-        user_id = request.query_params.get('user_id')
+        user_id = request.user.id
         if not user_id:
-            return Response({'error': 'user_id parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'logged in required'}, status=status.HTTP_400_BAD_REQUEST)
 
         queryset = UserIndicatorPreference.objects.filter(user__id=user_id)
         serializer = UserIndicatorPreferenceItemSerializer(queryset, many=True)
@@ -241,9 +242,9 @@ class ListUserPreference(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'])
     def listmetrics(self, request):
-        user_id = request.query_params.get('user_id')
+        user_id = request.user.id
         if not user_id:
-            return Response({'error': 'user_id parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'logged in required'}, status=status.HTTP_400_BAD_REQUEST)
 
         queryset = UserMetricPreference.objects.filter(user__id=user_id)
         serializer = UserMetricPreferenceItemSerializer(queryset, many=True)

@@ -167,14 +167,14 @@ class MetricIndicatorSerializer(serializers.ModelSerializer):
         fields = ['indicator', 'predefined_weight']
 
 
-class UserMetricPreferenceSerializer(serializers.ModelSerializer):
+class UserMetricPreferenceSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         preferences = []
         for data in validated_data:
             obj, created = UserMetricPreference.objects.update_or_create(
                 user=data['user'],
-                metric=data['framework'],
-                indicator=data['metric'],
+                framework=data['framework'],
+                metric=data['metric'],
                 defaults={'custom_weight': data['custom_weight']}
             )
             preferences.append(obj)

@@ -11,9 +11,12 @@ import {
   Modal,
 } from "react-bootstrap";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { SERVER_URL } from "./config";
-
 import "./MetricsCard.css";
+
+const csrftoken = Cookies.get("csrftoken");
+axios.defaults.headers.common["X-CSRFToken"] = csrftoken;
 
 const MetricsCard = ({ currentFramework }) => {
   const [metrics, setMetrics] = useState([]);
@@ -78,6 +81,7 @@ const MetricsCard = ({ currentFramework }) => {
     metrics.forEach((metric) => {
       if (weights[`metric_${metric.id}`] !== undefined) {
         metricsData.push({
+          // user: 1, // Assuming the user ID is 1
           metric: metric.id,
           framework: currentFramework, // assuming the framework ID is stored in each metric
           custom_weight: parseFloat(weights[`metric_${metric.id}`]),
@@ -86,6 +90,7 @@ const MetricsCard = ({ currentFramework }) => {
       metric.subMetrics.forEach((subMetric) => {
         if (weights[`indicator_${metric.id}_${subMetric.id}`] !== undefined) {
           indicatorsData.push({
+            // user: 1, // Assuming the user ID is 1
             metric: metric.id,
             indicator: subMetric.id,
             custom_weight: parseFloat(
