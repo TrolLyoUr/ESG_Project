@@ -91,3 +91,27 @@
 .indicator-row {
     background-color: #e6e6e6; /* Slightly darker gray for individual indicators */
 }
+
+.pillar-indicator {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    color: rgb(239, 235, 235);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.pillar-e {
+    background-color: rgb(31, 120, 31);
+}
+
+.pillar-s {
+    background-color: rgb(36, 36, 151);
+}
+
+.pillar-g {
+    background-color: rgb(108, 21, 21);
+}

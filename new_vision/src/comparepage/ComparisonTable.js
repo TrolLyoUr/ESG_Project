@@ -259,10 +259,15 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
                     </tr>
                     {Object.keys(mergedMetrics).map(metricId => {
                         const metric = mergedMetrics[metricId];
+                        const pillarClass = `pillar-${metric.pillar.toLowerCase()}`;
                         return (
                             <React.Fragment key={metricId}>
                                 <tr onClick={() => toggleMetric(metricId)} className="metric-row">
-                                    <td>{metric.metric_name}</td>
+                                    <td>
+                                        {metric.metric_name}{' '}
+                                        <span className={`${pillarClass} pillar-indicator`}>
+                                        {metric.pillar.toUpperCase()}
+                                        </span></td>
                                     <td colSpan="4">Click to view details</td>
                                 </tr>
                                 {openMetrics[metricId] && (
@@ -281,8 +286,8 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
                                                         {metric.indicators.map(indicator => (
                                                             <tr key={indicator.indicator_id} className="indicator-row">
                                                                 <td>{indicator.indicator_name}</td>
-                                                                <td>{indicator.value1 || 'N/A'}</td>
-                                                                <td>{indicator.value2 || 'N/A'}</td>
+                                                                <td>{indicator.value1  || 'N/A'} {indicator.unit}</td>
+                                                                <td>{indicator.value2  || 'N/A'} {indicator.unit}</td>
                                                             </tr>
                                                         ))}
                                                     </tbody>
