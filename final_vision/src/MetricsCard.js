@@ -205,6 +205,29 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
       setLoading(false);
     }
   };
+  
+  //checking weight
+  const handleFillWeight = async () => {
+    const userPreferencesURL = `http://9900.seasite.top:8000/app/listpreference/listindicators/`;
+
+    try {
+        setLoading(true);
+        const response = await axios.get(userPreferencesURL, { withCredentials: true });
+        const userWeights = response.data;
+
+        const updatedWeights = {...weights}; // Make a shallow copy of the current weights
+        userWeights.forEach(({ indicator, custom_weight }) => {
+            const weightKey = `indicator_${indicator}`; // Ensure the key matches your state structure
+            updatedWeights[weightKey] = custom_weight; // Update the weight
+        });
+        console.log("Updated weights:", updatedWeights);
+        setWeights(updatedWeights); // Set the updated weights back to the state
+    } catch (error) {
+        console.error("Failed to fetch and apply weights:", error);
+    } finally {
+        setLoading(false);
+    }
+};
 
   // Function to convert text with '\n' into an array of JSX elements with <br/>
   const renderTextWithLineBreaks = (text) => {
@@ -288,6 +311,7 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
       <Card className="metrics-card">
         <Card.Body>
           <Card.Title>Indicators</Card.Title>
+          <Button onClick={handleFillWeight} variant="info" className="metrics-fill">Fill Weights</Button>
           <ListGroup>
             {metrics.map((metric) => (
               <ListGroup.Item key={metric.id} className="metric-item">
@@ -300,6 +324,7 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
                   />
                   <div className="d-flex align-items-center">
                     <Form.Control
+                      key={`indicator_${metric.id}`}
                       className="weight-input"
                       type="number"
                       value={weights[`metric_${metric.id}`]}
@@ -368,12 +393,13 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
                           />
                           <div className="d-flex align-items-center">
                             <Form.Control
+                              key={`indicator_${metric.id}_${subMetric.id}`}
                               className="weight-input"
                               type="number"
                               value={
                                 weights[
                                   `indicator_${metric.id}_${subMetric.id}`
-                                ]
+                                ] || ''
                               }
                               onChange={(e) =>
                                 handleWeightChange(
