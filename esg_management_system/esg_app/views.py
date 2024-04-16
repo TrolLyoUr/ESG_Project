@@ -7,6 +7,8 @@ from rest_framework import status
 from django.db import connection
 from rest_framework.views import APIView
 from collections import defaultdict
+import time
+from multiprocessing import cpu_count, Queue, Process
 
 from .calculations import calculate_metric_score_by_year, calculate_all_framework_scores_all_years
 
@@ -307,3 +309,36 @@ class CompanyPerformance(generics.ListAPIView):
         company = Company.objects.get(id=com_id)
         result = calculate_all_framework_scores_all_years(company)
         return Response({"result": result})
+
+
+cpu_count = cpu_count()
+pcontrol = Queue(cpu_count * 2)
+results = Queue()
+
+
+def calculate(com):
+    result = calculate_all_framework_scores_all_years(com)
+    results.put(result)
+    print(pcontrol.get())
+
+
+def run_all():
+    coms = Company.objects.all()[:20]
+    for com in coms:
+        while pcontrol.full():
+            time.sleep(0.1)
+        query = Process(target=calculate, args=(com,))
+        pcontrol.put(f"company: {com.id} finish")
+        query.start()
+    while pcontrol.qsize() != 0:
+        time.sleep(1)
+    results_inner = []
+    for r in range(results.qsize()):
+        results_inner.append(r)
+    return results_inner
+
+
+class Test(generics.ListAPIView):
+    def get(self, request, *args, **kwargs):
+        results = run_all()
+        return Response({"result": results})
