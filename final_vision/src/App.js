@@ -13,9 +13,9 @@ const App = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   const [profile, setProfile] = useState({
-    company: "Default Company",
-    year: "Default Year",
-    framework: "React", // 确保这里的属性名称与其他地方一致
+    company: "",
+    year: "",
+    framework: "", // 确保这里的属性名称与其他地方一致
   });
 
   const toggleSidebar = () => {
