@@ -205,29 +205,37 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
       setLoading(false);
     }
   };
-  
+
   //checking weight
   const handleFillWeight = async () => {
-    const userPreferencesURL = `http://9900.seasite.top:8000/app/listpreference/listindicators/`;
+    const indicatorsPreferencesURL = `${SERVER_URL}/app/listpreference/listindicators/?userId=1`;
+    const metricsPreferencesURL = `${SERVER_URL}/app/listpreference/listmetrics/?userId=1`;
 
     try {
-        setLoading(true);
-        const response = await axios.get(userPreferencesURL, { withCredentials: true });
-        const userWeights = response.data;
+      setLoading(true);
+      const response = await axios.get(indicatorsPreferencesURL);
+      const userWeights = response.data;
 
-        const updatedWeights = {...weights}; // Make a shallow copy of the current weights
-        userWeights.forEach(({ indicator, custom_weight }) => {
-            const weightKey = `indicator_${indicator}`; // Ensure the key matches your state structure
-            updatedWeights[weightKey] = custom_weight; // Update the weight
-        });
-        console.log("Updated weights:", updatedWeights);
-        setWeights(updatedWeights); // Set the updated weights back to the state
+      const updatedWeights = { ...weights }; // Make a shallow copy of the current weights
+      userWeights.forEach(({ metric, indicator, custom_weight }) => {
+        updatedWeights[`indicator_${metric}_${indicator}`] = custom_weight; // Update the weight
+      });
+
+      const metricsResponse = await axios.get(metricsPreferencesURL);
+      const userMetricsWeights = metricsResponse.data;
+      userMetricsWeights.forEach(({ framework, metric, custom_weight }) => {
+        if (framework === currentFramework) {
+          updatedWeights[`metric_${metric}`] = custom_weight; // Update the weight
+        }
+      });
+
+      setWeights(updatedWeights); // Set the updated weights back to the state
     } catch (error) {
-        console.error("Failed to fetch and apply weights:", error);
+      console.error("Failed to fetch and apply weights:", error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
   // Function to convert text with '\n' into an array of JSX elements with <br/>
   const renderTextWithLineBreaks = (text) => {
@@ -311,7 +319,13 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
       <Card className="metrics-card">
         <Card.Body>
           <Card.Title>Indicators</Card.Title>
-          <Button onClick={handleFillWeight} variant="info" className="metrics-fill">Fill Weights</Button>
+          <Button
+            onClick={handleFillWeight}
+            variant="info"
+            className="metrics-fill"
+          >
+            Fill Weights
+          </Button>
           <ListGroup>
             {metrics.map((metric) => (
               <ListGroup.Item key={metric.id} className="metric-item">
@@ -399,7 +413,7 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
                               value={
                                 weights[
                                   `indicator_${metric.id}_${subMetric.id}`
-                                ] || ''
+                                ] || ""
                               }
                               onChange={(e) =>
                                 handleWeightChange(

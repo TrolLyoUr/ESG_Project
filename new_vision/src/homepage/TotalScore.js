@@ -35,7 +35,7 @@ const TotalScore = ({ companyId, year, frameworkId }) => {
           const yearData = data.result[frameworkName]; // 根据框架名从 result 对象中获取数据
           console.log("Year data for framework:", yearData); // 输出对应框架的年份数据
 
-          const score = yearData && yearData[year] !== undefined ? yearData[year] : null;
+          const score = yearData && yearData[year] !== undefined ? yearData[year].toFixed(3) : null;
           console.log("Resolved ESG score for the year:", score); // 输出解析出的 ESG 分数
 
           setEsgScore(score);

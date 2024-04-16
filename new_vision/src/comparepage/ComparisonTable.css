@@ -3,12 +3,12 @@
     font-family: Arial, sans-serif; /* 设置统一字体 */
     border-collapse: collapse; /* 表格边框合并 */
     width: 100%;
-    background-color: #f4f4f4; /* 轻微灰色背景 */
+    background-color: #816767; /* 轻微灰色背景 */
 }
 
 /* 表头样式 */
 .thead-dark th {
-    background-color: #6a7988; /* 深色背景 */
+    background-color: #7d8d98; /* 深色背景 */
     color: #ffffff; /* 白色文字 */
     padding: 12px 15px; /* 增加内边距 */
     text-align: left;
@@ -23,15 +23,95 @@
 .esg-score {
     font-size: 40px; /* 增大字体大小 */
     font-weight: bold; /* 加粗 */
-    color: #521111; /* 深色字体 */
-    background-color: #e9ecef; /* 浅灰色背景 */
+    color: #2d0808; /* 深色字体 */
+    background-color: #dce2e8; /* 浅灰色背景 */
     padding: 10px; /* 增加内边距 */
 }
 
 /* ESG 分数值的单元格样式 */
 .esg-score-cell {
     font-size: 60px; /* 字体大小 */
-    color: #555; /* 字体颜色 */
+    color: #686060; /* 字体颜色 */
     padding: 10px 20px; /* 调整内边距 */
      /* 居中显示 */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5; /* Light grey background on hover */
+}
+
+.thead-dark th {
+    background-color: #404952; /* Dark header background */
+    color: #ffffff; /* White text color */
+}
+
+.esg-score-cell {
+    font-weight: bold;
+    text-align: center; /* Centering text for ESG score cells */
+}
+
+/* Responsive table and chart */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: scroll; /* Ensuring table is scrollable on smaller screens */
+    }
+}
+
+/* Styling for Line chart */
+.chart-container1 {
+    width: 100%;
+    height: 300px;
+    margin: 20px auto; /* 垂直居中和上下边距 */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    display: block;
+}
+
+/* Error and Loading States */
+.loading-text, .error-text {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: #666;
+}
+
+/* Tooltip styling */
+.tooltip-inner {
+    background-color: #000; /* Black background for tooltips */
+    color: #fff; /* White text color */
+    font-size: 14px;
+}
+
+.metric-row {
+    background-color: #f0f0f0; /* Light gray background for metric categories */
+}
+
+/* 样式 for indicator detail rows */
+.indicator-row {
+    background-color: #e6e6e6; /* Slightly darker gray for individual indicators */
+}
+
+.pillar-indicator {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    color: rgb(239, 235, 235);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.pillar-e {
+    background-color: rgb(31, 120, 31);
+}
+
+.pillar-s {
+    background-color: rgb(36, 36, 151);
+}
+
+.pillar-g {
+    background-color: rgb(108, 21, 21);
 }
