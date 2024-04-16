@@ -312,8 +312,9 @@ class CompanyPerformance(generics.ListAPIView):
 
 
 cpu_count = cpu_count()
-pcontrol = Queue(cpu_count * 2)
+pcontrol = Queue(cpu_count)
 results = Queue()
+processes = []
 
 
 def calculate(com):
@@ -323,16 +324,19 @@ def calculate(com):
 
 
 def run_all():
-    coms = Company.objects.all()[:20]
+    coms = list(Company.objects.all()[:20])
     for com in coms:
-        while pcontrol.full():
-            time.sleep(0.1)
+        if len(processes) > (cpu_count * 2):
+            for p in processes:
+                p.join()
+            for _ in range(pcontrol.qsize()):
+                pcontrol.get()
         query = Process(target=calculate, args=(com,))
         pcontrol.put(f"company: {com.id} finish")
         query.start()
-    while pcontrol.qsize() != 0:
-        time.sleep(1)
+        processes.append(query)
     results_inner = []
+
     for r in range(results.qsize()):
         results_inner.append(r)
     return results_inner
