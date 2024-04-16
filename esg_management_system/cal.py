@@ -25,9 +25,20 @@ def calculate(com, pcount, sharelist):
 
 
 if __name__ == '__main__':
+    data = {}
     coms = Company.objects.all()
     print(f"cpu_count: {cpu_count}")
     for com in coms:
+        if len(processes) % 100 == 0:
+            count = len(processes)
+            for p in processes:
+                p.join()
+                print(f"clear one progress, left {count}")
+                count -= 1
+            processes.clear()
+            while not results.empty():
+                for key, value in results.get().items():
+                    data[key] = value
         while pcontrol.full():
             time.sleep(0.1)
         query = Process(target=calculate, args=(com, pcontrol, results))
@@ -40,7 +51,6 @@ if __name__ == '__main__':
     for p in processes:
         p.join()
 
-    data = {}
     while not results.empty():
         for key, value in results.get().items():
             data[key] = value
