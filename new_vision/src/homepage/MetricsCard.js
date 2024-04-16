@@ -22,7 +22,6 @@ axios.defaults.withCredentials = true;
 
 const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
   const [metrics, setMetrics] = useState([]);
-  const [errors, setErrors] = useState({});
   const [modalInfo, setModalInfo] = useState({ show: false, content: "" });
   const [weights, setWeights] = useState({}); // To store all weights
   const [loading, setLoading] = useState(false);
@@ -42,7 +41,6 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
           subMetrics: metric.metric.metric_indicators.map((indicator) => ({
             id: indicator.indicator.id,
             title: indicator.indicator.name,
-            isSelected: false,
             weight: indicator.predefined_weight,
           })),
           weight: metric.predefined_weight,
@@ -61,7 +59,7 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
         return newMetrics; // Return newMetrics for potential chain usage
       } catch (error) {
         console.error("Failed to fetch metrics:", error);
-        setErrors({ global: "Failed to load metrics" });
+        alert("Failed to fetch metrics.");
         setLoading(false);
         return null; // Return null to indicate failure
       } finally {
@@ -91,7 +89,7 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
       }
     };
 
-    if (selectedCompany == "" || selectedYear == "") {
+    if ((currentFramework && selectedCompany == "") || selectedYear == "") {
       fetchMetrics();
     }
     if (currentFramework && selectedCompany && selectedYear) {
@@ -110,10 +108,19 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
         title: ind.indicator_name,
         value: ind.value,
         unit: ind.unit,
-        isSelected: false,
         source: ind.source,
       })),
     }));
+    // Initialize weights state
+    const initialWeights = {};
+    updatedMetrics.forEach((m) => {
+      initialWeights[`metric_${m.id}`] = 1;
+      m.subMetrics.forEach((sm) => {
+        initialWeights[`indicator_${m.id}_${sm.id}`] = 1;
+      });
+    });
+    console.log(initialWeights);
+    setWeights(initialWeights);
     setMetrics(updatedMetrics);
   };
 
@@ -300,15 +307,6 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
           if (!isSubMetric) {
             // Toggle the selection of the main metric
             return { ...metric, isSelected: !metric.isSelected };
-          } else {
-            // Toggle the selection of a sub-metric
-            const updatedSubMetrics = metric.subMetrics.map((subMetric) => {
-              if (subMetric.id === subMetricId) {
-                return { ...subMetric, isSelected: !subMetric.isSelected };
-              }
-              return subMetric;
-            });
-            return { ...metric, subMetrics: updatedSubMetrics };
           }
         }
         return metric;
@@ -393,27 +391,19 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
                               key={subMetric.id}
                               className="d-flex align-items-center justify-content-between pe-3"
                             >
-                              <Form.Check
-                                type="checkbox"
-                                checked={subMetric.isSelected}
-                                onChange={() =>
-                                  toggleSelection(metric.id, true, subMetric.id)
-                                }
-                                label={
-                                  <div className="label-container">
-                                    <span className="label-title">
-                                      {subMetric.title}
-                                    </span>
-                                    <span className="label-value">
-                                      {subMetric.value}
-                                    </span>
-                                    <span className="label-unit">
-                                      {subMetric.unit}
-                                    </span>
-                                  </div>
-                                }
-                                className="me-4"
-                              />
+                              <div className="metric-display">
+                                <div className="label-container">
+                                  <span className="label-title">
+                                    {subMetric.title}
+                                  </span>
+                                  <span className="label-value">
+                                    {subMetric.value}
+                                  </span>
+                                  <span className="label-unit">
+                                    {subMetric.unit}
+                                  </span>
+                                </div>
+                              </div>
                               <div className="d-flex align-items-center">
                                 <Form.Control
                                   key={`indicator_${metric.id}_${subMetric.id}`}
