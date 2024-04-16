@@ -33,6 +33,7 @@ router.register(r'indicators', IndicatorViewSet)
 router.register(r'metrics', MetricViewSet)
 # calculate performance based on provided company, framework and metric id. return whole year data(from 2012-2023)
 # http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=97
+# http://127.0.0.1:8000/app/metricsdatavalue/?companies=1&framework=4&metrics=97&year=2022
 router.register(r"metricsdatavalue", MetricsDataViewSet, basename="calculation")
 # return user personal weight setting
 # http://127.0.0.1:8000/app/listpreference/listindicators/?user_id=1
