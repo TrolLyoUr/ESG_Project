@@ -12,8 +12,7 @@ from .views import (
     ListIndicatorValue,
     ListUserPreference,
     YearViewSet,
-    CompanyPerformance,
-    Test
+    CompanyPerformance
 )
 
 router = routers.SimpleRouter()
@@ -56,7 +55,6 @@ urlpatterns = [re_path(r"metricsdatavalue", MetricsDataViewSet.as_view({'get': '
                re_path(r"calculateperformance", CompanyPerformance.as_view(), name='calculateperformance'),
                # calculate whole performance
                # http://127.0.0.1:8000/app/calculateperformance?company=1
-               re_path(r"test", Test.as_view(), name="test")
                ]
 urlpatterns += router.urls
 '''

@@ -5,23 +5,23 @@ from .models import MetricIndicator, DataValue, FrameworkMetric, Framework
 
 # 计算某公司在所有三个框架下的所有年份的分数
 def calculate_all_framework_scores_all_years(company):
-    all_frameworks = Framework.objects.all()
+    all_frameworks = Framework.objects.prefetch_related().all()
     all_years = DataValue.objects.values_list('year', flat=True).distinct()
 
     company_scores = {}
-    
+
     for framework in all_frameworks:
         company_scores[framework.name] = calculate_framework_scores_all_years(company, framework)
-    
+
     return company_scores
 
 
 # 计算某公司某框架下所有年份的分数
 def calculate_framework_scores_all_years(company, framework):
-    framework_metrics = FrameworkMetric.objects.filter(framework=framework)
+    framework_metrics = FrameworkMetric.objects.filter(framework=framework).select_related()
     framework_scores = {}
     all_years = DataValue.objects.values_list('year', flat=True).distinct()
-    
+
     for year in all_years:
         framework_score_by_year = calculate_framework_score_by_year(company, framework, year)
         if framework_score_by_year > 0:
@@ -32,11 +32,11 @@ def calculate_framework_scores_all_years(company, framework):
 
 # 计算某公司某年某Framework下的分数
 def calculate_framework_score_by_year(company, framework, year):
-    framework_metrics = FrameworkMetric.objects.filter(framework=framework)
+    framework_metrics = FrameworkMetric.objects.filter(framework=framework).select_related()
     metric_scores = {}
 
     for framework_metric in framework_metrics:
-        metric_score_by_year = calculate_metric_score_by_year(company, framework, framework_metric.metric, year) 
+        metric_score_by_year = calculate_metric_score_by_year(company, framework, framework_metric.metric, year)
 
         if metric_score_by_year < 0:
             metric_scores[framework_metric.metric.name] = 0
@@ -49,7 +49,7 @@ def calculate_framework_score_by_year(company, framework, year):
 
 # 替代calculate_metric_score，添加了一个年份参数
 def calculate_metric_score_by_year(company, framework, metric, year):
-    metric_indicators = MetricIndicator.objects.filter(metric=metric)
+    metric_indicators = MetricIndicator.objects.filter(metric=metric).select_related()
     indicator_values = {}
 
     for metric_indicator in metric_indicators:
@@ -66,6 +66,7 @@ def calculate_metric_score_by_year(company, framework, metric, year):
             )
             .filter(year=year)
             .order_by("-year")
+            .select_related()
             .first()
         )
 
@@ -103,7 +104,6 @@ def calculate_metric_score(company, framework, metric):
         if data_value:
             value = data_value.value
             indicator_values[indicator.name] = value * predefined_weight
-        
 
     metric_score = calculate_metric_formula(metric.name, indicator_values)
     return metric_score
@@ -118,7 +118,7 @@ class ModelFormulas:
             metric_score = (co2_direct_scope1 + co2_indirect_scope2) / energy_use_total
         else:
             metric_score = -1
-            
+
         return metric_score
 
     def water_efficiency(self, indicator_values):
@@ -426,4 +426,3 @@ def calculate_metric_formula(model_name, indicator_values):
     model_score = formula_func(model_formulas_instance, indicator_values)
 
     return model_score
-
