@@ -7,6 +7,7 @@ from rest_framework import status
 from django.db import connection
 from rest_framework.views import APIView
 from collections import defaultdict
+import pickle
 
 from .calculations import calculate_metric_score_by_year, calculate_all_framework_scores_all_years
 
@@ -303,7 +304,11 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CompanyPerformance(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
-        com_id = request.query_params.get("company")
-        company = Company.objects.get(id=com_id)
-        result = calculate_all_framework_scores_all_years(company)
-        return Response({"result": result})
+        coms_id = request.query_params.getlist("company")
+        result = {}
+        with open("result.pkl", "rb") as file:
+            data = pickle.load(file)
+        for c in coms_id:
+            _result = data[int(c)]
+            result[c] = _result
+        return Response(result)
