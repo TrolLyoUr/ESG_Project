@@ -156,6 +156,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         company_ids = request.query_params.getlist("companies")
         framework_id = request.query_params.get("framework")
         metric_ids = request.query_params.getlist("metrics")
+        year = request.query_params.get("year")
         years = DataValue.objects.order_by('year').values('year').distinct()
 
         # 查询指定的公司、框架和指标
@@ -168,18 +169,31 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         for company in companies:
             company_data = CompanySerializer(company).data
             metrics_scores = []
-            for year in years:
+            if year:
                 for metric in metrics:
-                    score = calculate_metric_score_by_year(company, framework, metric, year['year'])
+                    score = calculate_metric_score_by_year(company, framework, metric, year)
                     metric_data = MetricSerializer(metric).data
                     metrics_scores.append(
                         {
-                            "year": year['year'],
+                            "year": year,
                             "metric_id": metric_data["id"],
                             "metric_name": metric_data["name"],
                             "score": score,
                         }
                     )
+            else:
+                for year in years:
+                    for metric in metrics:
+                        score = calculate_metric_score_by_year(company, framework, metric, year['year'])
+                        metric_data = MetricSerializer(metric).data
+                        metrics_scores.append(
+                            {
+                                "year": year['year'],
+                                "metric_id": metric_data["id"],
+                                "metric_name": metric_data["name"],
+                                "score": score,
+                            }
+                        )
             result.append(
                 {
                     "company_id": company_data["id"],
