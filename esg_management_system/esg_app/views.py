@@ -99,7 +99,7 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=["get"], url_path="metrics")
     def list_framework_metrics(self, request, pk=None):
         framework = self.get_object()
-        queryset = FrameworkMetric.objects.filter(framework=framework)
+        queryset = FrameworkMetric.objects.filter(framework=framework).select_related()
 
         pillar = request.query_params.get("pillar")
         if pillar in ["E", "S", "G"]:
@@ -109,7 +109,8 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = FrameworkMetricSerializer(
             queryset, many=True, context={"request": request}
         )
-        return Response(serializer.data)
+        data = serializer.data
+        return Response(data)
 
 
 class SaveMetricPreferences(APIView):

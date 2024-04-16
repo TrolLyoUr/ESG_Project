@@ -106,10 +106,12 @@ class FrameworkSerializer(serializers.ModelSerializer):
         model = Framework
         fields = ['id', 'name', 'description']
 
+
 class DataValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataValue
         fields = ['value_id', 'company', 'indicator', 'year', 'value']
+
 
 class YearSerializer(serializers.Serializer):
     year = serializers.IntegerField()
@@ -140,7 +142,7 @@ class MetricSerializer(serializers.ModelSerializer):
 
     def get_metric_indicators(self, metric):
         # Get all associated MetricIndicator objects for the metric
-        metric_indicators = MetricIndicator.objects.filter(metric=metric)
+        metric_indicators = MetricIndicator.objects.filter(metric=metric).select_related()
         # Serialize the MetricIndicator objects including the nested Indicator details
         return MetricIndicatorSerializer(metric_indicators, many=True).data
 
@@ -180,6 +182,7 @@ class UserMetricPreferenceSerializer(serializers.ListSerializer):
             preferences.append(obj)
         return preferences
 
+
 class UserMetricPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMetricPreference
@@ -200,6 +203,7 @@ class UserIndicatorPreferenceSerializer(serializers.ListSerializer):
             preferences.append(obj)
         return preferences
 
+
 class UserIndicatorPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
@@ -208,7 +212,7 @@ class UserIndicatorPreferenceItemSerializer(serializers.ModelSerializer):
 
 
 class MetricsScoresSerializer(serializers.Serializer):
-    metric_id: IntegerField(read_only=True) # type: ignore
+    metric_id: IntegerField(read_only=True)  # type: ignore
     metric_name = CharField(read_only=True)
     score = FloatField(read_only=True)
 
@@ -223,6 +227,7 @@ class IndicatorInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
         fields = ('description', 'unit', 'source')
+
 
 class MetricInfoSerializer(serializers.ModelSerializer):
     class Meta:
