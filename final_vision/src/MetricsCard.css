@@ -96,3 +96,27 @@
   .label-score {
     flex-shrink: 0; /* 防止分数部分在缩小时被压缩 */
   }
+
+  .metrics-fill {
+  background-color: #f8f9fa; /* Light grey background */
+  padding: 20px; /* Padding around the content */
+  margin-top: 20px; /* Space above the card */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+  border-radius: 8px; /* Rounded corners */
+}
+
+/* CSS for the Button inside the Card */
+.metrics-fill .btn-info {
+  color: #fff; /* White text color */
+  background-color: #17a2b8; /* Bootstrap's info button color */
+  padding: 10px 20px; /* Padding inside the button */
+  margin-top: 10px; /* Top margin */
+  font-weight: bold; /* Bold font for emphasis */
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s; /* Smooth transitions for interactions */
+}
+
+.metrics-fill .btn-info:hover,
+.metrics-fill .btn-info:focus {
+  background-color: #138496; /* Darker shade when hovered or focused */
+  box-shadow: 0 0 5px rgba(0,0,0,0.3); /* More prominent shadow on hover/focus */
+}
