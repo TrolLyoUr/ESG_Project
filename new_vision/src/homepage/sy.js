@@ -173,3 +173,68 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
 };
 
 export default Sidebar;
+
+return (
+  <div className="table-responsive">
+      <table className="table table-hover">
+          <thead className="thead-dark">
+              <tr>
+                  <th>Company names</th>
+                  <th colSpan="2">{company1} ({year1})</th>
+                  <th colSpan="2">{company2} ({year2})</th>
+              </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td className="esg-score">ESG Score</td>
+              <td colSpan="2" className="esg-score-cell">{esgScore1 !== null ? esgScore1 : 'Loading'}</td>
+              <td colSpan="2" className="esg-score-cell">{esgScore2 !== null ? esgScore2 : 'Loading'}</td>
+          </tr>
+              {data.metrics.map((metric) => (
+                  <React.Fragment key={metric.id}>
+                      <tr onClick={() => toggleMetric(metric.id)}>
+                          <td>{metric.name}</td>
+                          <td colSpan="4">Click to view details</td>
+                      </tr>
+                      {openMetrics[metric.id] && (
+                          <>
+                              <tr>
+                                  <td colSpan="5">
+                                      <Line
+                                          data={metric.data}
+                                          width={400}
+                                          height={200}
+                                          options={{ maintainAspectRatio: false }}
+                                      />
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td colSpan="5">
+                                      <table className="table">
+                                          <thead>
+                                              <tr>
+                                                  <th>Indicators</th>
+                                                  <th>{company1} ({year1})</th>
+                                                  <th>{company2} ({year2})</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              {metric.indicators && Object.keys(metric.indicators).map(key => (
+                                                  <tr key={key}>
+                                                      <td>{key}</td>
+                                                      <td>{metric.indicators[key][0]}</td>
+                                                      <td>{metric.indicators[key][1]}</td>
+                                                  </tr>
+                                              ))}
+                                          </tbody>
+                                      </table>
+                                  </td>
+                              </tr>
+                          </>
+                      )}
+                  </React.Fragment>
+              ))}
+          </tbody>
+      </table>
+  </div>
+);

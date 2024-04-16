@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "./homepage/Sidebar";
-import TotalScore from "./homepage/TotalScore";
-import FrameworkChoose from "./homepage/FrameworkChoose";
-import MetricsCard from "./homepage/MetricsCard";
-import ChartsContainer from "./homepage/ChartsContainer";
+import React, { useState,useEffect } from 'react';
+import Sidebar from './homepage/Sidebar';
+import TotalScore from './homepage/TotalScore';
+import FrameworkChoose from './homepage/FrameworkChoose';
+import MetricsCard from './homepage/MetricsCard';
+import ChartsContainer from './homepage/ChartsContainer';
 
 const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
   const [profile, setProfile] = useState({
@@ -12,28 +12,29 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
     framework: "",
   });
 
+
   const handleProfileChange = (key, value) => {
-    setProfile((prevProfile) => ({ ...prevProfile, [key]: value }));
+    setProfile(prevProfile => ({ ...prevProfile, [key]: value }));
   };
 
   const contentStyle = {
-    marginLeft: isSidebarOpen ? "20%" : "0",
-    width: isSidebarOpen ? "80%" : "100%",
-    transition: "margin-left 0.3s, width 0.3s",
+    marginLeft: isSidebarOpen ? '20%' : '0',
+    width: isSidebarOpen ? '80%' : '100%',
+    transition: 'margin-left 0.3s, width 0.3s',
   };
 
   const featureBarsStyle = {
-    marginLeft: isSidebarOpen ? "20%" : "0",
-    transition: "margin-left 0.3s",
+    marginLeft: isSidebarOpen ? '20%' : '0',
+    transition: 'margin-left 0.3s',
   };
 
   return (
     <div className="content-area" style={contentStyle}>
       <button onClick={toggleSidebar} className="toggle-button">
-        {isSidebarOpen ? "<" : ">"}
+        {isSidebarOpen ? '<' : '>'}
       </button>
       <div className="feature-bars" style={featureBarsStyle}>
-        <TotalScore
+      <TotalScore
           className="feature-bar-item"
           companyId={profile.company}
           year={profile.year}
@@ -41,27 +42,24 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
         />
         <FrameworkChoose
           className="feature-bar-item"
-          setFramework={(framework) =>
-            handleProfileChange("framework", framework)
-          }
+          setFramework={(framework) => handleProfileChange('framework', framework)}
         />
         <MetricsCard
           className="feature-bar-item"
+          
           currentFramework={profile.framework}
-          selectedYear={profile.year}
-          selectedCompany={profile.company}
         />
         <ChartsContainer
           className="feature-bar-item"
           companyId={profile.company}
           year={profile.year}
-          frameworkId={profile.framework}
+          frameworkId={profile.framework} 
         />
       </div>
       <Sidebar
         isOpen={isSidebarOpen}
-        setCompanyId={(company) => handleProfileChange("company", company)}
-        setYear={(year) => handleProfileChange("year", year)}
+        setCompanyId={(company) => handleProfileChange('company', company)}
+        setYear={(year) => handleProfileChange('year', year)}
       />
     </div>
   );
