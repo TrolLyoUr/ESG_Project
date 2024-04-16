@@ -5,127 +5,47 @@ from .models import MetricIndicator, DataValue, FrameworkMetric, Framework
 
 # 计算某公司在所有三个框架下的所有年份的分数
 def calculate_all_framework_scores_all_years(company):
-    all_framework_scores = {}
+    all_frameworks = Framework.objects.all()
+    all_years = DataValue.objects.values_list('year', flat=True).distinct()
 
-    frameworks = FrameworkMetric.objects.values_list("framework", flat=True).distinct()
-
-    for framework in frameworks:
-        framework = Framework.objects.get(id=framework)
-        framework_scores = calculate_framework_scores_all_years(company, framework)
-        all_framework_scores[framework.name] = framework_scores
-
-    return all_framework_scores
+    company_scores = {}
+    
+    for framework in all_frameworks:
+        company_scores[framework.name] = calculate_framework_scores_all_years(company, framework)
+    
+    return company_scores
 
 
 # 计算某公司某框架下所有年份的分数
 def calculate_framework_scores_all_years(company, framework):
     framework_metrics = FrameworkMetric.objects.filter(framework=framework)
     framework_scores = {}
+    all_years = DataValue.objects.values_list('year', flat=True).distinct()
+    
+    for year in all_years:
+        framework_score_by_year = calculate_framework_score_by_year(company, framework, year)
+        if framework_score_by_year > 0:
 
-    for framework_metric in framework_metrics:
-        metric = framework_metric.metric
-        metric_indicators = MetricIndicator.objects.filter(metric=metric)
+            framework_scores[year] = scale_score(framework_score_by_year)
 
-        for metric_indicator in metric_indicators:
-            indicator = metric_indicator.indicator
-            # 检查weight获取方式
-            predefined_weight = metric_indicator.predefined_weight
-
-            data_values = (
-                DataValue.objects.filter(company=company, indicator=indicator)
-                .filter(
-                    Q(
-                        company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
-                    )
-                )
-                .order_by("-year")
-                .values("year", "value")
-            )
-
-            for data_value in data_values:
-                year = data_value["year"]
-                value = data_value["value"]
-                indicator_name = indicator.name
-
-                if year not in framework_scores:
-                    framework_scores[year] = {}
-
-                if indicator_name not in framework_scores[year]:
-                    framework_scores[year][indicator_name] = value * predefined_weight
-                else:
-                    framework_scores[year][indicator_name] += value * predefined_weight
-
-    calculated_framework_scores = {}
-    for year, indicator_values in framework_scores.items():
-        framework_score = calculate_metric_formula(framework.name, indicator_values)
-        calculated_framework_scores[year] = framework_score
-
-    return calculated_framework_scores
+    return framework_scores
 
 
 # 计算某公司某年某Framework下的分数
 def calculate_framework_score_by_year(company, framework, year):
     framework_metrics = FrameworkMetric.objects.filter(framework=framework)
-    indicator_values = {}
+    metric_scores = {}
 
     for framework_metric in framework_metrics:
-        metric = framework_metric.metric
+        metric_score_by_year = calculate_metric_score_by_year(company, framework, framework_metric.metric, year) 
 
-        metric_indicators = MetricIndicator.objects.filter(metric=metric)
+        if metric_score_by_year < 0:
+            metric_scores[framework_metric.metric.name] = 0
+        else:
+            metric_scores[framework_metric.metric.name] = metric_score_by_year
 
-        for metric_indicator in metric_indicators:
-            indicator = metric_indicator.indicator
-            # 检查weight获取方式
-            predefined_weight = metric_indicator.predefined_weight
-
-            data_value = (
-                DataValue.objects.filter(company=company, indicator=indicator)
-                .filter(
-                    Q(
-                        company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
-                    )
-                )
-                .filter(year=year)
-                .order_by("-year")
-                .first()
-            )
-
-            if data_value:
-                value = data_value.value
-                indicator_values[indicator.name] = value * predefined_weight
-
-    framework_score = calculate_metric_formula(framework.name, indicator_values)
+    framework_score = calculate_metric_formula(framework.name, metric_scores)
     return framework_score
-
-
-# 返回某公司在某框架下最新一年的指定metric值，已过时。但为了已实现API保留。
-def calculate_metric_score(company, framework, metric):
-    metric_indicators = MetricIndicator.objects.filter(metric=metric)
-    indicator_values = {}
-
-    for metric_indicator in metric_indicators:
-        indicator = metric_indicator.indicator
-        # 这里的weight需要改为用户自定义的weight
-        predefined_weight = metric_indicator.predefined_weight
-
-        data_value = (
-            DataValue.objects.filter(company=company, indicator=indicator)
-            .filter(
-                Q(
-                    company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
-                )
-            )
-            .order_by("-year")
-            # 想要检索特定年份只需修改这里
-            .first()
-        )
-
-        if data_value:
-            value = data_value.value
-            indicator_values[indicator.name] = value * predefined_weight
-
-    metric_score = calculate_metric_formula(metric.name, indicator_values)
-    return metric_score
 
 
 # 替代calculate_metric_score，添加了一个年份参数
@@ -155,6 +75,38 @@ def calculate_metric_score_by_year(company, framework, metric, year):
             indicator_values[indicator.name] = value * predefined_weight
 
     metric_score = calculate_metric_formula(metric.name, indicator_values)
+
+    return metric_score
+
+
+# 返回某公司在某框架下最新一年的指定metric值，已过时。但为了已实现API保留。
+def calculate_metric_score(company, framework, metric):
+    metric_indicators = MetricIndicator.objects.filter(metric=metric)
+    indicator_values = {}
+
+    for metric_indicator in metric_indicators:
+        indicator = metric_indicator.indicator
+        # 这里的weight需要改为用户自定义的weight
+        predefined_weight = metric_indicator.predefined_weight
+
+        data_value = (
+            DataValue.objects.filter(company=company, indicator=indicator)
+            .filter(
+                Q(
+                    company__data_values__indicator__metric_indicators__metric__framework_metrics__framework=framework
+                )
+            )
+            .order_by("-year")
+            # 想要检索特定年份只需修改这里
+            .first()
+        )
+
+        if data_value:
+            value = data_value.value
+            indicator_values[indicator.name] = value * predefined_weight
+        
+
+    metric_score = calculate_metric_formula(metric.name, indicator_values)
     return metric_score
 
 
@@ -163,11 +115,11 @@ class ModelFormulas:
         co2_direct_scope1 = indicator_values.get("CO2DIRECTSCOPE1", 0)
         co2_indirect_scope2 = indicator_values.get("CO2INDIRECTSCOPE2", 0)
         energy_use_total = indicator_values.get("ENERGYUSETOTAL", 0)
-        print(co2_direct_scope1, co2_indirect_scope2, energy_use_total)
         if energy_use_total > 0:
             metric_score = (co2_direct_scope1 + co2_indirect_scope2) / energy_use_total
         else:
-            metric_score = 0
+            metric_score = -1
+            
         return metric_score
 
     def water_efficiency(self, indicator_values):
@@ -176,7 +128,7 @@ class ModelFormulas:
         if energy_use_total > 0:
             metric_score = water_withdrawal_total / energy_use_total
         else:
-            metric_score = 0
+            metric_score = -1
         return metric_score
 
     def renewable_energy_utilization(self, indicator_values):
@@ -185,7 +137,7 @@ class ModelFormulas:
         if energy_use_total > 0:
             metric_score = (renew_energy_consumed / energy_use_total) * 100
         else:
-            metric_score = 0
+            metric_score = -1
         return metric_score
 
     def waste_recycling_rate(self, indicator_values):
@@ -194,7 +146,7 @@ class ModelFormulas:
         if waste_total > 0:
             metric_score = (waste_recycled / waste_total) * 100
         else:
-            metric_score = 0
+            metric_score = -1
         return metric_score
 
     def carbon_intensity(self, indicator_values):
@@ -204,7 +156,7 @@ class ModelFormulas:
         if energy_use_total > 0:
             metric_score = (co2_direct_scope1 + co2_indirect_scope2) / energy_use_total
         else:
-            metric_score = 0
+            metric_score = -1
         return metric_score
 
     def air_quality_impact(self, indicator_values):
@@ -475,3 +427,14 @@ def calculate_metric_formula(model_name, indicator_values):
     model_score = formula_func(model_formulas_instance, indicator_values)
 
     return model_score
+
+# 数据放缩处理
+def scale_score(score):
+    if score > 1000:
+        score = score%1000
+        score = 90+score/1000
+    elif score >300:
+        score = (score-200)/10+20
+    elif score > 10:
+        score = score/25
+    return score
