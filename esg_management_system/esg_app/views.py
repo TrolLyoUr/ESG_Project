@@ -306,10 +306,10 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
 class CompanyPerformance(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         coms_id = request.query_params.getlist("company")
-        tanh = request.query_params.get('scale')
+        scale = request.query_params.get('scale')
         with open("result.pkl", "rb") as file:
             data = pickle.load(file)
-        if tanh is None:
+        if scale is None:
             result = {}
             for c in coms_id:
                 result[c] = data[int(c)]
