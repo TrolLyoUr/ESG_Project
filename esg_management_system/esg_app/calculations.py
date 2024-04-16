@@ -25,8 +25,7 @@ def calculate_framework_scores_all_years(company, framework):
     for year in all_years:
         framework_score_by_year = calculate_framework_score_by_year(company, framework, year)
         if framework_score_by_year > 0:
-
-            framework_scores[year] = scale_score(framework_score_by_year)
+            framework_scores[year] = framework_score_by_year
 
     return framework_scores
 
@@ -428,13 +427,3 @@ def calculate_metric_formula(model_name, indicator_values):
 
     return model_score
 
-# 数据放缩处理
-def scale_score(score):
-    if score > 1000:
-        score = score%1000
-        score = 90+score/1000
-    elif score >300:
-        score = (score-200)/10+20
-    elif score > 10:
-        score = score/25
-    return score
