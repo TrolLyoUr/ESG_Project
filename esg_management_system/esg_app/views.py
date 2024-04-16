@@ -326,7 +326,7 @@ def calculate(com):
 def run_all():
     coms = list(Company.objects.all()[:50])
     for com in coms:
-        if len(processes) > (cpu_count * 2):
+        if len(processes) > (cpu_count):
             for p in processes:
                 p.join()
             for _ in range(pcontrol.qsize()):
