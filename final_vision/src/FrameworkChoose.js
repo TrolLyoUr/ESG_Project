@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./FrameworkChoose.css";
-import { SERVER_URL } from "./config"; // Make sure the constant is correctly named
 
-const serverUrl = SERVER_URL; // Make sure the constant is correctly named
 
 const FrameworkChoose = ({ setFramework }) => {
   const [frameworks, setFrameworks] = useState([]);
@@ -13,7 +11,7 @@ const FrameworkChoose = ({ setFramework }) => {
   useEffect(() => {
     const fetchFrameworks = async () => {
       try {
-        const response = await axios.get(`${serverUrl}/app/frameworks/`);
+        const response = await axios.get(`http://9900.seasite.top:8000/app/frameworks/`);
         setFrameworks(response.data); // Set frameworks based on the API response
       } catch (error) {
         console.error("Failed to fetch frameworks:", error);
