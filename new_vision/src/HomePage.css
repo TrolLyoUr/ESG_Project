@@ -1,0 +1,86 @@
+.App {
+    text-align: center;
+    display: flex; /* 使用Flexbox */
+    align-items: stretch; /* 子元素拉伸以填充容器高度 */
+    height: 100vh; /* 根据需要，设置App的高度 */
+  }
+  
+  
+  .sidebar-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    align-items: start; /* 使按钮和侧边栏在顶部对齐 */
+  }
+  
+  
+  
+  .sidebar {
+    width: 250px; /* 侧边栏宽度 */
+    transform: translateX(-100%); /* 默认情况下，侧边栏被隐藏 */
+    transition: transform 0.3s ease; /* 平滑的过渡效果 */
+  }
+  
+  .sidebar.open {
+    transform: translateX(0); /* 当侧边栏打开时，取消位移，使其可见 */
+  }
+  
+  
+  
+  .toggle-button {
+    position: relative; /* 维持相对定位 */
+    z-index: 2; /* 确保按钮位于侧边栏之上 */
+    width: 40px; /* 设置按钮宽度 */
+    height: 40px; /* 设置按钮高度 */
+    left: 250px; /* 根据需要向左移动 */
+    background-color: rgba(237, 171, 50, 0.768); /* 设置按钮背景色为橙色 */
+    border: none; /* 移除边框 */
+    border-radius: 50%; /* 设置边框为圆形 */
+    display: flex; /* 使用 Flex 布局使内容居中 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    cursor: pointer; /* 鼠标悬停时显示指针 */
+  }
+  
+  .toggle-button::before, .toggle-button::after, .toggle-button div {
+    content: ''; /* 必须的，使伪元素显示 */
+    position: absolute; /* 绝对定位，相对于其父元素 */
+    height: 3px; /* 横杠的高度 */
+    width: 20px; /* 横杠的宽度 */
+    background-color: #fff; /* 横杠的颜色 */
+    transition: all 0.3s; /* 平滑的过渡效果 */
+  }
+  
+  .toggle-button::before {
+    top: 15px; /* 距离顶部的位置 */
+  }
+  
+  .toggle-button::after {
+    bottom: 15px; /* 距离底部的位置 */
+  }
+  
+  .toggle-button div {
+    background-color: #d3c2c2; /* 设置中间横杠的颜色 */
+    width: 20px; /* 中间横杠的宽度 */
+    height: 5px; /* 中间横杠的高度 */
+  }
+  
+  
+  
+  .top-bar {
+    padding: 15px; /* 根据需要调整内边距 */
+    border-bottom: 1px solid #f5ecec; /* 添加底边框以分隔顶栏和功能栏 */
+  }
+  
+  .feature-bars {
+    display: flex; /* Enable Flexbox layout */
+    flex-direction: column; /* Stack children vertically */
+    height: 100%; /* Full height of its parent */
+  }
+  
+  
+  .feature-bar-item {
+    flex-grow: 1; /* Each child will equally share the available space */
+    /* Add padding, margins, etc. as needed for your design */
+  }
+  
+  
+  

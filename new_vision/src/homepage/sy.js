@@ -70,6 +70,7 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
   };
 
   const toggleCompare = () => setIsComparing(!isComparing);
+
   return (
     <div className={sidebarClasses}>
       <div className="sidebar-header">
@@ -170,4 +171,5 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
     </div>
   );
 };
+
 export default Sidebar;

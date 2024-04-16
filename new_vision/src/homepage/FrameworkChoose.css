@@ -1,0 +1,36 @@
+/* FrameworkChoose.css */
+.framework-choose {
+  padding: 10px;
+  margin-left: -35%;
+  background-color: #48a2ce42;
+  max-width: 600px; /* 限制最大宽度而不是固定宽度 */
+  width: 100%; /* 使宽度自适应 */
+  margin: left; /* 水平居中对齐 */
+  display: flex; /* 启用Flexbox */
+  justify-content: center; /* 水平居中子元素 */
+  flex-wrap: wrap; /* 允许子元素换行 */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.framework-choose button {
+  margin: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.framework-choose button:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+}
+
+.framework-choose button:active {
+  background-color: #004085;
+  transform: translateY(2px);
+}

@@ -2,19 +2,39 @@ import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 import axios from "axios";
 import { SERVER_URL } from "./config";
+import { useNavigate } from 'react-router-dom';
+
 
 const serverUrl = SERVER_URL;
 axios.defaults.withCredentials = true;
 
 const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
+  const navigate = useNavigate(); 
   const sidebarClasses = `sidebar ${isOpen ? "open" : "hidden"}`;
   const [selectedCompany, setSelectedCompany] = useState("");
   const [filteredCompanies, setFilteredCompanies] = useState([]);
-  const [years, setYears] = useState([]); // State for storing the list of years
-  const [selectedYear, setSelectedYear] = useState("");
-  const [isComparing, setIsComparing] = useState(false);
   const [selectedCompany2, setSelectedCompany2] = useState("");
-  const [selectedYear2, setSelectedYear2] = useState("");
+  const [filteredCompanies2, setFilteredCompanies2] = useState([]); // 新增状态变量
+  const [years, setYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedYear2, setSelectedYear2] = useState(""); // 可以使用同一个年份列表
+  const [isComparing, setIsComparing] = useState(false);
+  const [companyId, getcompanyId] = useState("");
+  const [companyId2, getcompanyId2] = useState("")
+
+  useEffect(() => {
+    if (filteredCompanies.length > 0) {
+      getcompanyId(filteredCompanies[0].id);
+    }
+  }, [filteredCompanies]);
+
+  useEffect(() => {
+    if (filteredCompanies2.length > 0) {
+      getcompanyId2(filteredCompanies2[0].id);
+    }
+  }, [filteredCompanies2]);
+
+  
 
   useEffect(() => {
     const fetchYears = async () => {
@@ -29,14 +49,35 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
     fetchYears();
   }, []);
 
+  useEffect(() => {
+
+    if (isComparing && selectedCompany && selectedCompany2 && selectedYear && selectedYear2) {
+
+      const params = {
+        company1: selectedCompany,
+        year1: selectedYear,
+        companyid1: companyId,
+        company2: selectedCompany2,
+        year2: selectedYear2,
+        companyid2: companyId2
+      };
+
+
+      const queryString = new URLSearchParams(params).toString();
+      navigate(`/compare?${queryString}`);
+    }
+  }, [selectedCompany, selectedCompany2,companyId,companyId2, selectedYear, selectedYear2, isComparing, navigate]);
+  
+  
+
   const handleInputChange = async (e, isSecondCompany = false) => {
     const value = e.target.value.trim();
-    if (!isSecondCompany) {
-      setSelectedCompany(value);
-    } else {
+    if (isSecondCompany) {
       setSelectedCompany2(value);
+    } else {
+      setSelectedCompany(value);
     }
-
+  
     if (value.length >= 1) {
       try {
         const apiURL = `${serverUrl}/app/fsearch/${value}/`;
@@ -45,19 +86,19 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
           name: company.name,
           id: company.id,
         }));
-        if (!isSecondCompany) {
-          setFilteredCompanies(companies);
+        if (isSecondCompany) {
+          setFilteredCompanies2(companies);
         } else {
-          // Handle second company filtered list similarly if required
+          setFilteredCompanies(companies);
         }
       } catch (error) {
         console.error("Failed to fetch filtered companies:", error);
       }
     } else {
-      if (!isSecondCompany) {
-        setFilteredCompanies([]);
+      if (isSecondCompany) {
+        setFilteredCompanies2([]);
       } else {
-        // Clear second company's filtered companies if needed
+        setFilteredCompanies([]);
       }
     }
   };
@@ -69,7 +110,10 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
     }
   };
 
+  
+
   const toggleCompare = () => setIsComparing(!isComparing);
+
   return (
     <div className={sidebarClasses}>
       <div className="sidebar-header">
@@ -170,4 +214,5 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
     </div>
   );
 };
+
 export default Sidebar;
