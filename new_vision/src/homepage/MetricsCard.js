@@ -17,8 +17,9 @@ import "./MetricsCard.css";
 
 const csrftoken = Cookies.get("csrftoken");
 axios.defaults.headers.common["X-CSRFToken"] = csrftoken;
+axios.defaults.withCredentials = true;
 
-const MetricsCard = ({ currentFramework }) => {
+const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
   const [metrics, setMetrics] = useState([]);
   const [errors, setErrors] = useState({});
   const [modalInfo, setModalInfo] = useState({ show: false, content: "" });
@@ -30,12 +31,12 @@ const MetricsCard = ({ currentFramework }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${SERVER_URL}/app/frameworks/${currentFramework}/metrics/`,
-          { withCredentials: true }
+          `${SERVER_URL}/app/frameworks/${currentFramework}/metrics/`
         );
         const newMetrics = response.data.map((metric) => ({
           id: metric.metric.id,
           title: metric.metric.name,
+          pillar: metric.metric.pillar,
           isSelected: true,
           isOpen: false,
           subMetrics: metric.metric.metric_indicators.map((indicator) => ({
@@ -57,18 +58,65 @@ const MetricsCard = ({ currentFramework }) => {
           });
         });
         setWeights(initialWeights);
+        return newMetrics; // Return newMetrics for potential chain usage
       } catch (error) {
         console.error("Failed to fetch metrics:", error);
         setErrors({ global: "Failed to load metrics" });
+        return null; // Return null to indicate failure
       } finally {
         setLoading(false);
       }
     };
 
-    if (currentFramework) {
+    const fetchIndicatorData = async (metrics) => {
+      if (!metrics) return; // Skip if metrics fetch failed
+      setLoading(true);
+      try {
+        const url = `${SERVER_URL}/app/indicatordata?company=${selectedCompany}&framework=${currentFramework}&year=${selectedYear}`;
+        console.log(url);
+        const response = await axios.get(url);
+        const data = response.data;
+        console.log(response);
+        console.log(data.length);
+        if (Object.keys(data).length === 0 && data.constructor === Object) {
+          console.log("No data available for the selected company and year.");
+          alert("No data available for the selected company and year.");
+          return;
+        }
+        updateMetricsWithValues(data, metrics);
+      } catch (error) {
+        console.error("Failed to fetch indicator data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    console.log(currentFramework, selectedCompany, selectedYear);
+
+    if (selectedCompany == "" || selectedYear == "") {
       fetchMetrics();
+    } else if (currentFramework && selectedCompany && selectedYear) {
+      fetchMetrics().then(fetchIndicatorData); // Chain the promise
     }
-  }, [currentFramework]);
+  }, [currentFramework, selectedCompany, selectedYear]);
+
+  const updateMetricsWithValues = (data) => {
+    const updatedMetrics = Object.values(data).map((metric) => ({
+      id: metric.metric_id,
+      title: metric.metric_name,
+      pillar: metric.pillar,
+      isSelected: true,
+      isOpen: false,
+      subMetrics: metric.indicators.map((ind) => ({
+        id: ind.indicator_id,
+        title: ind.indicator_name,
+        value: ind.value,
+        unit: ind.unit,
+        isSelected: true,
+        source: ind.source,
+      })),
+    }));
+    setMetrics(updatedMetrics);
+  };
 
   const handleWeightChange = (key, value) => {
     setWeights({ ...weights, [key]: value });
@@ -105,12 +153,8 @@ const MetricsCard = ({ currentFramework }) => {
     try {
       console.log(metricsData);
       console.log(indicatorsData);
-      await axios.post(`${SERVER_URL}/app/saveindicator/`, indicatorsData, {
-        withCredentials: true,
-      });
-      await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData, {
-        withCredentials: true,
-      });
+      await axios.post(`${SERVER_URL}/app/saveindicator/`, indicatorsData);
+      await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData);
       alert("Weights updated successfully!");
     } catch (error) {
       console.error("Error submitting weights:", error);
@@ -149,8 +193,7 @@ const MetricsCard = ({ currentFramework }) => {
     try {
       // Make sure to replace the URL with the correct endpoint if necessary
       const response = await axios.get(
-        `${SERVER_URL}/app/indicators/?id=${indicatorId}`,
-        { withCredentials: true }
+        `${SERVER_URL}/app/indicators/?id=${indicatorId}`
       );
       console.log(response.data);
       const data = response.data[0]; // Assuming the response is an array with one object
@@ -185,7 +228,39 @@ const MetricsCard = ({ currentFramework }) => {
   };
 
   // 定义 updateWeight 函数，用于更新权重
-  
+  const updateWeight = (
+    id,
+    newWeight,
+    isSubMetric = false,
+    subMetricId = null
+  ) => {
+    const weight = newWeight === "" ? null : parseInt(newWeight, 10);
+    const isValid = weight === null || (weight >= 0 && weight <= 10);
+    let foundInvalid = !isValid; // 用于检查是否发现无效输入
+
+    setMetrics(
+      metrics.map((metric) => {
+        if (metric.id === id) {
+          if (!isSubMetric) {
+            return { ...metric, weight: isValid ? weight : metric.weight };
+          } else {
+            const updatedSubMetrics = metric.subMetrics.map((subMetric) => {
+              if (subMetric.id === subMetricId) {
+                return {
+                  ...subMetric,
+                  weight: isValid ? weight : subMetric.weight,
+                };
+              }
+              return subMetric;
+            });
+            return { ...metric, subMetrics: updatedSubMetrics };
+          }
+        }
+        return metric;
+      })
+    );
+  };
+
   const toggleSelection = (id, isSubMetric = false, subMetricId = null) => {
     setMetrics(
       metrics.map((metric) => {
@@ -283,11 +358,11 @@ const MetricsCard = ({ currentFramework }) => {
                                 <span className="label-title">
                                   {subMetric.title}
                                 </span>
-                                <span className="label-score">
-                                  {/* {subMetric.score} */}
+                                <span className="label-value">
+                                  {subMetric.value}
                                 </span>
-                                <span className="label-score">
-                                  {/* {subMetric.unit} */}
+                                <span className="label-unit">
+                                  {subMetric.unit}
                                 </span>
                               </div>
                             }
