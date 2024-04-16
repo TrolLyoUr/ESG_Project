@@ -25,6 +25,7 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
   const [modalInfo, setModalInfo] = useState({ show: false, content: "" });
   const [weights, setWeights] = useState({}); // To store all weights
   const [loading, setLoading] = useState(false);
+  const [metricScores, setMetricScores] = useState({});
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -315,6 +316,43 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
     // Optional: Send the selection status to the backend
   };
 
+  const calculateMetricsScores = async () => {
+    // Extract IDs of selected metrics
+    const selectedMetrics = metrics
+      .filter((metric) => metric.isSelected)
+      .map((metric) => metric.id);
+    setLoading(true);
+
+    try {
+      // API call to fetch metric scores based on selected metrics, company, framework, and selected year
+      const response = await axios.get(
+        `${SERVER_URL}/app/metricsdatavalue/?companies=${selectedCompany}&framework=${currentFramework}&metrics=${selectedMetrics.join(
+          ","
+        )}&year=${selectedYear}`
+      );
+      const data = response.data.data; // Assuming the API response structure as described
+
+      // Initialize an object to store scores for the selected year
+      const scores = {};
+
+      // Iterate over each company's data (assuming multiple companies could be included)
+      data.forEach((company) => {
+        // Filter out the metric scores for the selected year and update the scores object
+        company.metrics_scores.forEach((metric) => {
+          scores[metric.metric_id] = metric.score;
+        });
+      });
+
+      // Update the state with the filtered scores
+      setMetricScores(scores);
+    } catch (error) {
+      console.error("Error fetching metric scores:", error);
+      alert("Failed to fetch metric scores.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Card className="metrics-card">
@@ -381,6 +419,15 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
                             !
                           </span>
                         </OverlayTrigger>
+                        <div>
+                          {/* Displaying metric score */}
+                          <span className="metric-score">
+                            Score:{" "}
+                            {metricScores[metric.id]
+                              ? metricScores[metric.id]
+                              : "N/A"}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <Collapse in={metric.isOpen}>
@@ -454,6 +501,13 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
               </ListGroup>
               <Button variant="success" onClick={handleSubmitAllWeights}>
                 Save Weights Changes
+              </Button>
+              <Button
+                variant="primary"
+                onClick={calculateMetricsScores}
+                style={{ marginLeft: "10px" }}
+              >
+                Calculate Metrics Score
               </Button>
             </>
           )}
