@@ -139,6 +139,7 @@ class MetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = Metric
         fields = ['id', 'name', 'pillar', 'metric_indicators']
+        read_only_fields = ['id', 'name', 'pillar', 'metric_indicators']
 
     def get_metric_indicators(self, metric):
         # Get all associated MetricIndicator objects for the metric
@@ -153,6 +154,7 @@ class FrameworkMetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = FrameworkMetric
         fields = ['metric', 'predefined_weight']
+        read_only_fields = ['metric', 'predefined_weight']
 
 
 class IndicatorSerializer(serializers.ModelSerializer):
@@ -167,6 +169,7 @@ class MetricIndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = MetricIndicator
         fields = ['indicator', 'predefined_weight']
+        read_only_fields = ['indicator', 'predefined_weight']
 
 
 class UserMetricPreferenceSerializer(serializers.ListSerializer):
