@@ -1,0 +1,37 @@
+/* 基础表格样式 */
+.table {
+    font-family: Arial, sans-serif; /* 设置统一字体 */
+    border-collapse: collapse; /* 表格边框合并 */
+    width: 100%;
+    background-color: #f4f4f4; /* 轻微灰色背景 */
+}
+
+/* 表头样式 */
+.thead-dark th {
+    background-color: #6a7988; /* 深色背景 */
+    color: #ffffff; /* 白色文字 */
+    padding: 12px 15px; /* 增加内边距 */
+    text-align: left;
+}
+
+/* 行和单元格样式 */
+.table-hover tr:hover {
+    background-color: #ddd; /* 鼠标悬停时变色 */
+}
+
+/* 特定于ESG Score的样式 */
+.esg-score {
+    font-size: 40px; /* 增大字体大小 */
+    font-weight: bold; /* 加粗 */
+    color: #521111; /* 深色字体 */
+    background-color: #e9ecef; /* 浅灰色背景 */
+    padding: 10px; /* 增加内边距 */
+}
+
+/* ESG 分数值的单元格样式 */
+.esg-score-cell {
+    font-size: 60px; /* 字体大小 */
+    color: #555; /* 字体颜色 */
+    padding: 10px 20px; /* 调整内边距 */
+     /* 居中显示 */
+}
