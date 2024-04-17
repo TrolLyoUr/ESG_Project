@@ -26,13 +26,18 @@ const TotalScore = ({ companyId, year, frameworkId }) => {
             throw new Error('Network response was not ok');
           }
 
+          console.log("Framework name:", frameworkName);
+                    
+          // 假设 data 直接包含了框架数据，如 data.GRI 或 data.SASB
+         
+
           const data = await response.json();
           console.log("Complete data from backend:", data); // 输出完整的后端数据以供检查
 
           const frameworkName = frameworkMapping[frameworkId];
           console.log("Using framework:", frameworkName); // 确认使用的框架名称
 
-          const yearData = data.result[frameworkName]; // 根据框架名从 result 对象中获取数据
+          const yearData = data[frameworkName];// 根据框架名从 result 对象中获取数据
           console.log("Year data for framework:", yearData); // 输出对应框架的年份数据
 
           const score = yearData && yearData[year] !== undefined ? yearData[year].toFixed(3) : null;
