@@ -3,8 +3,14 @@
     font-family: Arial, sans-serif; /* 设置统一字体 */
     border-collapse: collapse; /* 表格边框合并 */
     width: 100%;
-    background-color: #816767; /* 轻微灰色背景 */
+    
+    background-color: rgb(245, 245, 245); /* 轻微灰色背景 */
 }
+
+.legend{
+    text-align: left; 
+}
+
 
 /* 表头样式 */
 .thead-dark th {
@@ -16,7 +22,7 @@
 
 /* 行和单元格样式 */
 .table-hover tr:hover {
-    background-color: #ddd; /* 鼠标悬停时变色 */
+    background-color: #ffffff; /* 鼠标悬停时变色 */
 }
 
 /* 特定于ESG Score的样式 */
