@@ -20,8 +20,12 @@ const csrftoken = Cookies.get("csrftoken");
 axios.defaults.headers.common["X-CSRFToken"] = csrftoken;
 axios.defaults.withCredentials = true;
 
-const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
-  const [metrics, setMetrics] = useState([]);
+const MetricsCard = ({
+  currentFramework,
+  selectedCompany,
+  selectedYear,
+  setSelectedMetrics,
+}) => {
   const [modalInfo, setModalInfo] = useState({ show: false, content: "" });
   const [weights, setWeights] = useState({}); // To store all weights
   const [loading, setLoading] = useState(false);
@@ -165,26 +169,27 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
     // Prepare data for API requests
     const indicatorsData = [];
     const metricsData = [];
-    metrics.forEach((metric) => {
-      if (weights[`metric_${metric.id}`] !== undefined) {
-        metricsData.push({
-          // user: 1, // Assuming the user ID is 1
-          metric: metric.id,
-          framework: currentFramework, // assuming the framework ID is stored in each metric
-          custom_weight: parseFloat(weights[`metric_${metric.id}`]),
-        });
-      }
-      metric.subMetrics.forEach((subMetric) => {
-        if (weights[`indicator_${metric.id}_${subMetric.id}`] !== undefined) {
-          indicatorsData.push({
-            // user: 1, // Assuming the user ID is 1
+    // Iterate over each category and its metrics
+    Object.values(categories).forEach((category) => {
+      category.metrics.forEach((metric) => {
+        if (weights[`metric_${metric.id}`] !== undefined) {
+          metricsData.push({
             metric: metric.id,
-            indicator: subMetric.id,
-            custom_weight: parseFloat(
-              weights[`indicator_${metric.id}_${subMetric.id}`]
-            ),
+            framework: currentFramework, // assuming the framework ID is stored in each metric
+            custom_weight: parseFloat(weights[`metric_${metric.id}`]),
           });
         }
+        metric.subMetrics.forEach((subMetric) => {
+          if (weights[`indicator_${metric.id}_${subMetric.id}`] !== undefined) {
+            indicatorsData.push({
+              metric: metric.id,
+              indicator: subMetric.id,
+              custom_weight: parseFloat(
+                weights[`indicator_${metric.id}_${subMetric.id}`]
+              ),
+            });
+          }
+        });
       });
     });
 
@@ -368,19 +373,23 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
 
   const calculateMetricsScores = async () => {
     // Extract IDs of selected metrics
-    const selectedMetrics = metrics
-      .filter((metric) => metric.isSelected)
-      .map((metric) => metric.id);
+    const selectedMetrics = Object.values(categories).flatMap((category) =>
+      category.metrics
+        .filter((metric) => metric.isSelected)
+        .map((metric) => metric.id)
+    );
+    setSelectedMetrics(selectedMetrics);
     setLoading(true);
 
     try {
       // API call to fetch metric scores based on selected metrics, company, framework, and selected year
-      const response = await axios.get(
-        `${SERVER_URL}/app/metricsdatavalue/?companies=${selectedCompany}&framework=${currentFramework}&metrics=${selectedMetrics.join(
-          ","
-        )}&year=${selectedYear}`
-      );
+      const url = `${SERVER_URL}/app/metricsdatavalue/?companies=${selectedCompany}&framework=${currentFramework}&metrics=${selectedMetrics.join(
+        "&metrics="
+      )}&year=${selectedYear}`;
+
+      const response = await axios.get(url);
       const data = response.data.data; // Assuming the API response structure as described
+      console.log(data);
 
       // Initialize an object to store scores for the selected year
       const scores = {};
@@ -390,6 +399,7 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
         // Filter out the metric scores for the selected year and update the scores object
         company.metrics_scores.forEach((metric) => {
           scores[metric.metric_id] = metric.score;
+          console.log(metric.score);
         });
       });
 
@@ -485,8 +495,8 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
                                 {/* Displaying metric score */}
                                 <span className="metric-score">
                                   Score:{" "}
-                                  {metricScores[metric.id]
-                                    ? metricScores[metric.id]
+                                  {metricScores[metric.id] >= 0
+                                    ? metricScores[metric.id].toFixed(4)
                                     : "N/A"}
                                 </span>
                               </div>

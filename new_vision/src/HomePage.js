@@ -10,6 +10,7 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
     company: "",
     year: "",
     framework: "",
+    selectedMetrics: [],
   });
 
   const handleProfileChange = (key, value) => {
@@ -50,12 +51,16 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
           currentFramework={profile.framework}
           selectedYear={profile.year}
           selectedCompany={profile.company}
+          setSelectedMetrics={(metrics) =>
+            handleProfileChange("selectedMetrics", metrics)
+          }
         />
         <ChartsContainer
           className="feature-bar-item"
           companyId={profile.company}
           year={profile.year}
           frameworkId={profile.framework}
+          selectedMetrics={profile.selectedMetrics}
         />
       </div>
       <Sidebar
