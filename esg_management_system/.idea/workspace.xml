@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="enable react">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="back_end done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_app/calculations.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/calculations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,10 +40,11 @@
   &quot;keyToString&quot;: {
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/sea/Desktop/capstone-project-studentitp/esg_management_system&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sea/Desktop/capstone-project-studentitp/esg_management_system/esg_app&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -56,15 +54,62 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/esg_app" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/esg_app" />
       <recent name="$PROJECT_DIR$/templates/build" />
       <recent name="$PROJECT_DIR$/templates" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/auth" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Django Server.esg_management_system">
+    <configuration name="cal" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="esg_management_system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/esg_app" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/cal.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="cals" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="esg_management_system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/esg_app" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/esg_app/cals.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="esg_management_system" type="Python.DjangoServer" factoryName="Django server">
       <module name="esg_management_system" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -89,6 +134,12 @@
       <option name="customRunCommand" value="" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.cal" />
+        <item itemvalue="Python.cals" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -109,22 +160,13 @@
       <workItem from="1711949475734" duration="11299000" />
       <workItem from="1712027070049" duration="15405000" />
       <workItem from="1712096862396" duration="13704000" />
-    </task>
-    <task id="LOCAL-00001" summary="fix redirected problem">
-      <option name="closed" value="true" />
-      <created>1711347888954</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1711347888954</updated>
-    </task>
-    <task id="LOCAL-00002" summary="disable csrf">
-      <option name="closed" value="true" />
-      <created>1711350283749</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1711350283749</updated>
+      <workItem from="1713162435217" duration="130000" />
+      <workItem from="1713162615966" duration="1871000" />
+      <workItem from="1713240031085" duration="1249000" />
+      <workItem from="1713243814177" duration="1759000" />
+      <workItem from="1713245995789" duration="9016000" />
+      <workItem from="1713256880182" duration="10787000" />
+      <workItem from="1713308247358" duration="1844000" />
     </task>
     <task id="LOCAL-00003" summary="merge react">
       <option name="closed" value="true" />
@@ -358,22 +400,184 @@
       <option name="project" value="LOCAL" />
       <updated>1712122969591</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="performance api">
+      <option name="closed" value="true" />
+      <created>1713151227465</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1713151227465</updated>
+    </task>
+    <task id="LOCAL-00033" summary="support framework filter">
+      <option name="closed" value="true" />
+      <created>1713153236771</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1713153236771</updated>
+    </task>
+    <task id="LOCAL-00034" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1713156080370</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1713156080370</updated>
+    </task>
+    <task id="LOCAL-00035" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1713156838002</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1713156838002</updated>
+    </task>
+    <task id="LOCAL-00036" summary="return whole year results">
+      <option name="closed" value="true" />
+      <created>1713160846907</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1713160846907</updated>
+    </task>
+    <task id="LOCAL-00037" summary="add more comment">
+      <option name="closed" value="true" />
+      <created>1713164994595</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1713164994595</updated>
+    </task>
+    <task id="LOCAL-00038" summary="calculate metrics support year">
+      <option name="closed" value="true" />
+      <created>1713240417055</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1713240417055</updated>
+    </task>
+    <task id="LOCAL-00039" summary="calculate metrics support year">
+      <option name="closed" value="true" />
+      <created>1713240754808</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1713240754808</updated>
+    </task>
+    <task id="LOCAL-00040" summary="improve return metrics speed">
+      <option name="closed" value="true" />
+      <created>1713245122027</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1713245122027</updated>
+    </task>
+    <task id="LOCAL-00041" summary="improve return metrics speed">
+      <option name="closed" value="true" />
+      <created>1713245563523</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1713245563523</updated>
+    </task>
+    <task id="LOCAL-00042" summary="implement calculate task">
+      <option name="closed" value="true" />
+      <created>1713247847887</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1713247847887</updated>
+    </task>
+    <task id="LOCAL-00043" summary="implement calculate task">
+      <option name="closed" value="true" />
+      <created>1713248795312</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1713248795312</updated>
+    </task>
+    <task id="LOCAL-00044" summary="implement calculate task">
+      <option name="closed" value="true" />
+      <created>1713248879176</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1713248879176</updated>
+    </task>
+    <task id="LOCAL-00045" summary="implement calculate task">
+      <option name="closed" value="true" />
+      <created>1713248988803</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1713248988803</updated>
+    </task>
+    <task id="LOCAL-00046" summary="implement calculate task by multiprocess">
+      <option name="closed" value="true" />
+      <created>1713258206299</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1713258206299</updated>
+    </task>
+    <task id="LOCAL-00047" summary="result">
+      <option name="closed" value="true" />
+      <created>1713304229214</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1713304229214</updated>
+    </task>
+    <task id="LOCAL-00048" summary="back_end done">
+      <option name="closed" value="true" />
+      <created>1713306744113</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1713306744113</updated>
+    </task>
+    <task id="LOCAL-00049" summary="back_end done">
+      <option name="closed" value="true" />
+      <created>1713309235181</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1713309235181</updated>
+    </task>
+    <task id="LOCAL-00050" summary="back_end done">
+      <option name="closed" value="true" />
+      <created>1713309371059</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1713309371060</updated>
+    </task>
+    <task id="LOCAL-00051" summary="back_end done">
+      <option name="closed" value="true" />
+      <created>1713309390068</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1713309390068</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix redirected problem" />
-    <MESSAGE value="disable csrf" />
-    <MESSAGE value="merge react" />
-    <MESSAGE value="disable 跨站" />
-    <MESSAGE value="add new host for cors" />
-    <MESSAGE value="split api and front end" />
-    <MESSAGE value="remove cors hosts" />
-    <MESSAGE value="new build js" />
-    <MESSAGE value="add company api" />
     <MESSAGE value="add locaitons api" />
     <MESSAGE value="forgot what I did" />
     <MESSAGE value="list all companies" />
@@ -388,7 +592,18 @@
     <MESSAGE value="fix err" />
     <MESSAGE value="for esg performance" />
     <MESSAGE value="enable react" />
-    <option name="LAST_COMMIT_MESSAGE" value="enable react" />
+    <MESSAGE value="performance api" />
+    <MESSAGE value="support framework filter" />
+    <MESSAGE value="fix bug" />
+    <MESSAGE value="return whole year results" />
+    <MESSAGE value="add more comment" />
+    <MESSAGE value="calculate metrics support year" />
+    <MESSAGE value="improve return metrics speed" />
+    <MESSAGE value="implement calculate task" />
+    <MESSAGE value="implement calculate task by multiprocess" />
+    <MESSAGE value="result" />
+    <MESSAGE value="back_end done" />
+    <option name="LAST_COMMIT_MESSAGE" value="back_end done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -405,25 +620,29 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/esg_app/views.py</url>
-          <line>262</line>
-          <option name="timeStamp" value="12" />
+          <line>217</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/calculations.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/calculations.py</url>
+          <line>107</line>
+          <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/esg_app/views.py</url>
-          <line>240</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
-          <line>247</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
-          <line>256</line>
-          <option name="timeStamp" value="15" />
+          <line>319</line>
+          <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/esg_management_system$cals.coverage" NAME="cals Coverage Results" MODIFIED="1713247728898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/esg_app" />
+    <SUITE FILE_PATH="coverage/esg_management_system$test.coverage" NAME="test Coverage Results" MODIFIED="1713252062859" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/esg_app" />
   </component>
 </project>
