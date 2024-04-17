@@ -1,0 +1,4 @@
+company_name,perm_id,data_type,disclosure,metric_description,metric_name,metric_unit,metric_value,metric_year,nb_points_of_observations,metric_period,provider_name,reported_date,pillar,headquarter_country
+Banco Bilbao Vizcaya Argentaria SA,4295889577,float,REPORTED,Employment growth over the last year.,ANALYTICEMPLOYMENTCREATION,% growth in number of employees over last year,-4.72,2018-12-31,275,P1Y,Clarity AI,,G,Spain
+Promotora de Informaciones SA,4295889629,float,REPORTED,Employment growth over the last year.,ANALYTICEMPLOYMENTCREATION,% growth in number of employees over last year,-20.8468,2020-12-31,242,P1Y,Clarity AI,,G,Spain
+Compania Espanola de Petroleos SA,4295889448,float,REPORTED,Employment growth over the last year.,ANALYTICEMPLOYMENTCREATION,% growth in number of employees over last year,-5.0,2020-12-31,203,P1Y,Clarity AI,,G,Spain

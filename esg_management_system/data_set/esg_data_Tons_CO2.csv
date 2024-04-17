@@ -1,0 +1,3 @@
+company_name,perm_id,data_type,disclosure,metric_description,metric_name,metric_unit,metric_value,metric_year,nb_points_of_observations,metric_period,provider_name,reported_date,pillar,headquarter_country
+Toyota Motor Corp,4295876746,float,REPORTED,The estimated total CO2 emission in tons (without counting CO2 equivalents).,CO2_NO_EQUIVALENTS,Tons CO2,65000.0,2021-12-31,223,P1Y,Clarity AI,,E,Japan
+CITIC Ltd,4295870876,float,REPORTED,The estimated total CO2 emission in tons (without counting CO2 equivalents).,CO2_NO_EQUIVALENTS,Tons CO2,40755.83,2019-12-31,201,P1Y,Clarity AI,,E,"Hong Kong SAR, China"
