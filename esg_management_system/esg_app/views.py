@@ -307,6 +307,9 @@ class CompanyPerformance(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         com_id = request.query_params.get("company")
         scale = request.query_params.get('scale')
+        if com_id is None:
+            result = calculate_all_framework_scores_all_years(1)
+            return Response(result)
         with open("result.pkl", "rb") as file:
             data = pickle.load(file)
         if scale is None:
@@ -319,7 +322,8 @@ class CompanyPerformance(generics.ListAPIView):
                 __new_result = {}
                 for k, v in value.items():
                     try:
-                        tanh = lambda x: ((numpy.e ** x) - (numpy.e ** -x)) / ((numpy.e ** x) + (numpy.e ** -x))
+                        # tanh = lambda x: ((numpy.e ** x) - (numpy.e ** -x)) / ((numpy.e ** x) + (numpy.e ** -x))
+                        tanh = lambda x: 1 - (1 / (1 + x))
                         __new_result[k] = tanh(v) * 100
                     except OverflowError:
                         __new_result[k] = 100

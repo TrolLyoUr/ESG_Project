@@ -11,6 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import random
 import pickle
+from django.contrib.messages import ERROR
 
 
 def sendToUser(username, content):
@@ -64,21 +65,26 @@ def login_view(request):
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST['email']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            messages.error(request, "username already exists")
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if password1 == password2:
+            password = password1
+            email = request.POST['email']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                messages.error(request, "username already exists")
+                return render(request, 'register.html')
+            try:
+                validate_email(email)
+                user = User.objects.create_user(username, email, password)
+                user.save()
+                return HttpResponseRedirect(reverse("index"))
+            except Exception as _:
+                messages.error(request, "invalid email address or username already exists!")
+                return render(request, 'register.html')
+        else:
+            messages.error(request, "two password not same!")
             return render(request, 'register.html')
-        try:
-            validate_email(email)
-            user = User.objects.create_user(username, email, password)
-            user.save()
-            return HttpResponseRedirect(reverse("index"))
-        except ValidationError as _:
-            messages.error(request, "invalid email address!")
-            return render(request, 'register.html')
-
     else:
         return render(request, 'register.html')
 
@@ -110,17 +116,20 @@ def resetpwd_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         code = request.POST.get("code")
-        password = request.POST.get("password")
-        user = User.objects.get(username=username)
-        with open("resetCode.pkl", "rb") as f:
-            userPKL_read = pickle.load(f)
-            reset_code = userPKL_read[user.email]
-        if str(code) == str(reset_code):
-            user.password = password
-            user.save()
-            messages.add_message(request, 'change password successful!')
-        else:
-            messages.error(request, "reset password code is incorrect")
-        return HttpResponseRedirect(reverse("usermanage:login"))
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if password1 == password2:
+            password = password1
+            user = User.objects.get(username=username)
+            with open("resetCode.pkl", "rb") as f:
+                userPKL_read = pickle.load(f)
+                reset_code = userPKL_read[user.email]
+            if str(code) == str(reset_code):
+                user.password = password
+                user.save()
+                messages.add_message(request, ERROR, 'change password successful!')
+            else:
+                messages.error(request, "reset password code is incorrect")
+            return HttpResponseRedirect(reverse("usermanage:login"))
     else:
         return render(request, 'resetpwd.html')
