@@ -55,6 +55,8 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
 
         const categorizedMetrics = { E: [], S: [], G: [] };
         newMetrics.forEach((metric) => {
+          console.log("check");
+          console.log(metric);
           categorizedMetrics[metric.pillar].push(metric);
         });
 
@@ -96,17 +98,18 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
           setLoading(false);
           return;
         }
-        console.log(data);
-        const newMetrics = response.data.map((metric) => ({
+        const newMetrics = Object.values(data).map((metric) => ({
           id: metric.metric_id,
           title: metric.metric_name,
-          weight: metric.custom_weight,
+          pillar: metric.pillar,
+          weight: 1,
           isSelected: false,
           isOpen: false,
           subMetrics: metric.indicators.map((ind) => ({
             id: ind.indicator_id,
             title: ind.indicator_name,
             value: ind.value,
+            weight: 1,
             unit: ind.unit,
             source: ind.source,
           })),
@@ -187,8 +190,6 @@ const MetricsCard = ({ currentFramework, selectedCompany, selectedYear }) => {
 
     // Call APIs
     try {
-      console.log(metricsData);
-      console.log(indicatorsData);
       await axios.post(`${SERVER_URL}/app/saveindicator/`, indicatorsData);
       await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData);
       alert("Weights updated successfully!");
