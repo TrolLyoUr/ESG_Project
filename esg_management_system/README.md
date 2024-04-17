@@ -1,5 +1,6 @@
 ## Deploy instruction
 
+1. docker exec -it  bash
 1. python3 manage.py migrate
 2. python3 manage.py makemigrations
 3. python3 manage.py createsuperuser

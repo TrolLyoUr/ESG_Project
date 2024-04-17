@@ -136,3 +136,8 @@ def resetpwd_view(request):
             return render(request, 'resetpwd.html')
     else:
         return render(request, 'resetpwd.html')
+
+
+def userlogout(request):
+    logout(request)
+    return render(request, 'login.html')
