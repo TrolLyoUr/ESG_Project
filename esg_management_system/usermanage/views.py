@@ -131,5 +131,8 @@ def resetpwd_view(request):
             else:
                 messages.error(request, "reset password code is incorrect")
             return HttpResponseRedirect(reverse("usermanage:login"))
+        else:
+            messages.error(request, "two password not same!")
+            return render(request, 'resetpwd.html')
     else:
         return render(request, 'resetpwd.html')
