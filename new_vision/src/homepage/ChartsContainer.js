@@ -62,7 +62,7 @@ const ChartsContainer = ({
       datasets: [
         {
           label: `${framework} Score by Year`,
-          data: Object.values(resultData).map((value) => value || 0), // 转换为数组并处理 null 值
+          data: Object.values(resultData).map((value) => value || null), // 转换为数组并处理 null 值
           fill: false,
           borderColor: "rgb(75, 192, 192)",
           tension: 0.1,
@@ -72,49 +72,72 @@ const ChartsContainer = ({
   };
 
   const fetchChartMetricsData = async () => {
-    const framework = frameworkMap[frameworkId]; // 根据 frameworkId 获取对应的框架名称
+    const framework = frameworkMap[frameworkId];
+    console.log("Selected metrics:", selectedMetrics);
     const url = `${SERVER_URL}/app/metricsdatavalue/?companies=${companyId}&framework=${frameworkId}&metrics=${selectedMetrics.join(
       "&metrics="
     )}`;
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const jsonData = await response.json();
-    if (!jsonData.data || !jsonData.data.length) {
-      throw new Error("No data found");
-    }
-
-    // Assuming there is only one company in the response for simplicity
-    const metricsScores = jsonData.data[0].metrics_scores;
-
-    const resultData = {};
-    metricsScores.forEach((scoreItem) => {
-      if (scoreItem.metric_id === 97) {
-        // Ensure it's the correct metric ID
-        resultData[scoreItem.year] = scoreItem.score >= 0 ? scoreItem.score : 0; // Replace negative scores with 0
-      }
-    });
-
-    return {
-      labels: Object.keys(resultData).sort((a, b) => a - b), // Sort years numerically
-      datasets: [
-        {
-          label: `${framework} Score by Year`,
-          data: Object.values(resultData),
-          fill: false,
-          borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ],
-    };
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const jsonData = await response.json();
+      if (!jsonData.data || !jsonData.data.length) {
+        throw new Error("No data found");
+      }
+
+      // Assuming there is only one company in the response for simplicity
+      const metricsScores = jsonData.data[0].metrics_scores;
+      console.log("Metrics scores data:", metricsScores);
+
+      // Organize data by metric ID
+      const scoresByMetric = {};
+      const metricNames = {}; // To store metric names for use in labels
+
+      metricsScores.forEach((score) => {
+        if (!scoresByMetric[score.metric_id]) {
+          scoresByMetric[score.metric_id] = [];
+          metricNames[score.metric_id] = score.metric_name; // Store the metric name
+        }
+        scoresByMetric[score.metric_id].push({
+          year: score.year,
+          score: score.score >= 0 ? score.score : null, // Keep negative as null for better visualization
+        });
+      });
+      console.log("Scores by metric:", scoresByMetric);
+
+      // Convert organized data into chart datasets
+      const datasets = Object.keys(scoresByMetric).map((metricId) => {
+        return {
+          label: `${framework} - ${metricNames[metricId]} (ID: ${metricId})`, // Include metric name and ID
+          data: scoresByMetric[metricId]
+            .sort((a, b) => a.year - b.year)
+            .map((item) => item.score),
+          fill: false,
+          borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Random color for each line
+          tension: 0.1,
+        };
+      });
+
+      return {
+        labels: [...new Set(metricsScores.map((item) => item.year))].sort(
+          (a, b) => a - b
+        ),
+        datasets: datasets,
+      };
+    } catch (error) {
+      console.error("Error fetching metrics data:", error);
+      throw error; // Rethrow to handle in calling function
+    }
   };
 
   const handleApiCall = () => {
@@ -170,6 +193,7 @@ const ChartsContainer = ({
   const handleShowMetrcisChart = async () => {
     try {
       const data = await fetchChartMetricsData();
+      console.log("Metrics chart data:", data);
       setChartData(data);
       setShowChart(true);
     } catch (error) {
