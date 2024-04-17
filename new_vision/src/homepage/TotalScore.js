@@ -15,7 +15,7 @@ const TotalScore = ({ companyId, year, frameworkId }) => {
     if (companyId && year && frameworkId) {
       const fetchData = async () => {
         try {
-          const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyId}`, {
+          const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyId}&scale=1`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ const TotalScore = ({ companyId, year, frameworkId }) => {
             throw new Error('Network response was not ok');
           }
 
-          console.log("Framework name:", frameworkName);
+         
                     
           // 假设 data 直接包含了框架数据，如 data.GRI 或 data.SASB
          

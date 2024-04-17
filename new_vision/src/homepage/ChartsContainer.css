@@ -33,8 +33,10 @@
 
 
 .chart {
-  width: 100%; /* 使图表充满容器宽度 */
-  margin-bottom: 20px; /* 为图表之间添加一些空间 */
+  width: 100%;       /* 父容器宽度占满可用空间 */
+  height:40vh;     /* 高度设置为视口高度的100% */
+  padding: 0;        /* 如果不需要内边距，确保设置为0 */
+  margin: 0;         /* 如果不需要外边距，确保设置为0 */
 }
 
 /* 响应式调整：小屏幕设备上的样式 */
@@ -72,4 +74,11 @@
 
 .custom-pie-btn:hover {
   background-color: #e68900; /* 深橙色 */
+}
+
+.chart-buttons {
+  position: absolute; /* 或使用 relative, 根据需要调整 */
+  top: 0;
+  left: 50%; /* 可以调整到页面的中间 */
+  transform: translateX(-50%); /* 中心对齐 */
 }
