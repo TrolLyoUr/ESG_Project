@@ -13,15 +13,17 @@ const frameworkMap = {
   6: 'TCFD'
 };
 
-const ChartsContainer = ({ companyId, year, frameworkId }) => {
+const ChartsContainer = ({ companyId, year, frameworkId,companyname }) => {
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: []
   });
+  const [apiResponse, setApiResponse] = useState("");
+  const [showChart, setShowChart] = useState(true); 
 
   const fetchChartData = async () => {
     const framework = frameworkMap[frameworkId];  // 根据 frameworkId 获取对应的框架名称
-    const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}&framework=${framework}`;
+    const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}&framework=${frameworkId}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -48,10 +50,90 @@ const ChartsContainer = ({ companyId, year, frameworkId }) => {
     };
   };
 
+  const fetchChartMetricsData = async () => {
+    const framework = frameworkMap[frameworkId];  // 根据 frameworkId 获取对应的框架名称
+    const url = `${SERVER_URL}/app/metricsdatavalue/?companies=${companyId}&framework=${frameworkId}&metrics=97`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+  
+    const jsonData = await response.json();
+    if (!jsonData.data || !jsonData.data.length) {
+      throw new Error('No data found');
+    }
+  
+    // Assuming there is only one company in the response for simplicity
+    const metricsScores = jsonData.data[0].metrics_scores;
+  
+    const resultData = {};
+    metricsScores.forEach(scoreItem => {
+      if (scoreItem.metric_id === 97) {  // Ensure it's the correct metric ID
+        resultData[scoreItem.year] = scoreItem.score >= 0 ? scoreItem.score : 0;  // Replace negative scores with 0
+      }
+    });
+    
+    
+    
+    return {
+      labels: Object.keys(resultData).sort((a, b) => a - b), // Sort years numerically
+      datasets: [{
+        label: `${framework} Score by Year`,
+        data: Object.values(resultData),
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }]
+    };
+  };
+  
+  const handleApiCall = () => {
+    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+    const apiKey = "AIzaSyBbLoDWc9dfyr1nz5ySOc3uGpdiyxLyTG0"; // 
+    const text = `Analyze the ESG performance of ${companyname} for the year ${year}.`; // 使用模板字符串整合文本和参数
+    const data = {
+        contents: [
+            {
+                parts: [{ 
+                    text: text  
+                }]
+            }
+        ]
+    };
+
+    fetch(`${url}?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      const text = data.candidates[0].content.parts[0].text;
+      console.log('Success:', text);
+      setApiResponse(text);  // 更新状态以显示文本
+      toggleDisplay();  // 数据加载完成后切换显示
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+};
+
+  
+  
+
   const handleShowChart = async () => {
     try {
       const data = await fetchChartData();
       setChartData(data);
+      setShowChart(true);
     } catch (error) {
       console.error('Error fetching chart data:', error);
       setChartData({
@@ -61,16 +143,50 @@ const ChartsContainer = ({ companyId, year, frameworkId }) => {
     }
   };
 
+  const handleShowMetrcisChart = async () => {
+    try {
+      const data = await fetchChartMetricsData();
+      setChartData(data);
+      setShowChart(true);
+    } catch (error) {
+      console.error('Error fetching chart data:', error);
+      setChartData({
+        labels: [],
+        datasets: []
+      });
+    }
+  };
+
+  const toggleDisplay = () => {
+    setShowChart(!showChart);  // 切换显示状态
+  };
+
   return (
     <div className="chart-container">
       <div className="chart-buttons btn-group">
         <button type="button" className="btn custom-line-btn" onClick={handleShowChart}>
-          {frameworkMap[frameworkId]} Score Line Chart
+          ESG Line Chart
         </button>
+        <button type="button" className="btn custom-line-btn" onClick={handleShowMetrcisChart}>
+          Metrics Line Chart
+        </button>
+        <button type="button" className="btn custom-line-btn" onClick={handleApiCall}>
+          Data Analysis
+        </button>
+
       </div>
-      <div className="chart">
-        <Line data={chartData} />
-      </div>
+      {showChart ? (
+        <div className="chart">
+          <Line data={chartData} />
+        </div>
+      ) : (
+        <textarea
+          value={apiResponse || ""}
+          readOnly
+          className="form-control feature-bar-item textarea-feature-bar-item"
+          rows="20"
+        ></textarea>
+      )}
     </div>
   );
 };
