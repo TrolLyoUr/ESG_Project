@@ -26,7 +26,7 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
             console.log("Fetching data for company1:", companyid1, year1, framework);
             const fetchData = async () => {
                 try {
-                    const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyid1}`, {
+                    const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyid1}&scale=1`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
@@ -227,19 +227,21 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
                     labels: data[0].data[0].metrics_scores.map(score => score.year),
                     datasets: [
                         {
-                            label: data[0].data[0].company_name,
+                            label: `Company 1: ${company1} (${year1})`,  // 使用 company1 变量，假设它包含正确的公司名称
                             data: data[0].data[0].metrics_scores.map(score => score.score),
                             fill: false,
                             borderColor: 'rgb(75, 192, 192)'
                         },
                         {
-                            label: data[1].data[0].company_name,
+                            label: `Company 2: ${company2} (${year2})`,// 使用 company2 变量，假设它包含正确的公司名称
                             data: data[1].data[0].metrics_scores.map(score => score.score),
                             fill: false,
                             borderColor: 'rgb(255, 99, 132)'
                         }
                     ]
                 };
+
+                
     
                 // 更新状态以保存数据
                 setChartData(prev => ({ ...prev, [metricId]: chartData }));
@@ -249,6 +251,22 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
             }
         }
     };
+
+    const options = {
+        legend: {
+            display: true,  // 确保显示图例
+            position: 'top' // 图例的位置
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    };
+    
+    
 
     return (
         <div className="table-responsive">
@@ -291,6 +309,7 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
                                                             <th>{company2}({year2})</th>
                                                         </tr>
                                                     </thead>
+                                                    
                                                     <tbody>
                                                         {metric.indicators.map(indicator => (
                                                             <tr key={indicator.indicator_id} className="indicator-row">
@@ -302,17 +321,22 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
                                                     </tbody>
                                                 </table>
                                             </td>
+                                            
                                         </tr>
                                         <tr>
+                                       
                                         <td colSpan="5">
                                             {chartData[metricId] ? (
                                                 <div className="chart-container1">
-                                                    <Line data={chartData[metricId]} />
+                                                    <Line data={chartData[metricId]} options={options}/>
                                                 </div>
                                             ) : (
                                                 <p className="loading-text">Loading chart...</p>
                                             )}
+                                             <div className='legend'>Green line:{company1} </div>
+                                        <div className='legend'>Red line: {company2}</div>
                                         </td>
+                                        
                                         </tr>
                                     </>
                                 )}
