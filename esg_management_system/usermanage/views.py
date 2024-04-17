@@ -125,7 +125,7 @@ def resetpwd_view(request):
                 userPKL_read = pickle.load(f)
                 reset_code = userPKL_read[user.email]
             if str(code) == str(reset_code):
-                user.password = password
+                user.set_password(password)
                 user.save()
                 messages.add_message(request, ERROR, 'change password successful!')
             else:

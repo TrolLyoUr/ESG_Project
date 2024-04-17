@@ -160,6 +160,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         framework_id = request.query_params.get("framework")
         metric_ids = request.query_params.getlist("metrics")
         year = request.query_params.get("year")
+        user = request.user.id
         years = DataValue.objects.order_by('year').values('year').distinct()
 
         # 查询指定的公司、框架和指标
@@ -174,7 +175,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
             metrics_scores = []
             if year:
                 for metric in metrics:
-                    score = calculate_metric_score_by_year(company, framework, metric, year)
+                    score = calculate_metric_score_by_year(company, framework, metric, year, user)
                     metric_data = MetricSerializer(metric).data
                     metrics_scores.append(
                         {
@@ -187,7 +188,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
             else:
                 for year in years:
                     for metric in metrics:
-                        score = calculate_metric_score_by_year(company, framework, metric, year['year'])
+                        score = calculate_metric_score_by_year(company, framework, metric, year['year'], user)
                         metric_data = MetricSerializer(metric).data
                         metrics_scores.append(
                             {

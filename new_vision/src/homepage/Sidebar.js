@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const serverUrl = SERVER_URL;
 axios.defaults.withCredentials = true;
 
-const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
+const Sidebar = ({ isOpen, setCompanyId, setYear, setCompanyname }) => {
   const navigate = useNavigate(); 
   const sidebarClasses = `sidebar ${isOpen ? "open" : "hidden"}`;
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -103,10 +103,45 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
     }
   };
 
+  const handleInputChange2 = async (e, isSecondCompany = false) => {
+    const value = e.target.value.trim();
+    if (isSecondCompany) {
+      setSelectedCompany2(value);
+    } else {
+      setSelectedCompany(value);
+    }
+  
+    if (value.length >= 1) {
+      try {
+        const apiURL = `${serverUrl}/app/fsearch/${value}/`;
+        const response = await axios.get(apiURL, { withCredentials: true });
+        
+        const companies = response.data.map((company) => ({
+          name: company.name,
+          id: company.id,
+        }));
+        if (isSecondCompany) {
+          setFilteredCompanies2(companies);
+        } else {
+          setFilteredCompanies(companies);
+        }
+      } catch (error) {
+        console.error("Failed to fetch filtered companies:", error);
+      }
+    } else {
+      if (isSecondCompany) {
+        setFilteredCompanies2([]);
+      } else {
+        setFilteredCompanies([]);
+      }
+    }
+  };
+
   const finalizeSelection = () => {
     const company = filteredCompanies.find((c) => c.name === selectedCompany);
     if (company) {
       setCompanyId(company.id);
+      setCompanyname(company.name);
     }
   };
 
@@ -130,14 +165,14 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
               Company
             </label>
             <input
-              className="input"
-              list="company-options"
-              id="company"
-              value={selectedCompany}
-              onChange={(e) => handleInputChange(e)}
-              onBlur={finalizeSelection}
-              placeholder="Search a company"
-            />
+                className="input"
+                list="company-options"
+                id="company"
+                value={selectedCompany}
+                onChange={handleInputChange} // 只处理输入变化，不设置公司名称
+                onBlur={finalizeSelection} // 在这里处理最终选择，设置公司ID和名称
+                placeholder="Search a company"
+              />
             <datalist id="company-options">
               {filteredCompanies.map((company, index) => (
                 <option key={index} value={company.name} />
@@ -183,10 +218,16 @@ const Sidebar = ({ isOpen, setCompanyId, setYear }) => {
                   list="company-options2"
                   id="company2"
                   value={selectedCompany2}
-                  onChange={(e) => handleInputChange(e, true)}
+                  onChange={(e) => handleInputChange2(e, true)}
                   placeholder="Search another company"
                 />
+                 <datalist id="company-options2">
+                    {filteredCompanies2.map((company2, index) => (
+                      <option key={index} value={company2.name} />
+                    ))}
+                  </datalist>
               </li>
+              
               <li>
                 <label className="label" htmlFor="year2">
                   Year

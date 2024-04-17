@@ -1,6 +1,7 @@
 from django.db.models import Sum, F, FloatField, Q
 from django.db.models.functions import Coalesce
-from .models import MetricIndicator, DataValue, FrameworkMetric, Framework
+from .models import MetricIndicator, DataValue, FrameworkMetric, Framework, UserMetricPreference, \
+    UserIndicatorPreference
 
 
 # 计算某公司在所有三个框架下的所有年份的分数
@@ -48,14 +49,18 @@ def calculate_framework_score_by_year(company, framework, year):
 
 
 # 替代calculate_metric_score，添加了一个年份参数
-def calculate_metric_score_by_year(company, framework, metric, year):
+def calculate_metric_score_by_year(company, framework, metric, year, user):
     metric_indicators = MetricIndicator.objects.filter(metric=metric).select_related()
     indicator_values = {}
 
     for metric_indicator in metric_indicators:
         indicator = metric_indicator.indicator
         # 这里的weight需要改为用户自定义的weight
-        predefined_weight = metric_indicator.predefined_weight
+        user_metric_weight = UserMetricPreference.objects.filter(user_id=user, framework=framework, metric=metric).all()
+        if len(user_metric_weight) == 0:
+            predefined_weight = metric_indicator.predefined_weight
+        else:
+            predefined_weight = user_metric_weight.custom_weight
 
         data_value = (
             DataValue.objects.filter(company=company, indicator=indicator)
