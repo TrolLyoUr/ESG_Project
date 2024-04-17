@@ -10,6 +10,7 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
     company: "",
     year: "",
     framework: "",
+    companyName: "",
     selectedMetrics: [],
   });
 
@@ -61,12 +62,16 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
           year={profile.year}
           frameworkId={profile.framework}
           selectedMetrics={profile.selectedMetrics}
+          companyname={profile.companyName}
         />
       </div>
       <Sidebar
         isOpen={isSidebarOpen}
         setCompanyId={(company) => handleProfileChange("company", company)}
         setYear={(year) => handleProfileChange("year", year)}
+        setCompanyname={(companyName) =>
+          handleProfileChange("companyName", companyName)
+        }
       />
     </div>
   );
