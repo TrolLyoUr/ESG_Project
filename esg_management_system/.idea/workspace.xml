@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="final version 3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resetCode.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/resetCode.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,15 +170,7 @@
       <workItem from="1713243814177" duration="1759000" />
       <workItem from="1713245995789" duration="9016000" />
       <workItem from="1713256880182" duration="10787000" />
-      <workItem from="1713308247358" duration="14983000" />
-    </task>
-    <task id="LOCAL-00009" summary="split api and front end">
-      <option name="closed" value="true" />
-      <created>1711521266553</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1711521266553</updated>
+      <workItem from="1713308247358" duration="16691000" />
     </task>
     <task id="LOCAL-00010" summary="remove cors hosts">
       <option name="closed" value="true" />
@@ -564,7 +556,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713337692992</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="final version 3">
+      <option name="closed" value="true" />
+      <created>1713338875970</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1713338875970</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
