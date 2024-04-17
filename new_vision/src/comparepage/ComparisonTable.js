@@ -5,9 +5,9 @@ import './ComparisonTable.css';
 import { SERVER_URL } from "./config"; 
 
 const frameworkMapping = {
-    4: 'GRI',
-    5: 'SASB',
-    6: 'TCFD'
+    4: "GRI",
+    5: "SASB",
+    6: "TCFD"
 };
 
 
@@ -18,6 +18,7 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
     const [esgScore1, setEsgScore1] = useState(null);
     const [esgScore2, setEsgScore2] = useState(null);
     const [chartData, setChartData] = useState({});
+    const [isTimeout, setIsTimeout] = useState(false);
 
 
     useEffect(() => {
@@ -37,10 +38,14 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
                     }
     
                     const data = await response.json();
-                    const frameworkName = frameworkMapping[framework];
-                    const yearData = data.result[frameworkName];
-                    console.log("Year data for framework:", yearData); 
-                    const score1 = yearData && yearData[year1] !== undefined ? yearData[year1].toFixed(3) : null;
+                console.log("Data from backend:", data);
+                const frameworkName = frameworkMapping[framework];
+                console.log("Framework name:", frameworkName);
+                
+                // 假设 data 直接包含了框架数据，如 data.GRI 或 data.SASB
+                const yearData = data[frameworkName];
+                console.log("Year data for framework:", yearData);
+                const score1 = yearData && yearData[year1] !== undefined ? yearData[year1].toFixed(3) : null;
                     
                     setEsgScore1(score1);
                     console.log("Score1:", score1);
@@ -62,7 +67,7 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
         if (companyid2 && year2 && framework) {
             const fetchData = async () => {
                 try {
-                    const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyid2}`, {
+                    const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyid2}&scale=1`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
@@ -75,7 +80,11 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
     
                     const data = await response.json();
                     const frameworkName = frameworkMapping[framework];
-                    const yearData = data.result[frameworkName];// 输出对应框架的年份数据
+                    console.log("Framework name:", frameworkName);
+                    
+                    // 假设 data 直接包含了框架数据，如 data.GRI 或 data.SASB
+                    const yearData = data[frameworkName];
+                    console.log("Year data for framework:", yearData);
                     const score2 = yearData && yearData[year2] !== undefined ? yearData[year2].toFixed(3) : null;
                     setEsgScore2(score2);
     
@@ -254,8 +263,8 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
                 <tbody>
                     <tr>
                         <td className="esg-score">ESG Score</td>
-                        <td colSpan="2" className="esg-score-cell">{esgScore1 !== null ? esgScore1 : 'Loading...'}</td>
-                        <td colSpan="2" className="esg-score-cell">{esgScore2 !== null ? esgScore2 : 'Loading...'}</td>
+                        <td colSpan="2" className="esg-score-cell">{esgScore1 !== null ? esgScore1 : 'Unavailable'}</td>
+                        <td colSpan="2" className="esg-score-cell">{esgScore2 !== null ? esgScore2 : 'Unavailable'}</td>
                     </tr>
                     {Object.keys(mergedMetrics).map(metricId => {
                         const metric = mergedMetrics[metricId];
