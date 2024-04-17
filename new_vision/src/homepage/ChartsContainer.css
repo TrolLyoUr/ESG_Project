@@ -86,11 +86,11 @@
 
 .textarea-feature-bar-item {
   width: 100%; /* 控制宽度为容器宽度的 80% */
-  max-height: 350px; /* 最大宽度为 600px，可以根据实际需要调整 */
+  max-height: 800px; /* 最大宽度为 600px，可以根据实际需要调整 */
   margin: 10px auto; /* 上下 10px 边距，水平居中 */
   display: block; /* 确保这是一个块级元素，以应用 margin auto */
   position: absolute;
-  bottom: 0; /* 置于底部 */
+  top: 20; /* 置于底部 */
   left: 0; /* 从左侧开始，可以根据需要调整 */
   width: 100%; /* 覆盖整个容器宽度，或根据需求调整 */
   max-width: 100%; /* 确保不超出容器宽度 */
