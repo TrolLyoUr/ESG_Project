@@ -305,28 +305,23 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CompanyPerformance(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
-        coms_id = request.query_params.getlist("company")
+        com_id = request.query_params.get("company")
         scale = request.query_params.get('scale')
         with open("result.pkl", "rb") as file:
             data = pickle.load(file)
         if scale is None:
-            result = {}
-            for c in coms_id:
-                result[c] = data[int(c)]
+            result = data[int(com_id)]
             return Response(result)
         else:
-            new_result = {}
-            for c in coms_id:
-                _result = data[int(c)]
-                _new_result = {}
-                for key, value in _result.items():
-                    __new_result = {}
-                    for k, v in value.items():
-                        try:
-                            tanh = lambda x: ((numpy.e ** x) - (numpy.e ** -x)) / ((numpy.e ** x) + (numpy.e ** -x))
-                            __new_result[k] = tanh(v) * 100
-                        except OverflowError:
-                            __new_result[k] = 100
-                    _new_result[key] = __new_result
-                new_result[c] = _new_result
-            return Response(new_result)
+            _result = data[int(com_id)]
+            _new_result = {}
+            for key, value in _result.items():
+                __new_result = {}
+                for k, v in value.items():
+                    try:
+                        tanh = lambda x: ((numpy.e ** x) - (numpy.e ** -x)) / ((numpy.e ** x) + (numpy.e ** -x))
+                        __new_result[k] = tanh(v) * 100
+                    except OverflowError:
+                        __new_result[k] = 100
+                _new_result[key] = __new_result
+            return Response(_new_result)
