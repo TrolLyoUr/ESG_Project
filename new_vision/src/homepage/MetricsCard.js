@@ -41,7 +41,8 @@ const MetricsCard = ({
       setLoading(true);
       try {
         const response = await axios.get(
-          `${SERVER_URL}/app/frameworks/${currentFramework}/metrics/`
+          `${SERVER_URL}/app/frameworks/${currentFramework}/metrics/`,
+          { withCredentials: true }
         );
         const newMetrics = response.data.map((metric) => ({
           id: metric.metric.id,
@@ -94,7 +95,7 @@ const MetricsCard = ({
       try {
         const url = `${SERVER_URL}/app/indicatordata?company=${selectedCompany}&framework=${currentFramework}&year=${selectedYear}`;
         console.log(url);
-        const response = await axios.get(url);
+        const response = await axios.get(url,{ withCredentials: true });
         const data = response.data;
         if (Object.keys(data).length === 0 && data.constructor === Object) {
           console.log("No data available for the selected company and year.");
@@ -195,8 +196,8 @@ const MetricsCard = ({
 
     // Call APIs
     try {
-      await axios.post(`${SERVER_URL}/app/saveindicator/`, indicatorsData);
-      await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData);
+      await axios.post(`${SERVER_URL}/app/saveindicator/`, indicatorsData,{ withCredentials: true });
+      await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData,{ withCredentials: true });
       alert("Weights updated successfully!");
     } catch (error) {
       console.error("Error submitting weights:", error);
@@ -255,7 +256,7 @@ const MetricsCard = ({
 
     try {
       setLoading(true);
-      const response = await axios.get(indicatorsPreferencesURL);
+      const response = await axios.get(indicatorsPreferencesURL, { withCredentials: true });
       const userWeights = response.data;
 
       const updatedWeights = { ...weights }; // Make a shallow copy of the current weights
@@ -263,7 +264,7 @@ const MetricsCard = ({
         updatedWeights[`indicator_${metric}_${indicator}`] = custom_weight; // Update the weight
       });
 
-      const metricsResponse = await axios.get(metricsPreferencesURL);
+      const metricsResponse = await axios.get(metricsPreferencesURL, { withCredentials: true });
       const userMetricsWeights = metricsResponse.data;
       userMetricsWeights.forEach(({ framework, metric, custom_weight }) => {
         if (framework === currentFramework) {
@@ -387,7 +388,7 @@ const MetricsCard = ({
         "&metrics="
       )}&year=${selectedYear}`;
 
-      const response = await axios.get(url);
+      const response = await axios.get(url,{ withCredentials: true });
       const data = response.data.data; // Assuming the API response structure as described
       console.log(data);
 
