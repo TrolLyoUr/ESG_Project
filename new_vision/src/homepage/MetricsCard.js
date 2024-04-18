@@ -443,42 +443,35 @@ const MetricsCard = ({
                   <Collapse in={value.open}>
                     <ListGroup>
                       {value.metrics.map((metric) => (
-                        <ListGroup.Item
-                          key={metric.id}
-                          className="metric-item"
-                          style={{
-                            border: "1px solid #eee",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                          }}
-                        >
+                        <ListGroup.Item key={metric.id} className="metric-item">
                           <div className="d-flex justify-content-between align-items-center">
                             <Form.Check
-                              type="switch"
-                              id={`custom-switch-${metric.id}`}
-                              label={metric.title}
+                              type="checkbox"
                               checked={metric.isSelected}
                               onChange={() => toggleSelection(metric.id)}
-                              className="form-switch"
+                              label={metric.title}
                             />
-                            <div className="metric-controls">
+                            <div className="d-flex align-items-center">
                               <Form.Control
-                                type="number"
+                                key={`indicator_${metric.id}`}
                                 className="weight-input"
-                                value={weights[`metric_${metric.id}`] || ""}
+                                type="number"
+                                value={weights[`metric_${metric.id}`]}
                                 onChange={(e) =>
                                   handleWeightChange(
                                     `metric_${metric.id}`,
                                     e.target.value
                                   )
                                 }
-                                style={{ maxWidth: "80px" }}
                               />
                               <Button
-                                variant="outline-secondary"
-                                size="sm"
                                 onClick={() => toggleSubMetrics(metric.id)}
+                                size="sm"
+                                style={{ marginLeft: "10px" }}
                               >
-                                {metric.isOpen ? "Hide" : "Show"} Metrics
+                                {metric.isOpen
+                                  ? "Hide Metrics"
+                                  : "Show Metrics"}
                               </Button>
                               <OverlayTrigger
                                 placement="top"
@@ -487,28 +480,26 @@ const MetricsCard = ({
                                     {loading
                                       ? "Loading..."
                                       : tooltipContent[metric.id] ||
-                                        "Click to view more"}
+                                        "Click to view indicator's information"}
                                   </Tooltip>
                                 }
                               >
-                                <i
-                                  className="fas fa-info-circle"
+                                <span
+                                  className="info-icon"
                                   onClick={() => fetchMetricsContent(metric.id)}
-                                ></i>
+                                >
+                                  !
+                                </span>
                               </OverlayTrigger>
-                              <span className="metric-score">
-                                Score:{" "}
-                                <strong>
+                              <div>
+                                {/* Displaying metric score */}
+                                <span className="metric-score">
+                                  Score:{" "}
                                   {metricScores[metric.id] >= 0
                                     ? metricScores[metric.id].toFixed(4)
                                     : "N/A"}
-                                </strong>
-                              </span>
-                              <i
-                                className="fas fa-chart-line"
-                                onClick={() => setSelectedMetrics([metric.id])}
-                                style={{ cursor: "pointer", marginLeft: "5px" }}
-                              ></i>
+                                </span>
+                              </div>
                             </div>
                           </div>
                           <Collapse in={metric.isOpen}>
@@ -517,13 +508,38 @@ const MetricsCard = ({
                                 {metric.subMetrics.map((subMetric) => (
                                   <ListGroup.Item
                                     key={subMetric.id}
-                                    className="sub-metric"
+                                    className="d-flex align-items-center justify-content-between pe-3"
                                   >
-                                    <div className="d-flex justify-content-between align-items-center">
-                                      <span className="sub-metric-title">
-                                        {subMetric.title} - {subMetric.value}{" "}
-                                        {subMetric.unit}
-                                      </span>
+                                    <div className="metric-display">
+                                      <div className="label-container">
+                                        <span className="label-title">
+                                          {subMetric.title}
+                                        </span>
+                                        <span className="label-value">
+                                          {subMetric.value}
+                                        </span>
+                                        <span className="label-unit">
+                                          {subMetric.unit}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="d-flex align-items-center">
+                                      <Form.Control
+                                        key={`indicator_${metric.id}_${subMetric.id}`}
+                                        className="weight-input"
+                                        type="number"
+                                        value={
+                                          weights[
+                                            `indicator_${metric.id}_${subMetric.id}`
+                                          ] || ""
+                                        }
+                                        onChange={(e) =>
+                                          handleWeightChange(
+                                            `indicator_${metric.id}_${subMetric.id}`,
+                                            e.target.value
+                                          )
+                                        }
+                                      />
                                       <OverlayTrigger
                                         placement="top"
                                         overlay={
@@ -533,12 +549,20 @@ const MetricsCard = ({
                                               : renderTextWithLineBreaks(
                                                   tooltipContent[
                                                     subMetric.id
-                                                  ] || "Click to view more"
+                                                  ] ||
+                                                    "click to view metric's information"
                                                 )}
                                           </Tooltip>
                                         }
                                       >
-                                        <i className="fas fa-info-circle"></i>
+                                        <span
+                                          className="info-icon me-3"
+                                          onClick={() =>
+                                            fetchIndicatorContent(subMetric.id)
+                                          }
+                                        >
+                                          !
+                                        </span>
                                       </OverlayTrigger>
                                     </div>
                                   </ListGroup.Item>
