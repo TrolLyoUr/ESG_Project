@@ -118,7 +118,7 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SaveMetricPreferences(APIView):
     def post(self, request, *args, **kwargs):
-        user_id = 1
+        user_id = request.user.id
         data = [
             {**item, "user": user_id} for item in request.data
         ]
@@ -137,23 +137,23 @@ class SaveMetricPreferences(APIView):
                 framework__in=[item['framework'] for item in data],
                 metric__in=[item['metric'] for item in data]
             )
-            
+
             with transaction.atomic():
                 for preference in existing_query:
                     key = (preference.user_id, preference.framework_id, preference.metric_id)
                     if key in existing_preferences:
                         preference.custom_weight = existing_preferences[key]['custom_weight']
                         existing_preferences.pop(key)
-                
+
                 # Perform bulk update
                 UserMetricPreference.objects.bulk_update(existing_query, ['custom_weight'])
-                
+
                 # Remaining are new entries
                 new_preferences = [
                     UserMetricPreference(**item) for item in existing_preferences.values()
                 ]
                 UserMetricPreference.objects.bulk_create(new_preferences)
-            
+
             return Response({"status": "success"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -161,10 +161,10 @@ class SaveMetricPreferences(APIView):
 
 class SaveIndicatorPreferences(APIView):
     def post(self, request, *args, **kwargs):
-        user_id = 1
+        user_id = request.user.id
         data = [{**item, "user": user_id} for item in request.data]
         serializer = UserIndicatorPreferenceItemSerializer(data=data, many=True)
-        
+
         if serializer.is_valid():
             self.handle_bulk_operations(serializer.validated_data, user_id)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -296,7 +296,7 @@ class ListIndicatorValue(APIView):
                 cursor.execute(base_query)
 
             rows = cursor.fetchall()
-        
+
         for r in rows:
             metric_id = r[0]
             if metric_id not in data:
@@ -380,7 +380,7 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CompanyPerformance(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
-   # Query to fetch weighted values of indicators for each metric in the frameworks, grouped by year
+        # Query to fetch weighted values of indicators for each metric in the frameworks, grouped by year
         company_id = request.query_params.get('company')
         scores_query = """
         SELECT dv.year, f.name as framework_name, fm.predefined_weight as framework_weight, 
@@ -409,13 +409,13 @@ class CompanyPerformance(generics.ListAPIView):
 
         for row in rows:
             year, framework_name, framework_weight, metric_name, indicator_name, weighted_value = row
-            
+
             if framework_name not in company_scores:
                 company_scores[framework_name] = {}
-            
+
             if year not in company_scores[framework_name]:
                 company_scores[framework_name][year] = {'total_score': 0, 'metrics': {}}
-            
+
             if metric_name not in metrics_data:
                 metrics_data[metric_name] = {}
 
@@ -435,97 +435,103 @@ class CompanyPerformance(generics.ListAPIView):
         print("final:", company_scores)
         return JsonResponse(company_scores)
 
-def aggregate_scores(year_data, metrics_data, company_scores):
-        print("year_data", year_data)
-        print("metrics_data", metrics_data)
-        print("company_scores", company_scores)
-        
-        year = year_data['year']
-        framework_name = year_data['framework_name']
-        framework_weight = year_data['framework_weight']
 
-        for metric_name, indicators in metrics_data.items():
-            print(f"Processing metric {metric_name}")
-            print(f"Indicators: {indicators}")
-            score = apply_metric_formula(framework_name, metric_name, indicators)
-            print(f"Metric: {metric_name}, Score: {score}")
-            if score == -1:
-                continue
-            weighted_score = score * framework_weight
-            company_scores[framework_name][year]['metrics'][metric_name] = score
-            company_scores[framework_name][year]['total_score'] += weighted_score
+def aggregate_scores(year_data, metrics_data, company_scores):
+    print("year_data", year_data)
+    print("metrics_data", metrics_data)
+    print("company_scores", company_scores)
+
+    year = year_data['year']
+    framework_name = year_data['framework_name']
+    framework_weight = year_data['framework_weight']
+
+    for metric_name, indicators in metrics_data.items():
+        print(f"Processing metric {metric_name}")
+        print(f"Indicators: {indicators}")
+        score = apply_metric_formula(framework_name, metric_name, indicators)
+        print(f"Metric: {metric_name}, Score: {score}")
+        if score == -1:
+            continue
+        weighted_score = score * framework_weight
+        company_scores[framework_name][year]['metrics'][metric_name] = score
+        company_scores[framework_name][year]['total_score'] += weighted_score
+
 
 def apply_metric_formula(framework, metric_name, indicators):
     framework = framework.upper()
 
     indicator_requirements = {
-    'GRI': {
-        "Greenhouse Gas (GHG) Emissions Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'CO2INDIRECTSCOPE3', 'ENERGYUSETOTAL'],
-        "Water Efficiency": ['WATERWITHDRAWALTOTAL', 'ENERGYUSETOTAL'],
-        "Renewable Energy Utilization": ['RENEWENERGYCONSUMED', 'ENERGYUSETOTAL'],
-        "Waste Recycling Rate": ['WASTE_RECYCLED', 'WASTETOTAL'],
-        "Carbon Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL'],
-        "Air Quality Impact": ['SOXEMISSIONS', 'NOXEMISSIONS', 'PARTICULATE_MATTER_EMISSIONS'],
-        "Gender Pay Equity": ['GENDER_PAY_GAP_PERCENTAGE'],
-        "Diversity in Leadership": ['WOMENMANAGERS', 'ANALYTICBOARDFEMALE'],
-        "Employee Turnover Rate": ['TURNOVEREMPLOYEES'],
-        "Workforce Training Investment": ['AVGTRAININGHOURS'],
-        "Labor Relations Quality": ['TRADEUNIONREP'],
-        "Health and Safety Performance": ['TIRTOTAL', 'LOSTWORKINGDAYS', 'EMPLOYEEFATALITIES'],
-        "Employee Well-being and Engagement": ['COMMMEETINGSATTENDANCEAVG'],
-        "Workforce Diversity": ['WOMENEMPLOYEES'],
-        "Board Composition and Diversity": ['ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE'],
-        "Board Meeting Engagement": ['BOARDMEETINGATTENDANCEAVG'],
-        "Executive Compensation Alignment": ['CEO_PAY_RATIO_MEDIAN'],
-        "Committee Independence": ['ANALYTICAUDITCOMMIND', 'ANALYTICCOMPCOMMIND'],
-        "Governance Structure Effectiveness": ['ANALYTICNONEXECBOARD', 'ANALYTICINDEPBOARD'],
-        "Transparency and Accountability": ['ANALYTICNONAUDITAUDITFEESRATIO']
-    },
-    'SASB': {
-        "Greenhouse Gas (GHG) Emissions Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL'],
-        "Water Efficiency": ['WATERWITHDRAWALTOTAL', 'ELECTRICITYPURCHASED'],
-        "Renewable Energy Utilization": ['RENEWENERGYCONSUMED', 'ENERGYUSETOTAL'],
-        "Waste Recycling Rate": ['ANALYTICWASTERECYCLINGRATIO'],
-        "Carbon Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ANNUAL_MEDIAN_COMPENSATION'],
-        "Air Quality Impact": ['SOXEMISSIONS', 'NOXEMISSIONS', 'PARTICULATE_MATTER_EMISSIONS'],
-        "Gender Pay Equity": ['GENDER_PAY_GAP_PERCENTAGE'],
-        "Diversity in Leadership": ['WOMENMANAGERS', 'ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE'],
-        "Employee Turnover Rate": ['TURNOVEREMPLOYEES'],
-        "Workforce Training Investment": ['AVGTRAININGHOURS'],
-        "Labor Relations Quality": ['TRADEUNIONREP'],
-        "Health and Safety Performance": ['TIRTOTAL', 'LOSTWORKINGDAYS'],
-        "Employee Well-being and Engagement": ['BOARDMEETINGATTENDANCEAVG'],
-        "Workforce Diversity": ['WOMENEMPLOYEES', 'ANALYTICBOARDFEMALE'],
-        "Board Composition and Diversity": ['ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE', 'ANALYTICNONEXECBOARD'],
-        "Board Meeting Engagement": ['BOARDMEETINGATTENDANCEAVG', 'COMMMEETINGSATTENDANCEAVG'],
-        "Executive Compensation Alignment": ['CEO_PAY_RATIO_MEDIAN', 'ANALYTICNONAUDITAUDITFEESRATIO'],
-        "Committee Independence": ['ANALYTICAUDITCOMMIND', 'ANALYTICCOMPCOMMIND', 'ANALYTICNOMINATIONCOMMIND'],
-        "Governance Structure Effectiveness": ['ANALYTICNONEXECBOARD', 'ANALYTICINDEPBOARD', 'BOARDMEETINGATTENDANCEAVG'],
-        "Transparency and Accountability": ['ANALYTICNONAUDITAUDITFEESRATIO', 'AUDITCOMMNONEXECMEMBERS', 'COMPCOMMNONEXECMEMBERS']
-    },
-    'TCFD': {
-        "Greenhouse Gas (GHG) Emissions Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL', 'TRANALYTICRENEWENERGYUSE'],
-        "Water Efficiency": ['WATERWITHDRAWALTOTAL', 'ENERGYUSETOTAL'],
-        "Renewable Energy Utilization": ['RENEWENERGYCONSUMED', 'ENERGYUSETOTAL'],
-        "Waste Recycling Rate": ['WASTE_RECYCLED', 'WASTETOTAL'],
-        "Carbon Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL', 'CO2_NO_EQUIVALENTS'],
-        "Air Quality Impact": ['SOXEMISSIONS', 'NOXEMISSIONS', 'PARTICULATE_MATTER_EMISSIONS'],
-        "Gender Pay Equity": ['GENDER_PAY_GAP_PERCENTAGE'],
-        "Diversity in Leadership": ['WOMENMANAGERS', 'ANALYTICBOARDFEMALE'],
-        "Employee Turnover Rate": ['TURNOVEREMPLOYEES'],
-        "Workforce Training Investment": ['AVGTRAININGHOURS'],
-        "Labor Relations Quality": ['TRADEUNIONREP'],
-        "Health and Safety Performance": ['TIRTOTAL', 'LOSTWORKINGDAYS', 'EMPLOYEEFATALITIES'],
-        "Employee Well-being and Engagement": ['COMMMEETINGSATTENDANCEAVG', 'BOARDMEETINGATTENDANCEAVG'],
-        "Workforce Diversity": ['WOMENEMPLOYEES', 'ANALYTICBOARDFEMALE'],
-        "Board Composition and Diversity": ['ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE', 'ANALYTICNONEXECBOARD'],
-        "Board Meeting Engagement": ['BOARDMEETINGATTENDANCEAVG'],
-        "Executive Compensation Alignment": ['CEO_PAY_RATIO_MEDIAN'],
-        "Committee Independence": ['ANALYTICAUDITCOMMIND', 'ANALYTICCOMPCOMMIND', 'ANALYTICNOMINATIONCOMMIND'],
-        "Governance Structure Effectiveness": ['ANALYTICNONEXECBOARD', 'ANALYTICINDEPBOARD'],
-        "Transparency and Accountability": ['ANALYTICNONAUDITAUDITFEESRATIO']
+        'GRI': {
+            "Greenhouse Gas (GHG) Emissions Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'CO2INDIRECTSCOPE3',
+                                                         'ENERGYUSETOTAL'],
+            "Water Efficiency": ['WATERWITHDRAWALTOTAL', 'ENERGYUSETOTAL'],
+            "Renewable Energy Utilization": ['RENEWENERGYCONSUMED', 'ENERGYUSETOTAL'],
+            "Waste Recycling Rate": ['WASTE_RECYCLED', 'WASTETOTAL'],
+            "Carbon Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL'],
+            "Air Quality Impact": ['SOXEMISSIONS', 'NOXEMISSIONS', 'PARTICULATE_MATTER_EMISSIONS'],
+            "Gender Pay Equity": ['GENDER_PAY_GAP_PERCENTAGE'],
+            "Diversity in Leadership": ['WOMENMANAGERS', 'ANALYTICBOARDFEMALE'],
+            "Employee Turnover Rate": ['TURNOVEREMPLOYEES'],
+            "Workforce Training Investment": ['AVGTRAININGHOURS'],
+            "Labor Relations Quality": ['TRADEUNIONREP'],
+            "Health and Safety Performance": ['TIRTOTAL', 'LOSTWORKINGDAYS', 'EMPLOYEEFATALITIES'],
+            "Employee Well-being and Engagement": ['COMMMEETINGSATTENDANCEAVG'],
+            "Workforce Diversity": ['WOMENEMPLOYEES'],
+            "Board Composition and Diversity": ['ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE'],
+            "Board Meeting Engagement": ['BOARDMEETINGATTENDANCEAVG'],
+            "Executive Compensation Alignment": ['CEO_PAY_RATIO_MEDIAN'],
+            "Committee Independence": ['ANALYTICAUDITCOMMIND', 'ANALYTICCOMPCOMMIND'],
+            "Governance Structure Effectiveness": ['ANALYTICNONEXECBOARD', 'ANALYTICINDEPBOARD'],
+            "Transparency and Accountability": ['ANALYTICNONAUDITAUDITFEESRATIO']
+        },
+        'SASB': {
+            "Greenhouse Gas (GHG) Emissions Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL'],
+            "Water Efficiency": ['WATERWITHDRAWALTOTAL', 'ELECTRICITYPURCHASED'],
+            "Renewable Energy Utilization": ['RENEWENERGYCONSUMED', 'ENERGYUSETOTAL'],
+            "Waste Recycling Rate": ['ANALYTICWASTERECYCLINGRATIO'],
+            "Carbon Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ANNUAL_MEDIAN_COMPENSATION'],
+            "Air Quality Impact": ['SOXEMISSIONS', 'NOXEMISSIONS', 'PARTICULATE_MATTER_EMISSIONS'],
+            "Gender Pay Equity": ['GENDER_PAY_GAP_PERCENTAGE'],
+            "Diversity in Leadership": ['WOMENMANAGERS', 'ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE'],
+            "Employee Turnover Rate": ['TURNOVEREMPLOYEES'],
+            "Workforce Training Investment": ['AVGTRAININGHOURS'],
+            "Labor Relations Quality": ['TRADEUNIONREP'],
+            "Health and Safety Performance": ['TIRTOTAL', 'LOSTWORKINGDAYS'],
+            "Employee Well-being and Engagement": ['BOARDMEETINGATTENDANCEAVG'],
+            "Workforce Diversity": ['WOMENEMPLOYEES', 'ANALYTICBOARDFEMALE'],
+            "Board Composition and Diversity": ['ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE', 'ANALYTICNONEXECBOARD'],
+            "Board Meeting Engagement": ['BOARDMEETINGATTENDANCEAVG', 'COMMMEETINGSATTENDANCEAVG'],
+            "Executive Compensation Alignment": ['CEO_PAY_RATIO_MEDIAN', 'ANALYTICNONAUDITAUDITFEESRATIO'],
+            "Committee Independence": ['ANALYTICAUDITCOMMIND', 'ANALYTICCOMPCOMMIND', 'ANALYTICNOMINATIONCOMMIND'],
+            "Governance Structure Effectiveness": ['ANALYTICNONEXECBOARD', 'ANALYTICINDEPBOARD',
+                                                   'BOARDMEETINGATTENDANCEAVG'],
+            "Transparency and Accountability": ['ANALYTICNONAUDITAUDITFEESRATIO', 'AUDITCOMMNONEXECMEMBERS',
+                                                'COMPCOMMNONEXECMEMBERS']
+        },
+        'TCFD': {
+            "Greenhouse Gas (GHG) Emissions Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL',
+                                                         'TRANALYTICRENEWENERGYUSE'],
+            "Water Efficiency": ['WATERWITHDRAWALTOTAL', 'ENERGYUSETOTAL'],
+            "Renewable Energy Utilization": ['RENEWENERGYCONSUMED', 'ENERGYUSETOTAL'],
+            "Waste Recycling Rate": ['WASTE_RECYCLED', 'WASTETOTAL'],
+            "Carbon Intensity": ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'ENERGYUSETOTAL', 'CO2_NO_EQUIVALENTS'],
+            "Air Quality Impact": ['SOXEMISSIONS', 'NOXEMISSIONS', 'PARTICULATE_MATTER_EMISSIONS'],
+            "Gender Pay Equity": ['GENDER_PAY_GAP_PERCENTAGE'],
+            "Diversity in Leadership": ['WOMENMANAGERS', 'ANALYTICBOARDFEMALE'],
+            "Employee Turnover Rate": ['TURNOVEREMPLOYEES'],
+            "Workforce Training Investment": ['AVGTRAININGHOURS'],
+            "Labor Relations Quality": ['TRADEUNIONREP'],
+            "Health and Safety Performance": ['TIRTOTAL', 'LOSTWORKINGDAYS', 'EMPLOYEEFATALITIES'],
+            "Employee Well-being and Engagement": ['COMMMEETINGSATTENDANCEAVG', 'BOARDMEETINGATTENDANCEAVG'],
+            "Workforce Diversity": ['WOMENEMPLOYEES', 'ANALYTICBOARDFEMALE'],
+            "Board Composition and Diversity": ['ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE', 'ANALYTICNONEXECBOARD'],
+            "Board Meeting Engagement": ['BOARDMEETINGATTENDANCEAVG'],
+            "Executive Compensation Alignment": ['CEO_PAY_RATIO_MEDIAN'],
+            "Committee Independence": ['ANALYTICAUDITCOMMIND', 'ANALYTICCOMPCOMMIND', 'ANALYTICNOMINATIONCOMMIND'],
+            "Governance Structure Effectiveness": ['ANALYTICNONEXECBOARD', 'ANALYTICINDEPBOARD'],
+            "Transparency and Accountability": ['ANALYTICNONAUDITAUDITFEESRATIO']
+        }
     }
-}
 
     # Check for missing indicators
     required_indicators = indicator_requirements.get(framework, {}).get(metric_name, [])
@@ -536,11 +542,15 @@ def apply_metric_formula(framework, metric_name, indicators):
     if metric_name == "Greenhouse Gas (GHG) Emissions Intensity":
         # Implementation for different frameworks
         if framework == 'GRI':
-            result = sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'CO2INDIRECTSCOPE3']) / indicators.get('ENERGYUSETOTAL', 1)
+            result = sum(indicators.get(ind, 0) for ind in
+                         ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2', 'CO2INDIRECTSCOPE3']) / indicators.get(
+                'ENERGYUSETOTAL', 1)
         elif framework == 'SASB':
-            result = sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2']) / indicators.get('ENERGYUSETOTAL', 1)
+            result = sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2']) / indicators.get(
+                'ENERGYUSETOTAL', 1)
         elif framework == 'TCFD':
-            energy_adjusted = indicators.get('TRANALYTICRENEWENERGYUSE',0) * (1 + indicators.get('TRANALYTICRENEWENERGYUSE', 0) / 100)
+            energy_adjusted = indicators.get('TRANALYTICRENEWENERGYUSE', 0) * (
+                    1 + indicators.get('TRANALYTICRENEWENERGYUSE', 0) / 100)
             if energy_adjusted == 0:
                 return 0
             result = sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2']) / energy_adjusted
@@ -553,31 +563,36 @@ def apply_metric_formula(framework, metric_name, indicators):
             return indicators.get('WATERWITHDRAWALTOTAL', 0) / indicators.get('ELECTRICITYPURCHASED', 1)
 
     elif metric_name == "Renewable Energy Utilization":
-        return (indicators.get('RENEWENERGYCONSUMED', 0) / indicators.get('ENERGYUSETOTAL', 1)) if indicators.get('ENERGYUSETOTAL', 0) > 0 else 0
+        return (indicators.get('RENEWENERGYCONSUMED', 0) / indicators.get('ENERGYUSETOTAL', 1)) if indicators.get(
+            'ENERGYUSETOTAL', 0) > 0 else 0
 
     elif metric_name == "Waste Recycling Rate":
         if framework == 'GRI':
-            return (indicators.get('WASTE_RECYCLED', 0) / indicators.get('WASTETOTAL', 1)) if indicators.get('WASTETOTAL', 0) > 0 else 0
+            return (indicators.get('WASTE_RECYCLED', 0) / indicators.get('WASTETOTAL', 1)) if indicators.get(
+                'WASTETOTAL', 0) > 0 else 0
         elif framework == 'SASB':
             return indicators.get('ANALYTICWASTERECYCLINGRATIO', 0)
 
     elif metric_name == "Carbon Intensity":
         if framework in ['GRI', 'TCFD']:
-            return (sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2']) / indicators.get('ENERGYUSETOTAL', 1)) if indicators.get('ENERGYUSETOTAL', 0) > 0 else 0
+            return (sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2']) / indicators.get(
+                'ENERGYUSETOTAL', 1)) if indicators.get('ENERGYUSETOTAL', 0) > 0 else 0
         elif framework == 'SASB':
-            return (sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2']) / indicators.get('ANNUAL_MEDIAN_COMPENSATION', 1)) if indicators.get('ANNUAL_MEDIAN_COMPENSATION', 0) > 0 else 0
+            return (sum(indicators.get(ind, 0) for ind in ['CO2DIRECTSCOPE1', 'CO2INDIRECTSCOPE2']) / indicators.get(
+                'ANNUAL_MEDIAN_COMPENSATION', 1)) if indicators.get('ANNUAL_MEDIAN_COMPENSATION', 0) > 0 else 0
 
     elif metric_name == "Gender Pay Equity":
         if framework == 'GRI':
             return indicators.get('GENDER_PAY_GAP_PERCENTAGE', 0)
         elif framework == 'SASB':
-            return indicators.get('GENDER_PAY_GAP_PERCENTAGE', 0) # Assuming same formula for simplicity
+            return indicators.get('GENDER_PAY_GAP_PERCENTAGE', 0)  # Assuming same formula for simplicity
 
     elif metric_name == "Diversity in Leadership":
         if framework == 'GRI':
             return sum(indicators.get(ind, 0) for ind in ['WOMENMANAGERS', 'ANALYTICBOARDFEMALE']) / 2
         elif framework == 'SASB':
-            return sum(indicators.get(ind, 0) for ind in ['WOMENMANAGERS', 'ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE']) / 3
+            return sum(
+                indicators.get(ind, 0) for ind in ['WOMENMANAGERS', 'ANALYTICINDEPBOARD', 'ANALYTICBOARDFEMALE']) / 3
 
     elif metric_name == "Employee Turnover Rate":
         # Assuming same formula for both frameworks
