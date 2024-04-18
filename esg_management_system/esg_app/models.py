@@ -74,8 +74,7 @@ class FrameworkMetric(models.Model):
         Framework, on_delete=models.CASCADE, related_name='framework_metrics')
     metric = models.ForeignKey(
         Metric, on_delete=models.CASCADE, related_name='framework_metrics')
-    predefined_weight = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(1)])
+    predefined_weight = models.FloatField()
     objects = models.Manager()
 
 
@@ -84,8 +83,7 @@ class MetricIndicator(models.Model):
         Metric, on_delete=models.CASCADE, related_name='metric_indicators')
     indicator = models.ForeignKey(
         Indicator, on_delete=models.CASCADE, related_name='metric_indicators')
-    predefined_weight = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(1)])
+    predefined_weight = models.FloatField()
     objects = models.Manager()
 
 
@@ -94,8 +92,7 @@ class UserMetricPreference(models.Model):
         User, on_delete=models.CASCADE, related_name='metric_preferences')
     framework = models.ForeignKey(Framework, on_delete=models.CASCADE)
     metric = models.ForeignKey(Metric, on_delete=models.CASCADE)
-    custom_weight = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(1)])
+    custom_weight = models.FloatField()
     objects = models.Manager()
 
 
@@ -104,6 +101,5 @@ class UserIndicatorPreference(models.Model):
         User, on_delete=models.CASCADE, related_name='indicator_preferences')
     metric = models.ForeignKey(Metric, on_delete=models.CASCADE)
     indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE)
-    custom_weight = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(1)])
+    custom_weight = models.FloatField()
     objects = models.Manager()

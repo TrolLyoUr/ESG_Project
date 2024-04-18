@@ -190,7 +190,6 @@ class UserMetricPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMetricPreference
         fields = ['user', 'framework', 'metric', 'custom_weight']
-        list_serializer_class = UserMetricPreferenceSerializer
 
 
 class UserIndicatorPreferenceSerializer(serializers.ListSerializer):
