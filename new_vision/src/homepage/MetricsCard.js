@@ -60,8 +60,6 @@ const MetricsCard = ({
 
         const categorizedMetrics = { E: [], S: [], G: [] };
         newMetrics.forEach((metric) => {
-          console.log("check");
-          console.log(metric);
           categorizedMetrics[metric.pillar].push(metric);
         });
 
@@ -107,14 +105,14 @@ const MetricsCard = ({
           id: metric.metric_id,
           title: metric.metric_name,
           pillar: metric.pillar,
-          weight: 1,
+          weight: metric.predefined_weight,
           isSelected: false,
           isOpen: false,
           subMetrics: metric.indicators.map((ind) => ({
             id: ind.indicator_id,
             title: ind.indicator_name,
             value: ind.value,
-            weight: 1,
+            weight: ind.predefined_weight,
             unit: ind.unit,
             source: ind.source,
           })),
@@ -133,9 +131,9 @@ const MetricsCard = ({
         // Initialize weights state
         const initialWeights = {};
         newMetrics.forEach((m) => {
-          initialWeights[`metric_${m.id}`] = 1;
+          initialWeights[`metric_${m.id}`] = m.weight;
           m.subMetrics.forEach((sm) => {
-            initialWeights[`indicator_${m.id}_${sm.id}`] = 1;
+            initialWeights[`indicator_${m.id}_${sm.id}`] = sm.weight;
           });
         });
         setWeights(initialWeights);
