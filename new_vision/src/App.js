@@ -32,7 +32,7 @@ const App = () => {
   };
 
   return (
-    <Router basename="/static">
+    <Router>
       <Routes>
         <Route
           path="/"
