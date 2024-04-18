@@ -4,7 +4,7 @@ from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
-from django.db import connection
+from django.db import connection, transaction
 from rest_framework.views import APIView
 from collections import defaultdict
 from django.http import JsonResponse
@@ -118,31 +118,87 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SaveMetricPreferences(APIView):
     def post(self, request, *args, **kwargs):
-        user_id = request.user.id
+        user_id = 1
         data = [
             {**item, "user": user_id} for item in request.data
         ]
-        print(data)
+
         serializer = UserMetricPreferenceItemSerializer(data=data, many=True)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            new_preferences = []
+            existing_preferences = {}
+            for item in data:
+                key = (item['user'], item['framework'], item['metric'])
+                existing_preferences[key] = item
+
+            # Find existing
+            existing_query = UserMetricPreference.objects.filter(
+                user=user_id,
+                framework__in=[item['framework'] for item in data],
+                metric__in=[item['metric'] for item in data]
+            )
+            
+            with transaction.atomic():
+                for preference in existing_query:
+                    key = (preference.user_id, preference.framework_id, preference.metric_id)
+                    if key in existing_preferences:
+                        preference.custom_weight = existing_preferences[key]['custom_weight']
+                        existing_preferences.pop(key)
+                
+                # Perform bulk update
+                UserMetricPreference.objects.bulk_update(existing_query, ['custom_weight'])
+                
+                # Remaining are new entries
+                new_preferences = [
+                    UserMetricPreference(**item) for item in existing_preferences.values()
+                ]
+                UserMetricPreference.objects.bulk_create(new_preferences)
+            
+            return Response({"status": "success"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SaveIndicatorPreferences(APIView):
     def post(self, request, *args, **kwargs):
-        user_id = request.user.id
-        data = [
-            {**item, "user": user_id} for item in request.data
-        ]
+        user_id = 1
+        data = [{**item, "user": user_id} for item in request.data]
         serializer = UserIndicatorPreferenceItemSerializer(data=data, many=True)
+        
         if serializer.is_valid():
-            serializer.save()
+            self.handle_bulk_operations(serializer.validated_data, user_id)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def handle_bulk_operations(self, validated_data, user_id):
+        new_preferences = []
+        existing_preferences = {}
+        keys = [(item['user'], item['metric'], item['indicator']) for item in validated_data]
+
+        # Find existing preferences to decide on update or create
+        existing_query = UserIndicatorPreference.objects.filter(
+            user=user_id,
+            metric__in=[item['metric'] for item in validated_data],
+            indicator__in=[item['indicator'] for item in validated_data]
+        )
+
+        existing_map = {(obj.user_id, obj.metric_id, obj.indicator_id): obj for obj in existing_query}
+
+        with transaction.atomic():
+            for data in validated_data:
+                key = (data['user'], data['metric'], data['indicator'])
+                if key in existing_map:
+                    obj = existing_map[key]
+                    obj.custom_weight = data['custom_weight']
+                    existing_preferences[obj] = data
+                else:
+                    new_preferences.append(UserIndicatorPreference(**data))
+
+            # Bulk update existing
+            UserIndicatorPreference.objects.bulk_update(existing_preferences.keys(), ['custom_weight'])
+            # Bulk create new
+            UserIndicatorPreference.objects.bulk_create(new_preferences)
 
 
 class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.RetrieveModelMixin):

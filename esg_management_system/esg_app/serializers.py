@@ -211,7 +211,6 @@ class UserIndicatorPreferenceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserIndicatorPreference
         fields = ['user', 'metric', 'indicator', 'custom_weight']
-        list_serializer_class = UserIndicatorPreferenceSerializer
 
 
 class MetricsScoresSerializer(serializers.Serializer):
