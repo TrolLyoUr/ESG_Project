@@ -411,6 +411,62 @@ class Command(BaseCommand):
             (g_metrics_data, 'G'),  # Governance
         ]
 
+                # Predefined weights for each metric in different frameworks
+        weights = {
+            'GRI': {
+                'Greenhouse Gas (GHG) Emissions Intensity': 0.10,
+                'Water Efficiency': 0.05,
+                'Renewable Energy Utilization': 0.10,
+                'Waste Recycling Rate': 0.05,
+                'Carbon Intensity': 0.10,
+                'Air Quality Impact': 0.05,
+                'Gender Pay Equity': 0.05,
+                'Diversity in Leadership': 0.05,
+                'Employee Turnover Rate': 0.03,
+                'Workforce Training Investment': 0.03,
+                'Labor Relations Quality': 0.05,
+                'Health and Safety Performance': 0.10,
+                'Employee Well-being and Engagement': 0.05,
+                'Workforce Diversity': 0.05,
+                'Board Composition and Diversity': 0.05,
+                'Board Meeting Engagement': 0.03,
+                'Executive Compensation Alignment': 0.05,
+                'Committee Independence': 0.05,
+                'Governance Structure Effectiveness': 0.05,
+                'Transparency and Accountability': 0.10
+            },
+            'SASB': {
+                'Greenhouse Gas (GHG) Emissions Intensity': 0.08,
+                'Water Efficiency': 0.04,
+                'Renewable Energy Utilization': 0.08,
+                'Waste Recycling Rate': 0.04,
+                'Carbon Intensity': 0.08,
+                'Air Quality Impact': 0.04,
+                'Gender Pay Equity': 0.04,
+                'Diversity in Leadership': 0.04,
+                'Employee Turnover Rate': 0.03,
+                'Workforce Training Investment': 0.03,
+                'Labor Relations Quality': 0.04,
+                'Health and Safety Performance': 0.08,
+                'Employee Well-being and Engagement': 0.04,
+                'Workforce Diversity': 0.04,
+                'Board Composition and Diversity': 0.04,
+                'Board Meeting Engagement': 0.03,
+                'Executive Compensation Alignment': 0.05,
+                'Committee Independence': 0.05,
+                'Governance Structure Effectiveness': 0.05,
+                'Transparency and Accountability': 0.08
+            },
+            'TCFD': {
+                'Greenhouse Gas (GHG) Emissions Intensity': 0.20,
+                'Renewable Energy Utilization': 0.20,
+                'Carbon Intensity': 0.20,
+                'Health and Safety Performance': 0.10,
+                'Governance Structure Effectiveness': 0.15,
+                'Transparency and Accountability': 0.15
+            }
+        }
+
 
         for metrics_data, data_pillar in metrics_data_with_pillars:
             for metric_data in metrics_data:
@@ -422,7 +478,12 @@ class Command(BaseCommand):
 
                 framework_name = metric_data['frameworks']  # 'frameworks' is a string now, not a list
                 framework, _ = Framework.objects.get_or_create(name=framework_name)
-                FrameworkMetric.objects.get_or_create(framework=framework, metric=metric, defaults={'predefined_weight': 1})
+                weight = weights[framework_name].get(metric_data['name'], 0)
+                FrameworkMetric.objects.update_or_create(
+                    framework=framework,
+                    metric=metric,
+                    defaults={'predefined_weight': weight}
+                )
 
                 for indicator_name in metric_data['indicators']:
                     indicators = Indicator.objects.filter(name=indicator_name)
