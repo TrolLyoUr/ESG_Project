@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
-import {
-  Chart,
-  CategoryScale,
-  LineElement,
-  PointElement,
-  LinearScale,
-  LineController,
-} from "chart.js";
+import { Bar, Line } from "react-chartjs-2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ChartsContainer.css";
 import { SERVER_URL } from "./config";
-
-Chart.register(
+import {
+  Chart as ChartJS,
   CategoryScale,
+  LinearScale,
+  BarElement,
   LineElement,
   PointElement,
+  LineController,
+  BarController,
+} from "chart.js";
+
+// Register the controllers and elements for both Line and Bar charts
+ChartJS.register(
+  CategoryScale,
   LinearScale,
-  LineController
+  BarElement,
+  LineElement,
+  PointElement,
+  LineController,
+  BarController
 );
 
 const frameworkMap = {
@@ -39,10 +44,12 @@ const ChartsContainer = ({
   });
   const [apiResponse, setApiResponse] = useState("");
   const [showChart, setShowChart] = useState(true);
+  const [showBarChart, setShowBarChart] = useState(false);
+  const [showText, setShowText] = useState(false);
 
   const fetchChartData = async () => {
     const framework = frameworkMap[frameworkId]; // 根据 frameworkId 获取对应的框架名称
-    const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}&framework=${frameworkId}&scale=1`;
+    const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -55,6 +62,7 @@ const ChartsContainer = ({
     }
 
     const data = await response.json();
+    console.log("Complete data from backend:", data); // 输出完整的后端数据以供检查
     const resultData = data[framework]; // 从返回的 JSON 中获取对应框架的数据
 
     return {
@@ -62,7 +70,9 @@ const ChartsContainer = ({
       datasets: [
         {
           label: `${framework} Score by Year`,
-          data: Object.values(resultData).map((value) => value || null), // 转换为数组并处理 null 值
+          data: Object.values(resultData).map(
+            (value) => value["total_score"] || null
+          ), // 转换为数组并处理 null 值
           fill: false,
           borderColor: "rgb(75, 192, 192)",
           tension: 0.1,
@@ -74,9 +84,7 @@ const ChartsContainer = ({
   const fetchChartMetricsData = async () => {
     const framework = frameworkMap[frameworkId];
     console.log("Selected metrics:", selectedMetrics);
-    const url = `${SERVER_URL}/app/metricsdatavalue/?companies=${companyId}&framework=${frameworkId}&metrics=${selectedMetrics.join(
-      "&metrics="
-    )}`;
+    const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}`;
 
     try {
       const response = await fetch(url, {
@@ -91,47 +99,28 @@ const ChartsContainer = ({
       }
 
       const jsonData = await response.json();
-      if (!jsonData.data || !jsonData.data.length) {
-        throw new Error("No data found");
-      }
+      console.log("Complete data from backend:", jsonData);
 
       // Assuming there is only one company in the response for simplicity
-      const metricsScores = jsonData.data[0].metrics_scores;
+      const metricsScores = jsonData[framework][year].metrics;
       console.log("Metrics scores data:", metricsScores);
 
-      // Organize data by metric ID
-      const scoresByMetric = {};
-      const metricNames = {}; // To store metric names for use in labels
-
-      metricsScores.forEach((score) => {
-        if (!scoresByMetric[score.metric_id]) {
-          scoresByMetric[score.metric_id] = [];
-          metricNames[score.metric_id] = score.metric_name; // Store the metric name
-        }
-        scoresByMetric[score.metric_id].push({
-          year: score.year,
-          score: score.score >= 0 ? score.score : null, // Keep negative as null for better visualization
-        });
-      });
-      console.log("Scores by metric:", scoresByMetric);
-
       // Convert organized data into chart datasets
-      const datasets = Object.keys(scoresByMetric).map((metricId) => {
-        return {
-          label: `${framework} - ${metricNames[metricId]} (ID: ${metricId})`, // Include metric name and ID
-          data: scoresByMetric[metricId]
-            .sort((a, b) => a.year - b.year)
-            .map((item) => item.score),
-          fill: false,
-          borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Random color for each line
-          tension: 0.1,
-        };
-      });
+      const datasets = [
+        {
+          label: `${framework} - Metrics Scores for ${year}`,
+          data: Object.values(metricsScores), // Array of scores
+          backgroundColor: Object.keys(metricsScores).map(
+            () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+          ), // Random color for each bar
+          borderWidth: 1,
+        },
+      ];
+
+      const labels = Object.keys(metricsScores); // Metric names as labels
 
       return {
-        labels: [...new Set(metricsScores.map((item) => item.year))].sort(
-          (a, b) => a - b
-        ),
+        labels: labels,
         datasets: datasets,
       };
     } catch (error) {
@@ -140,7 +129,7 @@ const ChartsContainer = ({
     }
   };
 
-  const handleApiCall = () => {
+  const performApiCall = async () => {
     const url =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
     const apiKey = "AIzaSyBbLoDWc9dfyr1nz5ySOc3uGpdiyxLyTG0"; //
@@ -167,9 +156,7 @@ const ChartsContainer = ({
       .then((response) => response.json())
       .then((data) => {
         const text = data.candidates[0].content.parts[0].text;
-        console.log("Success:", text);
         setApiResponse(text); // 更新状态以显示文本
-        toggleDisplay(); // 数据加载完成后切换显示
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -181,6 +168,8 @@ const ChartsContainer = ({
       const data = await fetchChartData();
       setChartData(data);
       setShowChart(true);
+      setShowBarChart(false);
+      setShowText(false);
     } catch (error) {
       console.error("Error fetching chart data:", error);
       setChartData({
@@ -190,14 +179,15 @@ const ChartsContainer = ({
     }
   };
 
-  const handleShowMetrcisChart = async () => {
+  const handleShowBarChart = async () => {
     try {
       const data = await fetchChartMetricsData();
-      console.log("Metrics chart data:", data);
       setChartData(data);
-      setShowChart(true);
+      setShowChart(false);
+      setShowBarChart(true);
+      setShowText(false);
     } catch (error) {
-      console.error("Error fetching chart data:", error);
+      console.error("Error fetching metrics data:", error);
       setChartData({
         labels: [],
         datasets: [],
@@ -205,40 +195,46 @@ const ChartsContainer = ({
     }
   };
 
-  const toggleDisplay = () => {
-    setShowChart(!showChart); // 切换显示状态
+  const handleApiCall = async () => {
+    try {
+      setApiResponse("Loading...");
+      setShowText(true);
+      setShowChart(false);
+      setShowBarChart(false);
+      const data = await performApiCall(); // Implement performApiCall to handle API request
+      setApiResponse(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
     <div className="chart-container">
       <div className="chart-buttons btn-group">
-        <button
-          type="button"
-          className="btn custom-line-btn"
-          onClick={handleShowChart}
-        >
+        <button onClick={handleShowChart} className="btn custom-line-btn">
           ESG Line Chart
         </button>
-        <button
-          type="button"
-          className="btn custom-line-btn"
-          onClick={handleShowMetrcisChart}
-        >
-          Metrics Line Chart
+        <button onClick={handleShowBarChart} className="btn custom-line-btn">
+          Metrics Bar Chart
         </button>
-        <button
-          type="button"
-          className="btn custom-line-btn"
-          onClick={handleApiCall}
-        >
+        <button onClick={handleApiCall} className="btn custom-line-btn">
           Data Analysis
         </button>
       </div>
-      {showChart ? (
+      {showChart && (
         <div className="chart">
-          <Line data={chartData} />
+          <Line data={chartData} options={{ responsive: true }} />
         </div>
-      ) : (
+      )}
+      {showBarChart && (
+        <div className="chart">
+          <Bar
+            data={chartData}
+            options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
+          />
+        </div>
+      )}
+      {showText && (
         <textarea
           value={apiResponse || ""}
           readOnly
