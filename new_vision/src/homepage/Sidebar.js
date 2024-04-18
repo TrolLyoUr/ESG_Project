@@ -154,7 +154,7 @@ const Sidebar = ({ isOpen, setCompanyId, setYear, setCompanyname }) => {
       <div className="sidebar-header">
         <div className="logo">
           <img
-            src="/esglogoopy.png"
+            src="static/esglogoopy.png"
             alt="Logo"
             style={{ width: "200px", height: "200px" }}
           />
