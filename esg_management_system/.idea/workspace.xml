@@ -4,9 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="final version 3">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="fix icon">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/DALL·E 2024-04-09 17.22.39 - Redesign the minimalistic ESG (Environmental, Social, Governance) logo with a more subdued color palette. Maintain the elements of a green leaf for en.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/asset-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/esglogoopy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/build/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/logo192.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/logo512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/static/css/main.a2da88e1.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/build/static/css/main.a2da88e1.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/DALL·E 2024-04-09 17.22.39 - Redesign the minimalistic ESG (Environmental, Social, Governance) logo with a more subdued color palette. Maintain the elements of a green leaf for en.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/asset-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/esglogoopy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/logo192.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/logo512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/static/css/main.1ef7dd5c.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/static/css/main.1ef7dd5c.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/static/js/453.71b81364.chunk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/static/js/453.71b81364.chunk.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/static/js/main.494583c8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/build/static/js/main.494583c8.js.map" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,14 +194,6 @@
       <workItem from="1713245995789" duration="9016000" />
       <workItem from="1713256880182" duration="10787000" />
       <workItem from="1713308247358" duration="16691000" />
-    </task>
-    <task id="LOCAL-00010" summary="remove cors hosts">
-      <option name="closed" value="true" />
-      <created>1711525174245</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1711525174245</updated>
     </task>
     <task id="LOCAL-00011" summary="new build js">
       <option name="closed" value="true" />
@@ -564,7 +579,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713338875970</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="fix icon">
+      <option name="closed" value="true" />
+      <created>1713482322707</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1713482322707</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -582,7 +605,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove redundancy view function" />
     <MESSAGE value="add save metrics" />
     <MESSAGE value="change name search more professional" />
     <MESSAGE value="remove frameworksearch" />
@@ -607,7 +629,8 @@
     <MESSAGE value="change db url for docker" />
     <MESSAGE value="final version 2" />
     <MESSAGE value="final version 3" />
-    <option name="LAST_COMMIT_MESSAGE" value="final version 3" />
+    <MESSAGE value="fix icon" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix icon" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
