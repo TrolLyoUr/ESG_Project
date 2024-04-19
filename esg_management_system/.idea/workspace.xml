@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="combine">
-      <change beforePath="$PROJECT_DIR$/../new_vision/src/homepage/MetricsCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/homepage/MetricsCard.js" afterDir="false" />
-    </list>
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="combine" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
