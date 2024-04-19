@@ -1,80 +1,60 @@
-/* 基础表格样式 */
 .table {
-    font-family: Arial, sans-serif; /* 设置统一字体 */
-    border-collapse: collapse; /* 表格边框合并 */
+    font-family: Arial, sans-serif;
+    border-collapse: collapse;
     width: 100%;
-    
-    background-color: rgb(245, 245, 245); /* 轻微灰色背景 */
+    background-color: rgb(245, 245, 245);
 }
 
-.legend{
-    text-align: left; 
-}
-
-
-/* 表头样式 */
-.thead-dark th {
-    background-color: #7d8d98; /* 深色背景 */
-    color: #ffffff; /* 白色文字 */
-    padding: 12px 15px; /* 增加内边距 */
+.legend {
     text-align: left;
 }
 
-/* 行和单元格样式 */
+.thead-dark th {
+    background-color: #7d8d98;
+    color: #ffffff;
+    padding: 12px 15px;
+    text-align: left; /* Left-align text in table headers */
+}
+
 .table-hover tr:hover {
-    background-color: #ffffff; /* 鼠标悬停时变色 */
+    background-color: #ffffff;
 }
 
-/* 特定于ESG Score的样式 */
 .esg-score {
-    font-size: 40px; /* 增大字体大小 */
-    font-weight: bold; /* 加粗 */
-    color: #2d0808; /* 深色字体 */
-    background-color: #dce2e8; /* 浅灰色背景 */
-    padding: 10px; /* 增加内边距 */
+    font-size: 40px;
+    font-weight: bold;
+    color: #2d0808;
+    background-color: #dce2e8;
+    padding: 10px;
 }
 
-/* ESG 分数值的单元格样式 */
 .esg-score-cell {
-    font-size: 60px; /* 字体大小 */
-    color: #686060; /* 字体颜色 */
-    padding: 10px 20px; /* 调整内边距 */
-     /* 居中显示 */
+    font-size: 60px;
+    color: #686060;
+    padding: 10px 20px;
+    text-align: center; /* Center-align ESG score cells */
 }
 
 .table-hover tbody tr:hover {
-    background-color: #f5f5f5; /* Light grey background on hover */
+    background-color: #f5f5f5;
 }
 
-.thead-dark th {
-    background-color: #404952; /* Dark header background */
-    color: #ffffff; /* White text color */
-}
-
-.esg-score-cell {
-    font-weight: bold;
-    text-align: center; /* Centering text for ESG score cells */
-}
-
-/* Responsive table and chart */
 @media (max-width: 768px) {
     .table-responsive {
-        overflow-x: scroll; /* Ensuring table is scrollable on smaller screens */
+        overflow-x: scroll;
     }
 }
 
-/* Styling for Line chart */
 .chart-container1 {
     width: 100%;
     height: 300px;
-    margin: 20px auto; /* 垂直居中和上下边距 */
+    margin: 20px auto; /* Center vertically and add top/bottom margin */
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
     display: block;
 }
 
-/* Error and Loading States */
 .loading-text, .error-text {
     text-align: center;
     padding: 20px;
@@ -82,20 +62,18 @@
     color: #666;
 }
 
-/* Tooltip styling */
 .tooltip-inner {
-    background-color: #000; /* Black background for tooltips */
-    color: #fff; /* White text color */
+    background-color: #000;
+    color: #fff;
     font-size: 14px;
 }
 
 .metric-row {
-    background-color: #f0f0f0; /* Light gray background for metric categories */
+    background-color: #f0f0f0;
 }
 
-/* 样式 for indicator detail rows */
 .indicator-row {
-    background-color: #e6e6e6; /* Slightly darker gray for individual indicators */
+    background-color: #e6e6e6;
 }
 
 .pillar-indicator {
