@@ -6,27 +6,32 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 const App = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showProfileModal, setShowProfileModal] = useState(false);
+  // States to manage the app's UI and profile data
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Controls sidebar visibility
+  const [showProfileModal, setShowProfileModal] = useState(false); // Controls profile modal visibility
   const [profile, setProfile] = useState({
     company: "",
     year: "",
     framework: "",
-  });
+  }); // Stores user profile data
 
+  // Function to toggle the sidebar open/closed
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Handles changes to the framework selection
   const handleFrameworkChange = (framework) => {
     setProfile((prevProfile) => ({ ...prevProfile, framework }));
   };
 
+  // Handles updates to profile input fields
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
     setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
   };
 
+  // Function to save profile data (assumes there's logic to handle saving elsewhere)
   const saveProfile = () => {
     setShowProfileModal(false);
   };
@@ -37,6 +42,7 @@ const App = () => {
         <Route
           path="/"
           element={
+            // Passing props to HomePage component
             <HomePage
               isSidebarOpen={isSidebarOpen}
               profile={profile}

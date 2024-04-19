@@ -1,111 +1,115 @@
+/* Metrics Card Styles */
 .metrics-card {
-    margin-top: 20px;
-    margin-left: -270px; /* 适量向左偏移，根据需要调整 */
-    height: 50vh;
-    width: 43.5%;
-    transition: all 0.3s ease-in-out;
+  margin-top: 20px; /* Adjust the top margin as needed */
+  margin-left: -270px; /* Adjust the left margin to position the card as desired */
+  height: 50vh; /* Set the card height to 50% of the viewport height */
+  width: 43.5%; /* Set the card width to 43.5% */
+  transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
 }
 
-/* 对于小屏幕设备 */
+/* Responsive Styles for Smaller Screens */
 @media (max-width: 768px) {
-    .metrics-card {
-        margin-left: 0; /* 在小屏幕上保持居中或适当偏移 */
-        width: 50%;
-        height: 40vh;
-    }
+  .metrics-card {
+    margin-left: 0; /* Center the card on smaller screens */
+    width: 50%; /* Adjust card width for smaller screens */
+    height: 40vh; /* Adjust card height for smaller screens */
+  }
 }
 
+/* General Text Alignment */
 .metrics-card * {
-    text-align: left; /* 文本靠左 */
-    align-items: flex-start; /* 对齐项至开始位置 */
+  text-align: left; /* Align all text to the left */
+  align-items: flex-start; /* Align flex items to the start */
 }
 
-/* 针对Form.Control元素，确保也是靠左对齐 */
+/* Form Control Alignment */
 .metrics-card form {
-    justify-content: flex-start; /* 使表单控件在容器中靠左对齐 */
+  justify-content: flex-start; /* Align form controls to the left */
 }
 
-/* 适应Button样式，确保它们也是靠左 */
+/* Button Styles */
 .metrics-card button {
-    margin-left: 0; /* 移除可能存在的左边距，确保按钮靠左 */
+  margin-left: 0; /* Remove default left margin for buttons */
 }
 
-.metrics-card {
-    margin-top: 20px;
-    /* 其他样式保持不变 */
-}
-
+/* List Group Item Styles */
 .metrics-card .list-group-item {
-    border: none; /* 移除边框以获得更简洁的外观 */
+  border: none; /* Remove default border for list items */
 }
 
 .metrics-card .list-group-item + .list-group-item {
-    border-top: 1px solid #efefef; /* 在列表项之间添加细边框 */
+  border-top: 1px solid #efefef; /* Add a thin border between list items */
 }
 
+/* Form Control Styles */
 .metrics-card .form-control {
-    width: auto; /* 使表单控件宽度自适应内容 */
-    display: inline-block; /* 行内块级元素，与按钮同行 */
+  width: auto; /* Set form control width to auto */
+  display: inline-block; /* Display form controls as inline blocks */
 }
 
+/* Button Margin */
 .metrics-card .btn {
-    margin-left: 10px; /* 为按钮添加左边距 */
+  margin-left: 10px; /* Add left margin to buttons */
 }
 
+/* Sub-Metric Item Styles */
 .sub-metric-item {
-    background-color: #e7f3ff; /* 淡蓝色背景 */
+  background-color: #e7f3ff; /* Set sub-metric item background color */
 }
 
-
+/* Info Icon Styles */
 .info-icon {
-    display: inline-block; /* 使用 inline-block 以便可以设置宽高 */
-    width: 16px; /* 调整宽度使其更适合内联显示 */
-    height: 16px; /* 调整高度 */
-    line-height: 16px; /* 确保叹号在圆圈内垂直居中 */
-    text-align: center; /* 水平居中叹号 */
-    background-color: #35a2dc; /* 使用较为醒目的背景色以确保可见性 */
-    color: white; /* 保证叹号颜色与背景色对比度高 */
-    border-radius: 50%; /* 圆形 */
-    cursor: pointer;
-    margin-left: 5px; /* 可以调整这个值来控制叹号和文本之间的间隙 */
-    font-size: 12px; /* 调整字体大小以适应小圆圈 */
-    vertical-align: middle; /* 确保与文本基线对齐 */
+  display: inline-block; /* Use inline-block for width and height */
+  width: 16px; /* Adjust icon width */
+  height: 16px; /* Adjust icon height */
+  line-height: 16px; /* Vertically center icon */
+  text-align: center; /* Horizontally center icon */
+  background-color: #35a2dc; /* Set icon background color */
+  color: white; /* Set icon text color */
+  border-radius: 50%; /* Create a circular icon */
+  cursor: pointer; /* Make the icon clickable */
+  margin-left: 5px; /* Adjust spacing between icon and text */
+  font-size: 12px; /* Adjust icon font size */
+  vertical-align: middle; /* Vertically align icon with text */
 }
 
+/* Score Box Styles */
 .score-box {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 10px; /* 圆角 */
-    color: white;
-    font-weight: bold;
+  display: inline-block; /* Use inline-block for padding */
+  padding: 0.25rem 0.5rem; /* Set padding */
+  border-radius: 10px; /* Create rounded corners */
+  color: white; /* Set text color */
+  font-weight: bold; /* Set font weight */
 }
 
-
+/* Label Container Styles */
 .label-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%; /* 确保 label 元素充满其容器 */
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Distribute space between label and score */
+  align-items: center; /* Align items vertically */
+  width: 100%; /* Make the label container fill its width */
 }
 
+/* Label Title Styles */
 .label-title {
-    flex: 1; /* 允许标题扩展占据必要空间 */
-    margin-right: 30px; /* 设置标题和分数之间的间距 */
+  flex: 1; /* Allow the title to expand as needed */
+  margin-right: 30px; /* Set spacing between title and score */
 }
 
+/* Label Score Styles */
 .label-score {
-    flex-shrink: 0; /* 防止分数部分在缩小时被压缩 */
+  flex-shrink: 0; /* Prevent the score from shrinking when container shrinks */
 }
 
+/* Weight Input Styles */
 .metrics-card .weight-input {
-    width: 60px; /* 调整为所需的宽度 */
+  width: 60px; /* Adjust input width as needed */
 }
-
 
 .label-container .label-score {
-    margin-right: 5px; /* 右边距为10px */
+  margin-right: 5px;
 }
 
 .label-container .label-title {
-    margin-right: 20px; /* 右边距为10px */
+  margin-right: 20px;
 }

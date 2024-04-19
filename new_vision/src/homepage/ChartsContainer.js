@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ChartsContainer.css";
+import axios from "axios";
 import { SERVER_URL } from "./config";
 import {
   Chart as ChartJS,
@@ -14,6 +15,8 @@ import {
   BarController,
 } from "chart.js";
 
+axios.defaults.withCredentials = true;
+
 // Register the controllers and elements for both Line and Bar charts
 ChartJS.register(
   CategoryScale,
@@ -25,12 +28,22 @@ ChartJS.register(
   BarController
 );
 
+// Mapping of framework IDs to names
 const frameworkMap = {
   4: "GRI",
   5: "SASB",
   6: "TCFD",
 };
 
+/**
+ * Container for rendering ESG performance charts.
+ * @param {Object} props - Component props
+ * @param {number} props.companyId - Company identifier
+ * @param {number} props.year - Year for data retrieval
+ * @param {number} props.frameworkId - Framework identifier
+ * @param {string} props.companyname - Company name for analysis
+ * @param {Array} props.selectedMetrics - Metrics selected for detailed view
+ */
 const ChartsContainer = ({
   companyId,
   year,
@@ -38,104 +51,74 @@ const ChartsContainer = ({
   companyname,
   selectedMetrics,
 }) => {
-  const [chartData, setChartData] = useState({
-    labels: [],
-    datasets: [],
-  });
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [apiResponse, setApiResponse] = useState("");
   const [showChart, setShowChart] = useState(true);
   const [showBarChart, setShowBarChart] = useState(false);
   const [showText, setShowText] = useState(false);
 
+  // Function to fetch chart data for the selected framework and year
   const fetchChartData = async () => {
-    const framework = frameworkMap[frameworkId]; // 根据 frameworkId 获取对应的框架名称
-    const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}`;
-    const response = await fetch(url, {
-      method: "GET",
-      'credentials': 'include',
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+    try {
+      const framework = frameworkMap[frameworkId];
+      const response = await axios.get(
+        `${SERVER_URL}/app/calculateperformance?company=${companyId}`
+      );
+      const resultData = response.data[framework];
+      return {
+        labels: Object.keys(resultData).sort(),
+        datasets: [
+          {
+            label: `${framework} Score by Year`,
+            data: Object.values(resultData).map(
+              (value) => value["total_score"] || null
+            ),
+            fill: false,
+            borderColor: "rgb(75, 192, 192)",
+            tension: 0.1,
+          },
+        ],
+      };
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
+      throw error;
     }
-
-    const data = await response.json();
-    console.log("Complete data from backend:", data); // 输出完整的后端数据以供检查
-    const resultData = data[framework]; // 从返回的 JSON 中获取对应框架的数据
-
-    return {
-      labels: Object.keys(resultData).sort(), // 根据年份排序
-      datasets: [
-        {
-          label: `${framework} Score by Year`,
-          data: Object.values(resultData).map(
-            (value) => value["total_score"] || null
-          ), // 转换为数组并处理 null 值
-          fill: false,
-          borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
-        },
-      ],
-    };
   };
 
+  // Function to fetch detailed metrics data for the selected framework and year
   const fetchChartMetricsData = async () => {
-    const framework = frameworkMap[frameworkId];
-    console.log("Selected metrics:", selectedMetrics);
-    const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}`;
-
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        'credentials': 'include',
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const jsonData = await response.json();
-      console.log("Complete data from backend:", jsonData);
-
-      // Assuming there is only one company in the response for simplicity
-      const metricsScores = jsonData[framework][year].metrics;
-      console.log("Metrics scores data:", metricsScores);
-
-      // Convert organized data into chart datasets
-      const datasets = [
-        {
-          label: `${framework} - Metrics Scores for ${year}`,
-          data: Object.values(metricsScores), // Array of scores
-          backgroundColor: Object.keys(metricsScores).map(
-            () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
-          ), // Random color for each bar
-          borderWidth: 1,
-        },
-      ];
-
-      const labels = Object.keys(metricsScores); // Metric names as labels
+      const framework = frameworkMap[frameworkId];
+      const response = await axios.get(
+        `${SERVER_URL}/app/calculateperformance?company=${companyId}`
+      );
+      const metricsScores = response.data[framework][year].metrics;
 
       return {
-        labels: labels,
-        datasets: datasets,
+        labels: Object.keys(metricsScores),
+        datasets: [
+          {
+            label: `${framework} - Metrics Scores for ${year}`,
+            data: Object.values(metricsScores),
+            backgroundColor: Object.keys(metricsScores).map(
+              () => `#${Math.floor(Math.random() * 16777215).toString(16)}`
+            ),
+            borderWidth: 1,
+          },
+        ],
       };
     } catch (error) {
       console.error("Error fetching metrics data:", error);
-      throw error; // Rethrow to handle in calling function
+      throw error;
     }
   };
 
+  // Perform a custom API call to analyze data
   const performApiCall = async () => {
     const url =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-    const apiKey = "AIzaSyBbLoDWc9dfyr1nz5ySOc3uGpdiyxLyTG0"; //
-    const text = `Analyze the ESG performance of ${companyname} for the year ${year}.`; // 使用模板字符串整合文本和参数
+    const apiKey = "AIzaSyBbLoDWc9dfyr1nz5ySOc3uGpdiyxLyTG0";
+    const text = `Analyze the ESG performance of ${companyname} for the year ${year}.`;
     const data = {
       contents: [
         {
@@ -150,7 +133,6 @@ const ChartsContainer = ({
 
     fetch(`${url}?key=${apiKey}`, {
       method: "POST",
-      'credentials': 'include',
       headers: {
         "Content-Type": "application/json",
       },
@@ -159,13 +141,14 @@ const ChartsContainer = ({
       .then((response) => response.json())
       .then((data) => {
         const text = data.candidates[0].content.parts[0].text;
-        setApiResponse(text); // 更新状态以显示文本
+        setApiResponse(text);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
 
+  // Handlers to show different charts or analysis results
   const handleShowChart = async () => {
     try {
       const data = await fetchChartData();
@@ -174,11 +157,7 @@ const ChartsContainer = ({
       setShowBarChart(false);
       setShowText(false);
     } catch (error) {
-      console.error("Error fetching chart data:", error);
-      setChartData({
-        labels: [],
-        datasets: [],
-      });
+      setChartData({ labels: [], datasets: [] });
     }
   };
 
@@ -190,24 +169,19 @@ const ChartsContainer = ({
       setShowBarChart(true);
       setShowText(false);
     } catch (error) {
-      console.error("Error fetching metrics data:", error);
-      setChartData({
-        labels: [],
-        datasets: [],
-      });
+      setChartData({ labels: [], datasets: [] });
     }
   };
 
   const handleApiCall = async () => {
+    setShowText(true);
+    setShowChart(false);
+    setShowBarChart(false);
     try {
-      setApiResponse("Loading...");
-      setShowText(true);
-      setShowChart(false);
-      setShowBarChart(false);
-      const data = await performApiCall(); // Implement performApiCall to handle API request
-      setApiResponse(data);
+      setApiResponse("Loading data...");
+      const text = await performApiCall();
     } catch (error) {
-      console.error("Error:", error);
+      setApiResponse("Failed to load data");
     }
   };
 
@@ -239,7 +213,7 @@ const ChartsContainer = ({
       )}
       {showText && (
         <textarea
-          value={apiResponse || ""}
+          value={apiResponse}
           readOnly
           className="form-control feature-bar-item textarea-feature-bar-item"
           rows="20"

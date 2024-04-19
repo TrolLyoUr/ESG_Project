@@ -1,103 +1,117 @@
+/* Main container for chart elements, positioned absolutely to avoid layout shifts */
 .chart-container {
-    position: absolute;
-    margin-right: 20px;
-    top: 280px;
-    right: 0;
-    bottom: 0;
-    width: 43.5%;
-    height: 60vh;
-    padding: 20px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    background-image: linear-gradient(to right, #FDFEFE, #F4ECF7);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  margin-right: 20px;
+  top: 280px;
+  right: 0;
+  bottom: 0;
+  width: 43.5%;
+  height: 60vh;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  background-image: linear-gradient(
+    to right,
+    #fdfefe,
+    #f4ecf7
+  ); /* Soft gradient background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Hover effect to slightly lift the container */
 .chart-container:hover {
-    transform: translateY(0px);
+  transform: translateY(0px);
 }
 
-/* 针对顶部圆弧形状的样式 */
+/* Specific styles for containers that are at the top of their section */
 .chart-container.top-arc {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-/* 针对底部圆弧形状的样式 */
+/* Specific styles for containers that are at the bottom of their section */
 .chart-container.bottom-arc {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
-
+/* Styling for the chart component within the container */
 .chart {
-    width: 100%; /* 父容器宽度占满可用空间 */
-    height: 40vh; /* 高度设置为视口高度的100% */
-    padding: 0; /* 如果不需要内边距，确保设置为0 */
-    margin: 0; /* 如果不需要外边距，确保设置为0 */
+  width: 100%; /* Full width of the parent container */
+  height: 40vh; /* Height set relative to the viewport */
+  padding: 0;
+  margin: 0;
 }
 
-/* 响应式调整：小屏幕设备上的样式 */
+/* Responsive design adjustments for smaller screens */
 @media (max-width: 768px) {
-    .chart-container {
-        width: 100%; /* 小屏幕上宽度占满屏幕 */
-        height: auto; /* 根据内容调整高度 */
-        position: relative; /* 不再固定位置 */
-    }
+  .chart-container {
+    width: 100%; /* Full width on small screens */
+    height: auto; /* Height adjusts to content */
+    position: relative; /* Positioned relative to flow */
+  }
 }
 
-
+/* Button styles for line charts with a custom blue theme */
 .custom-line-btn {
-    background-color: #5dade2bc; /* 绿色 */
-    border-color: #4c57af; /* 绿色边框 */
+  background-color: #5dade2bc;
+  border-color: #4c57af;
 }
 
+/* Hover state for line chart buttons */
 .custom-line-btn:hover {
-    background-color: #4c95af; /* 深绿色 */
+  background-color: #4c95af;
 }
 
+/* Button styles for bar charts with a custom green theme */
 .custom-bar-btn {
-    background-color: #48c9af9a; /* 红色 */
-    border-color: #106b549f; /* 红色边框 */
+  background-color: #48c9af9a;
+  border-color: #106b549f;
 }
 
+/* Hover state for bar chart buttons */
 .custom-bar-btn:hover {
-    background-color: #106b549f; /* 深红色 */
+  background-color: #106b549f;
 }
 
+/* Button styles for pie charts with a custom orange theme */
 .custom-pie-btn {
-    background-color: #fad7a09a; /* 橙色 */
-    border-color: #ff9800; /* 橙色边框 */
+  background-color: #fad7a09a;
+  border-color: #ff9800;
 }
 
+/* Hover state for pie chart buttons */
 .custom-pie-btn:hover {
-    background-color: #e68900; /* 深橙色 */
+  background-color: #e68900;
 }
 
+/* Container for chart buttons, positioned for aesthetic alignment */
 .chart-buttons {
-    position: absolute; /* 或使用 relative, 根据需要调整 */
-    top: 0;
-    left: 50%; /* 可以调整到页面的中间 */
-    transform: translateX(-50%); /* 中心对齐 */
-    margin-top: 20px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 20px;
 }
 
-
+/* Styling for a large text area used to display data or messages */
 .textarea-feature-bar-item {
-    width: 100%; /* 控制宽度为容器宽度的 80% */
-    max-height: 800px; /* 最大宽度为 600px，可以根据实际需要调整 */
-    margin: 10px auto; /* 上下 10px 边距，水平居中 */
-    display: block; /* 确保这是一个块级元素，以应用 margin auto */
-    position: absolute;
-    top: 20px; /* 置于底部 */
-    left: 0; /* 从左侧开始，可以根据需要调整 */
-    width: 100%; /* 覆盖整个容器宽度，或根据需求调整 */
-    max-width: 100%; /* 确保不超出容器宽度 */
-    margin: 0;
-    background-image: linear-gradient(to right, #FDFEFE, #F4ECF7);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Full width to fill the container */
+  max-height: 800px; /* Maximum height allowed */
+  margin: 10px auto; /* Centered with vertical margin */
+  display: block; /* Block display to enable margin settings */
+  position: absolute;
+  top: 20px;
+  left: 0;
+  max-width: 100%; /* Ensures it does not overflow its container */
+  background-image: linear-gradient(
+    to right,
+    #fdfefe,
+    #f4ecf7
+  ); /* Background matching the container */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Consistent shadow for depth */
 }

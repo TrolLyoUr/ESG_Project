@@ -1,34 +1,41 @@
 /* FrameworkChoose.css */
+
+/* Main container style for the framework selection area */
 .framework-choose {
-    padding: 10px;
-    background-color: #48a2ce42;
-    width: 43.5%; /* 使宽度自适应 */
-    margin-left: -270px;
-    display: flex; /* 启用Flexbox */
-    justify-content: center; /* 水平居中子元素 */
-    flex-wrap: wrap; /* 允许子元素换行 */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  padding: 10px; /* Adds padding to avoid touching the edges */
+  background-color: #48a2ce42; /* Light blue background with transparency */
+  width: 43.5%; /* Responsive width to adapt to different screen sizes */
+  margin-left: -270px; /* Negative margin to align or offset as needed */
+  display: flex; /* Utilizes Flexbox for inner items */
+  justify-content: center; /* Horizontally centers child elements */
+  flex-wrap: wrap; /* Allows child items to wrap within the container */
+  border-radius: 10px; /* Rounded corners for a smoother look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
 }
 
+/* Style for buttons inside the .framework-choose container */
 .framework-choose button {
-    margin: 20px;
-    padding: 12px 24px;
-    font-size: 16px;
-    border: none;
-    border-radius: 10px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+  margin: 20px; /* Margin around buttons for spacing */
+  padding: 12px 24px; /* Padding inside buttons for better touch area */
+  font-size: 16px; /* Sets the text size for readability */
+  border: none; /* Removes border for a clean look */
+  border-radius: 10px; /* Rounded corners to match the container style */
+  background-color: #007bff; /* Bright blue background for visibility */
+  color: white; /* Text color for contrast and readability */
+  cursor: pointer; /* Indicates clickable items */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transitions for hover effects */
 }
 
+/* Hover state for buttons enhances user interaction feedback */
 .framework-choose button:hover {
-    background-color: #0056b3;
-    transform: translateY(-3px);
+  background-color: #0056b3; /* Darkens the button on hover for visual feedback */
+  transform: translateY(
+    -3px
+  ); /* Slightly raises the button to indicate actionability */
 }
 
+/* Active state for buttons to show a pressed effect */
 .framework-choose button:active {
-    background-color: #004085;
-    transform: translateY(2px);
+  background-color: #004085; /* Even darker color when button is pressed */
+  transform: translateY(2px); /* Moves button down to mimic a press */
 }
