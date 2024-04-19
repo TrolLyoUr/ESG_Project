@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 from .calculations import calculate_metric_score_by_year, calculate_all_framework_scores_all_years
 
-# 引入所有的model
+# import whole model
 from esg_app.models import (
     Company,
     Framework,
@@ -25,6 +25,7 @@ from esg_app.models import (
     UserMetricPreference,
     UserIndicatorPreference,
 )
+# import whole serializer
 from .serializers import (
     FastCompanies,
     FrameworkListSerializer,
@@ -53,6 +54,7 @@ from django.db.models.functions import Coalesce
 from django.db.models import Sum, F, FloatField
 
 
+# search company through name
 class FastSearch(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
@@ -74,6 +76,7 @@ class FastSearch(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
+# return distinct years are stored in our database
 class YearViewSet(viewsets.ViewSet):
     def list(self, request):
         # Querying distinct years from DataValue model
@@ -82,6 +85,7 @@ class YearViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+# return framework or metrics
 class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Framework.objects.all()
 
@@ -93,11 +97,13 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
             return FrameworkMetricSerializer
         return super().get_serializer_class()
 
+    # return framework details
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    # return metrics which is associated with framework
     @action(detail=True, methods=["get"], url_path="metrics")
     def list_framework_metrics(self, request, pk=None):
         framework = self.get_object()
@@ -115,6 +121,7 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(data)
 
 
+# post method: save user define weight of metrics
 class SaveMetricPreferences(APIView):
     def post(self, request, *args, **kwargs):
         user_id = request.user.id
@@ -162,6 +169,7 @@ class SaveMetricPreferences(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# post method: save user define weight of indicators
 class SaveIndicatorPreferences(APIView):
     def post(self, request, *args, **kwargs):
         user_id = request.user.id
@@ -204,6 +212,7 @@ class SaveIndicatorPreferences(APIView):
             UserIndicatorPreference.objects.bulk_create(new_preferences)
 
 
+# return metrics score
 class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.RetrieveModelMixin):
     def get_serializer_class(self):
         if self.action == "list":
@@ -211,9 +220,6 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         elif self.action == "retrieve":
             return MetricsDataSerializer
         return super().get_serializer_class()
-
-    # def get_queryset(self, data1=None, data2=None):
-    #     data1 = Data1()
 
     def retrieve(self, request, *args, **kwargs):
         company_ids = request.query_params.getlist("companies")
@@ -223,12 +229,12 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         user = request.user.id
         years = DataValue.objects.order_by('year').values('year').distinct()
 
-        # 查询指定的公司、框架和指标
+        # filter company, framework and metrics
         companies = Company.objects.filter(id__in=company_ids)
         framework = Framework.objects.get(id=framework_id)
         metrics = Metric.objects.filter(id__in=metric_ids)
 
-        # 计算每个公司的每个指标的分数
+        # calculate score
         result = []
         for company in companies:
             company_data = CompanySerializer(company).data
@@ -269,6 +275,7 @@ class MetricsDataViewSet(viewsets.GenericViewSet, rest_framework.mixins.Retrieve
         return Response({"data": result})
 
 
+# return datavalue which is stored in our database
 class ListIndicatorValue(APIView):
 
     def get(self, request, *args, **kwargs):
@@ -277,6 +284,7 @@ class ListIndicatorValue(APIView):
             year = request.query_params.get("year")
             framework = request.query_params.get("framework")
             company = request.query_params.get("company")
+            # sql
             base_query = f'''
                 SELECT m.id AS metric_id, i.id AS indicator_id, m.name AS metric_name, i.name AS indicator_name, dv.value, 
                        i.unit, dv.year, i.source, m.pillar, fm.predefined_weight AS metric_weight, 
@@ -289,6 +297,7 @@ class ListIndicatorValue(APIView):
                 WHERE dv.company_id = {company}
             '''
 
+            # for three different url
             if year and framework:
                 cursor.execute(f"{base_query} AND dv.year = {year} AND fm.framework_id = {framework};")
             elif year:
@@ -381,6 +390,7 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
+# calculate comprehensive score based on different framework
 class CompanyPerformance(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         # Query to fetch weighted values of indicators for each metric in the frameworks, grouped by year
@@ -437,7 +447,6 @@ class CompanyPerformance(generics.ListAPIView):
                     r[2] = rm[2]
         rows = [[*r[:-2], r[-2] * r[-1]] for r in rows]
         rows = rows[:-1]
-
 
         # Structure to hold the calculated scores
         company_scores = {}
@@ -706,31 +715,3 @@ def apply_metric_formula(framework, metric_name, indicators):
             comp_members = indicators.get('COMPCOMMNONEXECMEMBERS', 0)
             return (non_audit_ratio + audit_members + comp_members) / 3
     return -1
-
-# Old implementation
-# class CompanyPerformance(generics.ListAPIView):
-#     def get(self, request, *args, **kwargs):
-#         com_id = request.query_params.get("company")
-#         scale = request.query_params.get('scale')
-#         if com_id is None:
-#             result = calculate_all_framework_scores_all_years(1)
-#             return Response(result)
-#         with open("result.pkl", "rb") as file:
-#             data = pickle.load(file)
-#         if scale is None:
-#             result = data[int(com_id)]
-#             return Response(result)
-#         else:
-#             _result = data[int(com_id)]
-#             _new_result = {}
-#             for key, value in _result.items():
-#                 __new_result = {}
-#                 for k, v in value.items():
-#                     try:
-#                         # tanh = lambda x: ((numpy.e ** x) - (numpy.e ** -x)) / ((numpy.e ** x) + (numpy.e ** -x))
-#                         tanh = lambda x: 1 - (1 / (1 + x))
-#                         __new_result[k] = tanh(v) * 100
-#                     except OverflowError:
-#                         __new_result[k] = 100
-#                 _new_result[key] = __new_result
-#             return Response(_new_result)

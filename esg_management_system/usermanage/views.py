@@ -14,6 +14,7 @@ import pickle
 from django.contrib.messages import ERROR
 
 
+# send email to user
 def sendToUser(username, content):
     mail_host = "smtp.gmail.com"
     mail_user = "zgljzzb@gmail.com"
@@ -45,6 +46,7 @@ def sendToUser(username, content):
     smtp.sendmail(mail_user, username, mess_root.as_string())
 
 
+# login form
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -62,11 +64,13 @@ def login_view(request):
         return render(request, 'login.html')
 
 
+# user register form
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
+        # check password are same
         if password1 == password2:
             password = password1
             email = request.POST['email']
@@ -74,6 +78,7 @@ def register_view(request):
             if user is not None:
                 messages.error(request, "username already exists")
                 return render(request, 'register.html')
+            # make sure email is valid
             try:
                 validate_email(email)
                 user = User.objects.create_user(username, email, password)
@@ -89,12 +94,14 @@ def register_view(request):
         return render(request, 'register.html')
 
 
+# first part of reset password which just need username to send verify code.
 def resetpwd_send_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         user = User.objects.get(username=username)
         if user is not None:
             reset_code = random.randint(100000, 999999)
+            # save random generated code for verify
             try:
                 with open("resetCode.pkl", "ab") as f:
                     userPKL_read = pickle.load(f)
@@ -112,6 +119,7 @@ def resetpwd_send_view(request):
         return render(request, 'repwdem.html')
 
 
+# part2 of reset password
 def resetpwd_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -121,6 +129,7 @@ def resetpwd_view(request):
         if password1 == password2:
             password = password1
             user = User.objects.get(username=username)
+            # load saved verify code for make sure request is legal.
             with open("resetCode.pkl", "rb") as f:
                 userPKL_read = pickle.load(f)
                 reset_code = userPKL_read[user.email]
@@ -138,6 +147,7 @@ def resetpwd_view(request):
         return render(request, 'resetpwd.html')
 
 
+# simple function for logout
 def userlogout(request):
     logout(request)
     return render(request, 'login.html')

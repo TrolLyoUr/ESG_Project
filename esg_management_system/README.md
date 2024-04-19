@@ -1,21 +1,10 @@
-# Deploy instruction
+## Brief description
 
-## build and start program
-
-1. download program to "product"(recommend) folder: `git clone xxx product`
-2. `docker build . -t studentitp:latest`
-3. `docker compose up -d`
-
-## initialize database
-
-1. `docker exec -it product-web-1 bash`
-2. reload database
-   ```
-   export PGHOST=db
-   export PGUSER=postgres
-   export PGPASSWORD=99009900
-   ```
-    1. load environment variable
-    2. load database `psql esg < database.sql`
-
-## enjoy!
+* data_set: the dataset which is saved in our database.
+* esg_app: whole api definitions can find in here.
+    * url.py: provide details example and brief description
+* esg_management_system: program setting.
+* react: front end entry.
+* usermanage: implement user register, login and password reset.
+* cal.py: calculate ESP score through multiprocess method.
+* database.sql: back up from our database.
