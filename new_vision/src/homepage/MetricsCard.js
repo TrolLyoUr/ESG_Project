@@ -430,6 +430,7 @@ const MetricsCard = ({
                             >
                                 Load Saved Weights
                             </Button>
+                            <br/>
                             {Object.entries(categories).map(([key, value]) => (
                                 <>
                                     <Button variant="link" onClick={() => toggleCategory(key)}>
@@ -439,6 +440,7 @@ const MetricsCard = ({
                                                 ? "Social Risk"
                                                 : "Governance Risk"}
                                     </Button>
+                                    <br/>
                                     <Collapse in={value.open}>
                                         <ListGroup>
                                             {value.metrics.map((metric) => (
