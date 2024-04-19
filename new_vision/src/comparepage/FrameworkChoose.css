@@ -1,11 +1,11 @@
 .second_framework-choose {
   padding: 10px;
   background-color: #48a2ce42;
-  width: 100%; /* 设置宽度为100% */
-  height: 12vh; /* 设置高度为视口的100%，填满整个屏幕 */
+  width: 100%; 
+  height: 12vh; 
   display: flex;
   justify-content: center;
-  align-items: center; /* 垂直居中 */
+  align-items: center; 
   flex-wrap: wrap;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
