@@ -74,5 +74,5 @@ curl -X POST "http://localhost:8000/saveindicator/" \
            }
          ]'
 '''
-for u in urlpatterns:
-    print(u)
+# for u in urlpatterns:
+#     print(u)

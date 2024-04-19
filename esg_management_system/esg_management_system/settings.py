@@ -63,6 +63,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4000",
     "http://9900.seasite.top:4000"  # Add any other domains you want to allow
 ]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:4000', 'http://localhost:3000', 'http://localhost', 'http://127.0.0.1:4000',
+                        'http://127.0.0.1:3000', 'http://127.0.0.1']
 
 TEMPLATES = [
     {
@@ -103,8 +105,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAuthenticated'
-        'rest_framework.permissions.AllowAny'
+        'rest_framework.permissions.IsAuthenticated'
+        # 'rest_framework.permissions.AllowAny'
     ]
 }
 

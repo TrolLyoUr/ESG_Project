@@ -385,7 +385,7 @@ class CompanyPerformance(generics.ListAPIView):
         scores_query = """
         SELECT dv.year, f.name as framework_name, fm.predefined_weight as framework_weight, 
             m.name as metric_name, 
-            i.name as indicator_name, dv.value * mi.predefined_weight as weighted_value
+            i.name as indicator_name, mi.predefined_weight as metric_value, dv.value as value
         FROM esg_app_datavalue dv
         JOIN esg_app_indicator i ON dv.indicator_id = i.id
         JOIN esg_app_metricindicator mi ON i.id = mi.indicator_id
@@ -395,10 +395,45 @@ class CompanyPerformance(generics.ListAPIView):
         WHERE dv.company_id = %s
         ORDER BY dv.year, fm.framework_id, m.id;
         """
+        user = request.user.id
 
         with connection.cursor() as cursor:
             cursor.execute(scores_query, [company_id])
             rows = cursor.fetchall()
+
+        # check user metric preference
+        sql_query_metric = f'''
+        select f.name, m.name, ump.custom_weight from esg_app_usermetricpreference as ump 
+        join esg_app_framework as f on f.id=ump.framework_id 
+        join esg_app_metric m on ump.metric_id = m.id 
+        where user_id={user};
+        '''
+        with connection.cursor() as cursor:
+            cursor.execute(sql_query_metric)
+            rows_metric = cursor.fetchall()
+
+        # check user indicator preference
+        sql_query_indicator = f"""
+        select m.name, i.name, uip.custom_weight from esg_app_userindicatorpreference as uip 
+        join esg_app_metric m on uip.metric_id = m.id 
+        join esg_app_indicator i on i.id=uip.indicator_id 
+        where user_id={user}
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql_query_indicator)
+            rows_indicator = cursor.fetchall()
+
+        # combine user define weight
+        rows = [[*r] for r in rows]
+        for r in rows:
+            for ri in rows_indicator:
+                if ri[0] == r[3] and ri[1] == r[4]:
+                    r[5] = ri[2]
+            for rm in rows_metric:
+                if rm[0] == r[1] and rm[2] == r[3]:
+                    r[2] = rm[2]
+        rows = [[*r[:-2], r[-2] * r[-1]] for r in rows]
+        rows = rows[:-1]
 
         # Structure to hold the calculated scores
         company_scores = {}
@@ -432,24 +467,24 @@ class CompanyPerformance(generics.ListAPIView):
         if year_data:
             aggregate_scores(year_data, metrics_data, company_scores)
 
-        print("final:", company_scores)
+        # print("final:", company_scores)
         return JsonResponse(company_scores)
 
 
 def aggregate_scores(year_data, metrics_data, company_scores):
-    print("year_data", year_data)
-    print("metrics_data", metrics_data)
-    print("company_scores", company_scores)
+    # print("year_data", year_data)
+    # print("metrics_data", metrics_data)
+    # print("company_scores", company_scores)
 
     year = year_data['year']
     framework_name = year_data['framework_name']
     framework_weight = year_data['framework_weight']
 
     for metric_name, indicators in metrics_data.items():
-        print(f"Processing metric {metric_name}")
-        print(f"Indicators: {indicators}")
+        # print(f"Processing metric {metric_name}")
+        # print(f"Indicators: {indicators}")
         score = apply_metric_formula(framework_name, metric_name, indicators)
-        print(f"Metric: {metric_name}, Score: {score}")
+        # print(f"Metric: {metric_name}, Score: {score}")
         if score == -1:
             continue
         weighted_score = score * framework_weight

@@ -1,10 +1,9 @@
 /* TotalScore.css */
 .total-score {
   position: absolute;
-  top: 70px;
+  margin-right: 20px;
   right: 0;
-  width: 50vw; /* 使用视口宽度单位 */
-  max-width: 659px; /* 限制最大宽度 */
+  width: 43.5%; /* 使用视口宽度单位 */
   height: 30vh; /* 使用视口高度单位 */
   max-height: 300px; /* 限制最大高度 */
   padding: 20px;
