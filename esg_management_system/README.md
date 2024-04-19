@@ -1,8 +1,21 @@
-## Deploy instruction
+# Deploy instruction
 
-1. docker compose up -d
-2. docker exec -it {folder name}-web-1 bash
-3. python3 manage.py makemigrations
-4. python3 manage.py migrate
-5. python3 manage.py createsuperuser
-6. for f in $(ls data_set/*.csv); do python3 manage.py import_esg_data $f; done
+## build and start program
+
+1. download program to "product"(recommend) folder: `git clone xxx product`
+2. `docker build . -t studentitp:latest`
+3. `docker compose up -d`
+
+## initialize database
+
+1. `docker exec -it product-web-1 bash`
+2. reload database
+   ```
+   export PGHOST=db
+   export PGUSER=postgres
+   export PGPASSWORD=99009900
+   ```
+    1. load environment variable
+    2. load database `psql esg < database.sql`
+
+## enjoy!
