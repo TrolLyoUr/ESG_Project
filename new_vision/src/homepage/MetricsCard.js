@@ -25,6 +25,7 @@ const MetricsCard = ({
   selectedCompany,
   selectedYear,
   setSelectedMetrics,
+  setWeight,
 }) => {
   const [modalInfo, setModalInfo] = useState({ show: false, content: "" });
   const [weights, setWeights] = useState({}); // To store all weights
@@ -164,6 +165,7 @@ const MetricsCard = ({
 
   const handleWeightChange = (key, value) => {
     setWeights({ ...weights, [key]: value });
+    setWeight({ ...weights, [key]: value });
   };
 
   // Function to submit all weights to the API
@@ -208,6 +210,7 @@ const MetricsCard = ({
       await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData, {
         withCredentials: true,
       });
+      setWeight(metricsData);
       alert("metric weights updated successfully!");
     } catch (error) {
       console.error("Error submitting weights:", error);
@@ -287,7 +290,6 @@ const MetricsCard = ({
           updatedWeights[`metric_${metric}`] = custom_weight; // Update the weight
         }
       });
-      console.log(updatedWeights);
 
       setWeights(updatedWeights); // Set the updated weights back to the state
     } catch (error) {
@@ -603,7 +605,7 @@ const MetricsCard = ({
                 onClick={calculateMetricsScores}
                 style={{ marginLeft: "10px" }}
               >
-                Calculate Metrics Score
+                Calculate Indicators Score
               </Button>
             </>
           )}

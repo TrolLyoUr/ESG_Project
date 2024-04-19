@@ -23,7 +23,7 @@ axios.defaults.withCredentials = true;
  *  - year (number): The year for which the ESG score is desired.
  *  - frameworkId (number): The ID corresponding to an ESG framework (e.g., GRI, SASB, TCFD).
  */
-const TotalScore = ({ companyId, year, frameworkId }) => {
+const TotalScore = ({ companyId, year, frameworkId, weight }) => {
   const [esgScore, setEsgScore] = useState(null); // State to hold the fetched ESG score.
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const TotalScore = ({ companyId, year, frameworkId }) => {
       console.log("Missing parameters: companyId, year, or frameworkId");
       setEsgScore(null);
     }
-  }, [companyId, year, frameworkId]); // Dependency array to trigger the effect when these values change.
+  }, [companyId, year, frameworkId, weight]); // Dependency array to trigger the effect when these values change.
 
   // Render the ESG score or a message indicating unavailability.
   return (

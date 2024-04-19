@@ -44,13 +44,7 @@ const frameworkMap = {
  * @param {string} props.companyname - Company name for analysis
  * @param {Array} props.selectedMetrics - Metrics selected for detailed view
  */
-const ChartsContainer = ({
-  companyId,
-  year,
-  frameworkId,
-  companyname,
-  selectedMetrics,
-}) => {
+const ChartsContainer = ({ companyId, year, frameworkId, companyname }) => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [apiResponse, setApiResponse] = useState("");
   const [showChart, setShowChart] = useState(true);

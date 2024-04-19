@@ -13,6 +13,7 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
     framework: "",
     companyName: "",
     selectedMetrics: [],
+    weight: 0,
   });
 
   // Updates a specific property in the profile state
@@ -43,6 +44,7 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
           companyId={profile.company}
           year={profile.year}
           frameworkId={profile.framework}
+          weight={profile.weight}
         />
 
         {/* Component to let the user choose a framework */}
@@ -62,6 +64,7 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
           setSelectedMetrics={(metrics) =>
             handleProfileChange("selectedMetrics", metrics)
           }
+          setWeight={(weight) => handleProfileChange("weight", weight)}
         />
 
         {/* Component to display charts based on selections */}
@@ -70,7 +73,6 @@ const HomePage = ({ isSidebarOpen, toggleSidebar }) => {
           companyId={profile.company}
           year={profile.year}
           frameworkId={profile.framework}
-          selectedMetrics={profile.selectedMetrics}
           companyname={profile.companyName}
         />
       </div>
