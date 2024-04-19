@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="final version 20">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../new_vision/src/comparepage/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/comparepage/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../new_vision/src/homepage/MetricsCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/homepage/MetricsCard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../new_vision/src/homepage/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/homepage/config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -178,7 +174,7 @@
       <workItem from="1713256880182" duration="10787000" />
       <workItem from="1713308247358" duration="16691000" />
       <workItem from="1713497315250" duration="3045000" />
-      <workItem from="1713500765480" duration="4026000" />
+      <workItem from="1713500765480" duration="4393000" />
     </task>
     <task id="LOCAL-00012" summary="new build js">
       <option name="closed" value="true" />
@@ -644,16 +640,6 @@
           <url>file://$PROJECT_DIR$/usermanage/views.py</url>
           <line>120</line>
           <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
-          <line>429</line>
-          <option name="timeStamp" value="64" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
-          <line>437</line>
-          <option name="timeStamp" value="65" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
