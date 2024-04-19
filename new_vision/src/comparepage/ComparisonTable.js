@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./ComparisonTable.css";
-import { SERVER_URL } from "./config";
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap for styling
+import "./ComparisonTable.css"; // Custom CSS for the comparison table
+import { SERVER_URL } from "./config"; // Base URL for making API requests
 
+// Mapping framework IDs to their respective names
 const frameworkMapping = {
   4: "GRI",
   5: "SASB",
   6: "TCFD",
 };
 
+// Component for comparing ESG scores and metrics between two companies
 const ComparisonTable = ({
   company1,
   year1,
@@ -19,6 +21,7 @@ const ComparisonTable = ({
   companyid2,
   framework,
 }) => {
+  // State for holding combined metrics, individual scores, and chart data
   const [mergedMetrics, setMergedMetrics] = useState({});
   const [openMetrics, setOpenMetrics] = useState({});
   const [esgScore1, setEsgScore1] = useState(null);
@@ -26,6 +29,7 @@ const ComparisonTable = ({
   const [chartData, setChartData] = useState({});
   const [isTimeout, setIsTimeout] = useState(false);
 
+  // Fetch data for company1 based on framework and year
   useEffect(() => {
     if (companyid1 && year1 && framework) {
       console.log("Fetching data for company1:", companyid1, year1, framework);
@@ -51,13 +55,11 @@ const ComparisonTable = ({
           const frameworkName = frameworkMapping[framework];
           console.log("Framework name:", frameworkName);
 
-          // 假设 data 直接包含了框架数据，如 data.GRI 或 data.SASB
           const yearData = data[frameworkName];
           console.log("Year data for framework:", yearData);
-          const score1 =
-            yearData && yearData[year1] !== undefined
-              ? yearData[year1]["total_score"].toFixed(3)
-              : null;
+          const score1 = yearData && yearData[year1] !== undefined
+            ? yearData[year1]["total_score"].toFixed(3)
+            : null;
 
           setEsgScore1(score1);
           console.log("Score1:", score1);
@@ -72,9 +74,9 @@ const ComparisonTable = ({
       console.log("Missing parameters: companyId, year, or frameworkId");
       setEsgScore1(null);
     }
-  }, [framework]); // Depend only on framework
+  }, [framework, companyid1, year1]); // Dependencies include framework, companyid1, year1
 
-  // Hook for companyid2 and year2
+  // Similar fetch operation for company2
   useEffect(() => {
     if (companyid2 && year2 && framework) {
       const fetchData = async () => {
@@ -98,13 +100,11 @@ const ComparisonTable = ({
           const frameworkName = frameworkMapping[framework];
           console.log("Framework name:", frameworkName);
 
-          // 假设 data 直接包含了框架数据，如 data.GRI 或 data.SASB
           const yearData = data[frameworkName];
           console.log("Year data for framework:", yearData);
-          const score2 =
-            yearData && yearData[year2] !== undefined
-              ? yearData[year2]["total_score"].toFixed(3)
-              : null;
+          const score2 = yearData && yearData[year2] !== undefined
+            ? yearData[year2]["total_score"].toFixed(3)
+            : null;
           setEsgScore2(score2);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -117,8 +117,9 @@ const ComparisonTable = ({
       console.log("Missing parameters: companyId, year, or frameworkId");
       setEsgScore2(null);
     }
-  }, [framework]);
+  }, [framework, companyid2, year2]); // Dependencies include framework, companyid2, year2
 
+  // Fetch indicator data for comparison between the two companies
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -159,12 +160,12 @@ const ComparisonTable = ({
     };
 
     fetchData();
-  }, [framework]);
+  }, [framework, companyid1, year1, companyid2, year2]); // Dependencies include framework, companyids, and years
 
+  // Merge data from both companies for display
   function mergeIndicatorData(data1, data2) {
     const mergedData = {};
 
-    // 遍历data1的每个metric
     Object.keys(data1).forEach((metricId) => {
       const metric = data1[metricId];
       mergedData[metricId] = {
@@ -174,19 +175,17 @@ const ComparisonTable = ({
         indicators: {},
       };
 
-      // 合并data1中的指标
       metric.indicators.forEach((indicator) => {
         mergedData[metricId].indicators[indicator.indicator_id] = {
           indicator_id: indicator.indicator_id,
           indicator_name: indicator.indicator_name,
-          value1: indicator.value, // 保存来自data1的值为value1
+          value1: indicator.value, 
           unit: indicator.unit,
           year: indicator.year,
           source: indicator.source,
         };
       });
 
-      // 合并data2中的指标，如果已存在则添加value2
       if (data2[metricId]) {
         data2[metricId].indicators.forEach((indicator) => {
           if (mergedData[metricId].indicators[indicator.indicator_id]) {
@@ -196,7 +195,7 @@ const ComparisonTable = ({
             mergedData[metricId].indicators[indicator.indicator_id] = {
               indicator_id: indicator.indicator_id,
               indicator_name: indicator.indicator_name,
-              value2: indicator.value, // 只有value2如果data1中不存在
+              value2: indicator.value, 
               unit: indicator.unit,
               year: indicator.year,
               source: indicator.source,
@@ -206,7 +205,6 @@ const ComparisonTable = ({
       }
     });
 
-    // 转换指标数据结构为数组
     Object.keys(mergedData).forEach((metricId) => {
       const indicatorsArray = [];
       Object.keys(mergedData[metricId].indicators).forEach((indicatorId) => {
@@ -218,11 +216,11 @@ const ComparisonTable = ({
     return mergedData;
   }
 
+  // Toggle visibility of metric details and fetch chart data if not already loaded
   const toggleMetric = async (metricId) => {
     setOpenMetrics((prev) => ({ ...prev, [metricId]: !prev[metricId] }));
     if (!chartData[metricId]) {
       try {
-        // 并行发送两个API请求
         const url1 = `${SERVER_URL}/app/metricsdatavalue/?companies=${companyid1}&framework=${framework}&metrics=${metricId}`;
         const url2 = `${SERVER_URL}/app/metricsdatavalue/?companies=${companyid2}&framework=${framework}&metrics=${metricId}`;
         const responses = await Promise.all([
@@ -237,27 +235,26 @@ const ComparisonTable = ({
             headers: { "Content-Type": "application/json" },
           }),
         ]);
-        // 检查响应是否成功
+
         responses.forEach((response) => {
           if (!response.ok)
             throw new Error(`Failed to fetch data for metric ${metricId}`);
         });
 
-        // 解析JSON数据
         const data = await Promise.all(responses.map((res) => res.json()));
         console.log("Complete data from backend:", data);
-        // 构建Chart.js所需的数据结构
+
         const chartData = {
           labels: data[0].data[0].metrics_scores.map((score) => score.year),
           datasets: [
             {
-              label: `Company 1: ${company1} (${year1})`, // 使用 company1 变量，假设它包含正确的公司名称
+              label: `Company 1: ${company1} (${year1})`,
               data: data[0].data[0].metrics_scores.map((score) => score.score),
               fill: false,
               borderColor: "rgb(75, 192, 192)",
             },
             {
-              label: `Company 2: ${company2} (${year2})`, // 使用 company2 变量，假设它包含正确的公司名称
+              label: `Company 2: ${company2} (${year2})`,
               data: data[1].data[0].metrics_scores.map((score) => score.score),
               fill: false,
               borderColor: "rgb(255, 99, 132)",
@@ -265,7 +262,6 @@ const ComparisonTable = ({
           ],
         };
 
-        // 更新状态以保存数据
         setChartData((prev) => ({ ...prev, [metricId]: chartData }));
       } catch (error) {
         console.error("Error fetching chart data:", error);
@@ -273,10 +269,11 @@ const ComparisonTable = ({
     }
   };
 
+  // Options for rendering the line chart
   const options = {
     legend: {
-      display: true, // 确保显示图例
-      position: "top", // 图例的位置
+      display: true,
+      position: "top",
     },
     scales: {
       yAxes: [
@@ -289,6 +286,7 @@ const ComparisonTable = ({
     },
   };
 
+  // Render the comparison table with ESG scores and metric details
   return (
     <div className="table-responsive">
       <table className="table table-hover">
