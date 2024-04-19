@@ -1,7 +1,7 @@
 ## Deploy instruction
 
 1. docker compose up -d
-2. docker exec -it capstone-web-1 bash
+2. docker exec -it {folder name}-web-1 bash
 3. python3 manage.py makemigrations
 4. python3 manage.py migrate
 5. python3 manage.py createsuperuser

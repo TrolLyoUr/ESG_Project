@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="final version 20">
-      <change beforePath="$PROJECT_DIR$/../new_vision/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../new_vision/src/comparepage/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/comparepage/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../new_vision/src/homepage/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/homepage/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,15 +173,7 @@
       <workItem from="1713256880182" duration="10787000" />
       <workItem from="1713308247358" duration="16691000" />
       <workItem from="1713497315250" duration="3045000" />
-      <workItem from="1713500765480" duration="4393000" />
-    </task>
-    <task id="LOCAL-00012" summary="new build js">
-      <option name="closed" value="true" />
-      <created>1711947950400</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1711947950400</updated>
+      <workItem from="1713500765480" duration="5662000" />
     </task>
     <task id="LOCAL-00013" summary="add company api">
       <option name="closed" value="true" />
@@ -568,7 +559,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713500651079</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="final version 20">
+      <option name="closed" value="true" />
+      <created>1713508648421</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1713508648422</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
