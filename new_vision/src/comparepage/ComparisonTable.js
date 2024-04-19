@@ -26,12 +26,16 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
             console.log("Fetching data for company1:", companyid1, year1, framework);
             const fetchData = async () => {
                 try {
-                    const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyid1}&scale=1`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
+                    const response = await fetch(
+                        `${SERVER_URL}/app/calculateperformance?company=${companyId}`,
+                        {
+                            method: "GET",
+                            'credentials': 'include',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
                         }
-                    });
+                    );
     
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -67,12 +71,16 @@ const ComparisonTable = ({ company1, year1, company2, year2,companyid1,companyid
         if (companyid2 && year2 && framework) {
             const fetchData = async () => {
                 try {
-                    const response = await fetch(`${SERVER_URL}/app/calculateperformance?company=${companyid2}&scale=1`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
+                    const response = await fetch(
+                        `${SERVER_URL}/app/calculateperformance?company=${companyId}`,
+                        {
+                            method: "GET",
+                            'credentials': 'include',
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
                         }
-                    });
+                    );
     
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
