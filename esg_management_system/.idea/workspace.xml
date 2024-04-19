@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="combine">
+    <list default="true" id="fbeb1683-8588-4093-8503-743083dd6d26" name="Changes" comment="final version 20">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/esg_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_app/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/esg_management_system/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/esg_management_system/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/src/comparepage/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/comparepage/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/src/homepage/MetricsCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/homepage/MetricsCard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../new_vision/src/homepage/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../new_vision/src/homepage/config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,15 +177,8 @@
       <workItem from="1713245995789" duration="9016000" />
       <workItem from="1713256880182" duration="10787000" />
       <workItem from="1713308247358" duration="16691000" />
-      <workItem from="1713497315250" duration="2230000" />
-    </task>
-    <task id="LOCAL-00011" summary="new build js">
-      <option name="closed" value="true" />
-      <created>1711946425647</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1711946425647</updated>
+      <workItem from="1713497315250" duration="3045000" />
+      <workItem from="1713500765480" duration="4026000" />
     </task>
     <task id="LOCAL-00012" summary="new build js">
       <option name="closed" value="true" />
@@ -566,7 +564,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713482322707</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="final version 20">
+      <option name="closed" value="true" />
+      <created>1713500651078</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1713500651079</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -584,7 +590,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add save metrics" />
     <MESSAGE value="change name search more professional" />
     <MESSAGE value="remove frameworksearch" />
     <MESSAGE value="remove unnecessary api" />
@@ -609,7 +614,8 @@
     <MESSAGE value="final version 2" />
     <MESSAGE value="final version 3" />
     <MESSAGE value="fix icon" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix icon" />
+    <MESSAGE value="final version 20" />
+    <option name="LAST_COMMIT_MESSAGE" value="final version 20" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -641,8 +647,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/esg_app/views.py</url>
-          <line>427</line>
-          <option name="timeStamp" value="61" />
+          <line>429</line>
+          <option name="timeStamp" value="64" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/esg_app/views.py</url>
+          <line>437</line>
+          <option name="timeStamp" value="65" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

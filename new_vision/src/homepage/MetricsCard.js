@@ -195,8 +195,14 @@ const MetricsCard = ({
         // Call APIs
         try {
             await axios.post(`${SERVER_URL}/app/saveindicator/`, indicatorsData, {withCredentials: true});
+            alert("Indicator weights updated successfully!");
+        } catch (error) {
+            console.error("Error submitting weights:", error);
+            alert("Failed to update weights.");
+        }
+        try {
             await axios.post(`${SERVER_URL}/app/savemetrics/`, metricsData, {withCredentials: true});
-            alert("Weights updated successfully!");
+            alert("metric weights updated successfully!");
         } catch (error) {
             console.error("Error submitting weights:", error);
             alert("Failed to update weights.");

@@ -8,8 +8,7 @@ from django.db import connection, transaction
 from rest_framework.views import APIView
 from collections import defaultdict
 from django.http import JsonResponse
-import pickle
-import numpy
+from django.contrib.auth.models import User
 
 from .calculations import calculate_metric_score_by_year, calculate_all_framework_scores_all_years
 
@@ -119,6 +118,7 @@ class FrameworkViewSet(viewsets.ReadOnlyModelViewSet):
 class SaveMetricPreferences(APIView):
     def post(self, request, *args, **kwargs):
         user_id = request.user.id
+        user = User.objects.filter(id=user_id).get()
         data = [
             {**item, "user": user_id} for item in request.data
         ]
@@ -129,11 +129,12 @@ class SaveMetricPreferences(APIView):
             existing_preferences = {}
             for item in data:
                 key = (item['user'], item['framework'], item['metric'])
+                item['user'] = user
                 existing_preferences[key] = item
 
             # Find existing
             existing_query = UserMetricPreference.objects.filter(
-                user=user_id,
+                user=user,
                 framework__in=[item['framework'] for item in data],
                 metric__in=[item['metric'] for item in data]
             )
@@ -150,7 +151,9 @@ class SaveMetricPreferences(APIView):
 
                 # Remaining are new entries
                 new_preferences = [
-                    UserMetricPreference(**item) for item in existing_preferences.values()
+                    UserMetricPreference(metric_id=item['metric'], framework_id=item['framework'],
+                                         custom_weight=item['custom_weight'], user=item['user']) for item in
+                    existing_preferences.values()
                 ]
                 UserMetricPreference.objects.bulk_create(new_preferences)
 
