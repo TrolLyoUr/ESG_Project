@@ -433,10 +433,11 @@ class CompanyPerformance(generics.ListAPIView):
                 if ri[0] == r[3] and ri[1] == r[4]:
                     r[5] = ri[2]
             for rm in rows_metric:
-                if rm[0] == r[1] and rm[2] == r[3]:
+                if rm[0] == r[1] and rm[1] == r[3]:
                     r[2] = rm[2]
         rows = [[*r[:-2], r[-2] * r[-1]] for r in rows]
         rows = rows[:-1]
+
 
         # Structure to hold the calculated scores
         company_scores = {}
