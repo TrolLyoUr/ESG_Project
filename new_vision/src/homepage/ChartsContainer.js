@@ -52,6 +52,7 @@ const ChartsContainer = ({
     const url = `${SERVER_URL}/app/calculateperformance?company=${companyId}`;
     const response = await fetch(url, {
       method: "GET",
+      'credentials': 'include',
       headers: {
         "Content-Type": "application/json",
       },
@@ -89,6 +90,7 @@ const ChartsContainer = ({
     try {
       const response = await fetch(url, {
         method: "GET",
+        'credentials': 'include',
         headers: {
           "Content-Type": "application/json",
         },
@@ -148,6 +150,7 @@ const ChartsContainer = ({
 
     fetch(`${url}?key=${apiKey}`, {
       method: "POST",
+      'credentials': 'include',
       headers: {
         "Content-Type": "application/json",
       },

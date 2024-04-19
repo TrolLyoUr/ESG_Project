@@ -35,7 +35,7 @@ const ComparisonTable = ({
             `${SERVER_URL}/app/calculateperformance?company=${companyid1}`,
             {
               method: "GET",
-              credentials: "include",
+              'credentials': 'include',
               headers: {
                 "Content-Type": "application/json",
               },
@@ -56,7 +56,7 @@ const ComparisonTable = ({
           console.log("Year data for framework:", yearData);
           const score1 =
             yearData && yearData[year1] !== undefined
-              ? yearData[year1].toFixed(3)
+              ? yearData[year1]["total_score"].toFixed(3)
               : null;
 
           setEsgScore1(score1);
@@ -83,7 +83,7 @@ const ComparisonTable = ({
             `${SERVER_URL}/app/calculateperformance?company=${companyid2}`,
             {
               method: "GET",
-              credentials: "include",
+              'credentials': 'include',
               headers: {
                 "Content-Type": "application/json",
               },
@@ -103,7 +103,7 @@ const ComparisonTable = ({
           console.log("Year data for framework:", yearData);
           const score2 =
             yearData && yearData[year2] !== undefined
-              ? yearData[year2].toFixed(3)
+              ? yearData[year2]["total_score"].toFixed(3)
               : null;
           setEsgScore2(score2);
         } catch (error) {
@@ -126,6 +126,7 @@ const ComparisonTable = ({
         const url2 = `${SERVER_URL}/app/indicatordata?company=${companyid2}&year=${year2}&framework=${framework}`;
         const response1 = await fetch(url1, {
           method: "GET",
+          'credentials': 'include',
           headers: {
             "Content-Type": "application/json",
           },
@@ -133,6 +134,7 @@ const ComparisonTable = ({
 
         const response2 = await fetch(url2, {
           method: "GET",
+          'credentials': 'include',
           headers: {
             "Content-Type": "application/json",
           },
@@ -226,10 +228,12 @@ const ComparisonTable = ({
         const responses = await Promise.all([
           fetch(url1, {
             method: "GET",
+            'credentials': 'include',
             headers: { "Content-Type": "application/json" },
           }),
           fetch(url2, {
             method: "GET",
+            'credentials': 'include',
             headers: { "Content-Type": "application/json" },
           }),
         ]);
