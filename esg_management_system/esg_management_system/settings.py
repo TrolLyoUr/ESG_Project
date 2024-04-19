@@ -55,17 +55,18 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'esg_management_system.urls'
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 # CORS Settings
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://127.0.0.1:4000",
-#     "http://localhost:4000",
-#     "http://9900.seasite.top:4000"  # Add any other domains you want to allow
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:4000",
+    "http://localhost:4000",
+    "http://9900.seasite.top:4000",  # Add any other domains you want to allow
+    "http://9900.seasite.top:8000"
+]
 CSRF_TRUSTED_ORIGINS = ['http://localhost:4000', 'http://localhost:3000', 'http://localhost', 'http://127.0.0.1:4000',
                         'http://127.0.0.1:3000', 'http://127.0.0.1', 'http://9900.seasite.top',
-                        'http://9900.seasite.top:3000', 'http://9900.seasite.top:4000']
+                        'http://9900.seasite.top:3000', 'http://9900.seasite.top:4000', 'http://9900.seasite.top:8000']
 
 TEMPLATES = [
     {
@@ -94,8 +95,8 @@ DATABASES = {
         "NAME": "esg",
         "USER": "postgres",
         "PASSWORD": "99009900",
-        # "HOST": "168.138.100.108",
-        "HOST": "db",
+        "HOST": "168.138.100.108",
+        # "HOST": "db",
         "PORT": "5432",
     }
 }
