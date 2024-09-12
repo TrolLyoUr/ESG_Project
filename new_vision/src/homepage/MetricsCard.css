@@ -2,7 +2,6 @@
 .metrics-card {
   margin-top: 20px; /* Adjust the top margin as needed */
   margin-left: -270px; /* Adjust the left margin to position the card as desired */
-  height: 50vh; /* Set the card height to 50% of the viewport height */
   width: 43.5%; /* Set the card width to 43.5% */
   transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
 }
@@ -10,9 +9,23 @@
 /* Responsive Styles for Smaller Screens */
 @media (max-width: 768px) {
   .metrics-card {
-    margin-left: 0; /* Center the card on smaller screens */
-    width: 50%; /* Adjust card width for smaller screens */
-    height: 40vh; /* Adjust card height for smaller screens */
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .metrics-card .weight-input {
+    width: 70px; /* Smaller input for mobile screens */
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group .btn {
+    width: 100%;
+    margin: 5px 0; /* Stack buttons on mobile */
   }
 }
 
@@ -113,4 +126,73 @@
 
 .label-container .label-title {
   margin-right: 20px;
+}
+
+/* Custom Category Toggle Button */
+.btn-category-toggle {
+  background-color: transparent;
+  color: #007bff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 10px 0;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.btn-category-toggle:hover {
+  color: #0056b3;
+}
+
+.btn-category-toggle:focus {
+  outline: none;
+}
+
+/* Optional: Icon to indicate expand/collapse */
+.btn-category-toggle::after {
+  content: "▼"; /* Down arrow for expanded state */
+  display: inline-block;
+  margin-left: 10px;
+  transition: transform 0.3s ease;
+}
+
+.btn-category-toggle.collapsed::after {
+  content: "▲"; /* Up arrow for collapsed state */
+  transform: rotate(180deg);
+}
+
+/* Container for each category */
+.category-container {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Spacing and container for ListGroup */
+.list-group-container {
+  margin-top: 10px;
+}
+
+/* Align buttons and list better */
+.button-group {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px; /* Gap between buttons */
+}
+
+/* Adjust margins and spacing in metric list */
+.metric-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Adjust the overall height and padding of the card */
+.metrics-card {
+  padding: 20px;
+  margin-top: 20px;
 }

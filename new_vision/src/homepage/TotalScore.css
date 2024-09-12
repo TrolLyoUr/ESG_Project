@@ -8,7 +8,7 @@
   height: 30vh; /* Relative height to the viewport, making it responsive */
   max-height: 300px; /* Maximum height constraint */
   padding: 20px; /* Padding around the content inside the container */
-  background-color: #48a1ce39; /* Semi-transparent background color */
+  background-color: #e3f2fd; /* Semi-transparent background color */
   border-radius: 10px; /* Rounded corners for a smoother look */
   display: flex; /* Flexbox display to enable flexible layouts inside */
   align-items: center; /* Centers children vertically */

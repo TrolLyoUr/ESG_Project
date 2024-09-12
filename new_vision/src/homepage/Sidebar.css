@@ -7,7 +7,7 @@
   top: 0; /* Align to the top edge */
   left: 0; /* Align to the left edge */
   height: 100%; /* Stretch to full height of the viewport */
-  background-color: #48a1ce39; /* Semi-transparent blue background */
+  background-color: #f9f9f9;
   transform: translateX(-100%); /* Initially hidden off-screen */
   transition: transform 0.3s ease; /* Smooth transition for showing/hiding */
   color: rgba(205, 190, 190, 0.702); /* Light gray text color */
@@ -24,7 +24,8 @@
 
 /* Styling for the logo inside the sidebar */
 .logo {
-  margin-top: -30px; /* Adjust vertical positioning */
+  margin-top: 10px; /* Adjust vertical positioning */
+  margin-left: 30px;
 }
 
 /* Styling for labels inside the sidebar */

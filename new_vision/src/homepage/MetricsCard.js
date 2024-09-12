@@ -168,6 +168,20 @@ const MetricsCard = ({
     setWeight({ ...weights, [key]: value });
   };
 
+  // Helper function to dynamically set color based on category
+  const getCategoryStyle = (pillar) => {
+    switch (pillar) {
+      case "E":
+        return { backgroundColor: "#d4edda", color: "#155724" }; // Light green for Environmental Risk
+      case "S":
+        return { backgroundColor: "#fff3cd", color: "#856404" }; // Light yellow for Social Risk
+      case "G":
+        return { backgroundColor: "#cce5ff", color: "#004085" }; // Light blue for Governance Risk
+      default:
+        return { backgroundColor: "#e2e3e5", color: "#383d41" }; // Default grey
+    }
+  };
+
   // Function to submit all weights to the API
   const handleSubmitAllWeights = async () => {
     // Prepare data for API requests
@@ -448,25 +462,39 @@ const MetricsCard = ({
               <Button
                 onClick={handleFillWeight}
                 variant="info"
-                className="metrics-fill"
+                className="btn-secondary-action metrics-fill"
               >
                 Load Saved Weights
               </Button>
               <br />
               {Object.entries(categories).map(([key, value]) => (
-                <>
-                  <Button variant="link" onClick={() => toggleCategory(key)}>
+                <div
+                  className="category-container"
+                  key={key}
+                  style={getCategoryStyle(key)}
+                >
+                  <button
+                    className={`btn-category-toggle ${
+                      !value.open ? "collapsed" : ""
+                    }`}
+                    onClick={() => toggleCategory(key)}
+                    style={getCategoryStyle(key)}
+                  >
                     {key === "E"
                       ? "Environmental Risk"
                       : key === "S"
                       ? "Social Risk"
                       : "Governance Risk"}
-                  </Button>
+                  </button>
                   <br />
                   <Collapse in={value.open}>
                     <ListGroup>
                       {value.metrics.map((metric) => (
-                        <ListGroup.Item key={metric.id} className="metric-item">
+                        <ListGroup.Item
+                          key={metric.id}
+                          className="metric-item"
+                          style={getCategoryStyle(metric.pillar)}
+                        >
                           <div className="d-flex justify-content-between align-items-center">
                             <Form.Check
                               type="checkbox"
@@ -488,6 +516,7 @@ const MetricsCard = ({
                                 }
                               />
                               <Button
+                                className="btn-tertiary-action"
                                 onClick={() => toggleSubMetrics(metric.id)}
                                 size="sm"
                                 style={{ marginLeft: "10px" }}
@@ -597,18 +626,24 @@ const MetricsCard = ({
                       ))}
                     </ListGroup>
                   </Collapse>
-                </>
+                </div>
               ))}
-              <Button variant="success" onClick={handleSubmitAllWeights}>
-                Save Weights Changes
-              </Button>
-              <Button
-                variant="primary"
-                onClick={calculateMetricsScores}
-                style={{ marginLeft: "10px" }}
-              >
-                Calculate Indicators Score
-              </Button>
+              <div className="button-group">
+                <Button
+                  variant="success"
+                  className="btn-primary-action"
+                  onClick={handleSubmitAllWeights}
+                >
+                  Save Weights Changes
+                </Button>
+                <Button
+                  className="btn-primary-action"
+                  onClick={calculateMetricsScores}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Calculate Indicators Score
+                </Button>
+              </div>
             </>
           )}
         </Card.Body>

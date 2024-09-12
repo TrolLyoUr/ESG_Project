@@ -13,11 +13,10 @@ import {
   PointElement,
   LineController,
   BarController,
+  Tooltip, // Import Tooltip for hover functionality
 } from "chart.js";
 
-axios.defaults.withCredentials = true;
-
-// Register the controllers and elements for both Line and Bar charts
+// Register the controllers, elements, and tooltip for Line and Bar charts
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -25,8 +24,11 @@ ChartJS.register(
   LineElement,
   PointElement,
   LineController,
-  BarController
+  BarController,
+  Tooltip
 );
+
+axios.defaults.withCredentials = true;
 
 // Mapping of framework IDs to names
 const frameworkMap = {
@@ -42,7 +44,6 @@ const frameworkMap = {
  * @param {number} props.year - Year for data retrieval
  * @param {number} props.frameworkId - Framework identifier
  * @param {string} props.companyname - Company name for analysis
- * @param {Array} props.selectedMetrics - Metrics selected for detailed view
  */
 const ChartsContainer = ({ companyId, year, frameworkId, companyname }) => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
@@ -179,6 +180,30 @@ const ChartsContainer = ({ companyId, year, frameworkId, companyname }) => {
     }
   };
 
+  // Chart options with tooltips to show actual values on hover
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      tooltip: {
+        enabled: true, // Enable the tooltip
+        callbacks: {
+          label: function (tooltipItem) {
+            const chartType = tooltipItem.chart.config.type; // Get the chart type
+
+            // Determine the label based on the chart type
+            const labelPrefix = chartType === "line" ? "Score" : "Scale";
+            return `${labelPrefix}: ${tooltipItem.raw}`; // Show the actual value with the correct label
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true, // Ensure the Y-axis begins at zero
+      },
+    },
+  };
+
   return (
     <div className="chart-container">
       <div className="chart-buttons btn-group">
@@ -194,15 +219,12 @@ const ChartsContainer = ({ companyId, year, frameworkId, companyname }) => {
       </div>
       {showChart && (
         <div className="chart">
-          <Line data={chartData} options={{ responsive: true }} />
+          <Line data={chartData} options={chartOptions} />
         </div>
       )}
       {showBarChart && (
         <div className="chart">
-          <Bar
-            data={chartData}
-            options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
-          />
+          <Bar data={chartData} options={chartOptions} />
         </div>
       )}
       {showText && (
