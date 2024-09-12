@@ -103,7 +103,8 @@
 
 /* Weight Input Styles */
 .metrics-card .weight-input {
-  width: 60px; /* Adjust input width as needed */
+  width: 80px; /* Adjust input width as needed */
+  margin-left: 10px; /* Add left margin to input */
 }
 
 .label-container .label-score {
