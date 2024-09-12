@@ -30,9 +30,9 @@ ChartJS.register(
 
 // Mapping of framework IDs to names
 const frameworkMap = {
-  4: "GRI",
-  5: "SASB",
-  6: "TCFD",
+  1: "GRI",
+  2: "SASB",
+  3: "TCFD",
 };
 
 /**
