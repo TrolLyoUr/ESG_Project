@@ -5,9 +5,9 @@ import axios from "axios";
 
 // Mapping of framework IDs to their string representations for easy reference.
 const frameworkMapping = {
-  4: "GRI",
-  5: "SASB",
-  6: "TCFD",
+  1: "GRI",
+  2: "SASB",
+  3: "TCFD",
 };
 
 // Configuration to send cookies with axios requests, needed for secure API calls.

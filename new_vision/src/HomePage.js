@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "./homepage/Sidebar";
 import TotalScore from "./homepage/TotalScore";
 import FrameworkChoose from "./homepage/FrameworkChoose";
