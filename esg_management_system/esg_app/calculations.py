@@ -55,12 +55,12 @@ def calculate_metric_score_by_year(company, framework, metric, year, user):
 
     for metric_indicator in metric_indicators:
         indicator = metric_indicator.indicator
-        # 这里的weight需要改为用户自定义的weight
-        user_metric_weight = UserMetricPreference.objects.filter(user_id=user, framework=framework, metric=metric).all()
-        if user_metric_weight:
-            predefined_weight = user_metric_weight[0].custom_weight
-        else:
-            predefined_weight = metric_indicator.predefined_weight
+
+        # user_metric_weight = UserMetricPreference.objects.filter(user_id=user, framework=framework, metric=metric).all()
+        # if user_metric_weight:
+        #     predefined_weight = user_metric_weight[0].custom_weight
+        # else:
+        predefined_weight = metric_indicator.predefined_weight
 
         data_value = (
             DataValue.objects.filter(company=company, indicator=indicator)

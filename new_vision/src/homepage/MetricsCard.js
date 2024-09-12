@@ -417,8 +417,10 @@ const MetricsCard = ({
       data.forEach((company) => {
         // Filter out the metric scores for the selected year and update the scores object
         company.metrics_scores.forEach((metric) => {
-          scores[metric.metric_id] = metric.score;
+          scores[metric.metric_id] =
+            metric.score * weights[`metric_${metric.metric_id}`];
           console.log(metric.score);
+          console.log(weights[`metric_${metric.metric_id}`]);
         });
       });
 
