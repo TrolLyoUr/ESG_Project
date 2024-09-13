@@ -164,6 +164,7 @@
 
 /* Container for each category */
 .category-container {
+  margin-top: 20px;
   margin-bottom: 20px;
   padding: 15px;
   border-radius: 8px;
