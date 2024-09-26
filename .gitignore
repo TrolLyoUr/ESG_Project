@@ -8,7 +8,6 @@ esg_management_system/esg_app/migrations/__pycache__/__init__.cpython-311.pyc
 
 #data
 *.txt
-*.pdf
 
 # System and editor files
 .DS_Store
