@@ -1,6 +1,6 @@
 ## Brief description
 
-- Document: database definition, formula used for calculate esg performance
+- Document: Proposal, Report and else like database definition, formula used for calculate esg performance
 - esg_management_system: back end
 - new_vision: front end
 
