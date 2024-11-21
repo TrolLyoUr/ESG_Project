@@ -5,6 +5,23 @@ class Command(BaseCommand):
     help = 'Populate the database with predefined metrics and related information.'
 
     def handle(self, *args, **kwargs):
+        # Define framework descriptions
+        framework_descriptions = {
+            'GRI': 'The GRI provides globally recognized standards for sustainability reporting. '
+                    'It focuses on helping organizations disclose their environmental, social, and '
+                    'governance (ESG) impacts and contributions to sustainable development. It emphasizes '
+                    'transparency and accountability for a broad range of stakeholders, including investors, '
+                    'customers, and communities.',
+            'SASB': 'SASB develops industry-specific standards to guide companies in disclosing '
+                    'financially material sustainability information. It focuses on ESG factors that '
+                    'are likely to impact a company\'s financial performance, providing relevant data '
+                    'for investors to make informed decisions.',
+            'TCFD': 'TCFD provides recommendations for companies to disclose climate-related financial '
+                    'risks and opportunities. It emphasizes transparency in governance, strategy, risk '
+                    'management, and metrics related to climate change, aiming to improve decision-making '
+                    'by investors and other stakeholders.'
+        }
+
         # Define your metrics and related data
         e_metrics_data = [
             # GHG Emissions Intensity - GRI
@@ -476,8 +493,11 @@ class Command(BaseCommand):
                     defaults={'description': metric_data['description']}
                 )
 
-                framework_name = metric_data['frameworks']  # 'frameworks' is a string now, not a list
-                framework, _ = Framework.objects.get_or_create(name=framework_name)
+                framework_name = metric_data['frameworks']
+                framework, _ = Framework.objects.get_or_create(
+                    name=framework_name,
+                    defaults={'description': framework_descriptions[framework_name]}
+                )
                 weight = weights[framework_name].get(metric_data['name'], 0)
                 FrameworkMetric.objects.update_or_create(
                     framework=framework,
