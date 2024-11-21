@@ -59,14 +59,14 @@ ROOT_URLCONF = 'esg_management_system.urls'
 # CORS Settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:4000",
-    "http://localhost:4000",
-    "http://9900.seasite.top:4000",  # Add any other domains you want to allow
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+    "http://9900.seasite.top:3000",  # Add any other domains you want to allow
     "http://9900.seasite.top:8000"
 ]
-CSRF_TRUSTED_ORIGINS = ['http://localhost:4000', 'http://localhost:4000', 'http://127.0.0.1:4000',
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://localhost:4000', 'http://127.0.0.1:3000',
                         'http://127.0.0.1', 'http://9900.seasite.top',
-                        'http://9900.seasite.top:4000', 'http://9900.seasite.top:8000']
+                        'http://9900.seasite.top:3000', 'http://9900.seasite.top:8000']
 
 TEMPLATES = [
     {
@@ -92,12 +92,12 @@ WSGI_APPLICATION = 'esg_management_system.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "esg",
+        "NAME": "csg_data",
         "USER": "postgres",
-        "PASSWORD": "99009900",
-        # "PASSWORD": "bb870817",
-        # "HOST": "localhost",
-        "HOST": "db",
+        # "PASSWORD": "99009900",
+        "PASSWORD": "bb870817",
+        "HOST": "localhost",
+        # "HOST": "db",
         "PORT": "5432",
     }
 }
